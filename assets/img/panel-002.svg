@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+  <rect width="760" height="760" fill="#fffaf0"/>
+  <rect x="14" y="14" width="732" height="732" fill="#f4ead0" stroke="#050505" stroke-width="12"/>
+  <path d="M112 306h536l-72 230H184Z" fill="#ffcc00" stroke="#050505" stroke-width="10"/>
+  <path d="M164 536v128M596 536v128" stroke="#050505" stroke-width="10"/>
+  <circle cx="230" cy="392" r="46" fill="#ef6b4f" stroke="#050505" stroke-width="8"/>
+  <circle cx="528" cy="392" r="46" fill="#39a36d" stroke="#050505" stroke-width="8"/>
+  <path d="M196 454c18 20 48 20 68 0M494 454c18 20 48 20 68 0" stroke="#050505" stroke-width="8" fill="none"/>
+  <text x="62" y="112" fill="#111" font-family="Arial, sans-serif" font-size="40" font-weight="900">"각도 좋고, 농담은 더 좋고."</text>
+</svg>

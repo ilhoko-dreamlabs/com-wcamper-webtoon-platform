@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WCAMPER Webtoon</title>
+  <meta name="description" content="캠핑 크루의 이야기를 웹툰으로 연재하는 WCamper Webtoon MVP">
+  <meta property="og:title" content="WCAMPER Webtoon">
+  <meta property="og:description" content="캠핑 크루의 이야기를 웹툰으로 만나는 연재 공간">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/img/og.svg">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 이동</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#home" aria-label="WCAMPER Webtoon 홈">
+        <span class="brand-mark">W</span>
+        <span>
+          <strong>WCAMPER</strong>
+          <small>WEBTOON</small>
+        </span>
+      </a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a href="#series">작품</a>
+        <a href="#episodes">신규 회차</a>
+        <a href="#studio">스튜디오</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="home" class="hero">
+      <div class="hero-art" aria-hidden="true">
+        <div class="comic-strip">
+          <img src="assets/img/hero-panel-1.svg" alt="">
+          <img src="assets/img/hero-panel-2.svg" alt="">
+          <img src="assets/img/hero-panel-3.svg" alt="">
+        </div>
+      </div>
+      <div class="hero-content">
+        <p class="eyebrow">Camping Webtoon Studio</p>
+        <h1>캠핑 크루의 이야기를 연재하는 웹툰 작업실</h1>
+        <p>1차 MVP는 독자용 연재 화면과 AI 웹툰 제작 worker의 회차 작업공간을 함께 검증합니다.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#series">작품 보기</a>
+          <a class="button ghost" href="#studio">제작 구조</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="series" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Series</p>
+        <h2>연재 작품</h2>
+      </div>
+      <div id="series-list" class="series-grid"></div>
+    </section>
+
+    <section id="episodes" class="section muted-band">
+      <div class="section-heading">
+        <p class="eyebrow">Latest</p>
+        <h2>신규 회차</h2>
+      </div>
+      <div id="episode-list" class="episode-list"></div>
+    </section>
+
+    <section id="reader" class="reader" hidden>
+      <div class="reader-head">
+        <button id="reader-close" class="icon-button" type="button" aria-label="뷰어 닫기">×</button>
+        <div>
+          <p id="reader-series" class="eyebrow"></p>
+          <h2 id="reader-title"></h2>
+        </div>
+      </div>
+      <div id="reader-panels" class="reader-panels"></div>
+    </section>
+
+    <section id="studio" class="section studio-section">
+      <div class="section-heading">
+        <p class="eyebrow">Worker Studio</p>
+        <h2>AI 웹툰 제작환경</h2>
+      </div>
+      <div class="studio-layout">
+        <article>
+          <h3>제한된 회차 작업공간</h3>
+          <p>worker는 캐릭터, 세계관, 제작 스킬을 읽고 회차 폴더 안에서만 산출물을 만듭니다. 최종 게시 반영은 검수 후 사람이 승인합니다.</p>
+        </article>
+        <ol class="workflow">
+          <li><strong>input</strong><span>원본 아이디어와 제작 브리프</span></li>
+          <li><strong>planning</strong><span>줄거리, 등장인물, 장면 목록</span></li>
+          <li><strong>storyboard</strong><span>컷 구성과 대사 배치</span></li>
+          <li><strong>prompts</strong><span>캐릭터 일관성 기반 이미지 프롬프트</span></li>
+          <li><strong>review</strong><span>말투, 외형, 게시 기준 검수</span></li>
+          <li><strong>final</strong><span>최종 웹툰 이미지와 게시 메타데이터</span></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>WCAMPER Webtoon MVP</p>
+    <p>Static publishing, worker-based production.</p>
+  </footer>
+
+  <script src="data/catalog.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="260" viewBox="0 0 620 260">
+  <rect width="620" height="260" fill="#171713"/>
+  <rect x="0" y="0" width="620" height="260" fill="none" stroke="#050505" stroke-width="8"/>
+  <circle cx="502" cy="64" r="34" fill="#fffaf0"/>
+  <path d="M0 196c88-44 172-58 252-42s160 16 240-8c44-13 86-17 128-12v126H0Z" fill="#223d32"/>
+  <path d="M112 198h180l-90-80Z" fill="#ffcc00" stroke="#050505" stroke-width="6"/>
+  <path d="M386 210c0-38 28-68 64-68s64 30 64 68Z" fill="#ef6b4f" stroke="#050505" stroke-width="6"/>
+  <text x="36" y="54" fill="#fffaf0" font-family="Arial, sans-serif" font-size="32" font-weight="900">밤이 오면 이야기가 시작된다.</text>
+</svg>

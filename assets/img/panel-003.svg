@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+  <rect width="760" height="760" fill="#050505"/>
+  <rect x="14" y="14" width="732" height="732" fill="#171713" stroke="#050505" stroke-width="12"/>
+  <circle cx="616" cy="116" r="50" fill="#fffaf0"/>
+  <path d="M14 560c104-80 224-92 360-36 126 52 250 32 372-60v282H14Z" fill="#223d32"/>
+  <path d="M160 574h280L300 414Z" fill="#ffcc00" stroke="#050505" stroke-width="10"/>
+  <path d="M300 414v160" stroke="#050505" stroke-width="8"/>
+  <circle cx="520" cy="548" r="42" fill="#ef6b4f" stroke="#050505" stroke-width="8"/>
+  <text x="54" y="98" fill="#fffaf0" font-family="Arial, sans-serif" font-size="42" font-weight="900">빗소리가 내려앉았다.</text>
+  <text x="54" y="156" fill="#ffcc00" font-family="Arial, sans-serif" font-size="32" font-weight="900">그래도 오늘은 성공.</text>
+</svg>

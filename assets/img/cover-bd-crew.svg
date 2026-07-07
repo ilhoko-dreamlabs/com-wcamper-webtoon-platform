@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="900" viewBox="0 0 720 900">
+  <rect width="720" height="900" fill="#fffaf0"/>
+  <rect x="18" y="18" width="684" height="864" fill="#ffcc00" stroke="#050505" stroke-width="14"/>
+  <rect x="76" y="96" width="568" height="438" fill="#39a36d" stroke="#050505" stroke-width="10"/>
+  <path d="M76 534 240 302l112 126 88-102 204 208Z" fill="#223d32" stroke="#050505" stroke-width="9"/>
+  <circle cx="526" cy="176" r="54" fill="#f6f0df" stroke="#050505" stroke-width="8"/>
+  <rect x="128" y="476" width="236" height="112" fill="#ef6b4f" stroke="#050505" stroke-width="10"/>
+  <path d="M128 476h236L246 366Z" fill="#fffaf0" stroke="#050505" stroke-width="10"/>
+  <text x="76" y="686" fill="#111" font-family="Arial, sans-serif" font-size="72" font-weight="900">BD크루</text>
+  <text x="76" y="766" fill="#111" font-family="Arial, sans-serif" font-size="72" font-weight="900">캠핑일지</text>
+  <text x="80" y="820" fill="#554b37" font-family="Arial, sans-serif" font-size="30" font-weight="700">WCAMPER WEBTOON</text>
+</svg>
