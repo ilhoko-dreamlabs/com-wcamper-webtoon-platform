@@ -25,47 +25,94 @@
         </span>
       </a>
       <nav class="nav" aria-label="주요 메뉴">
-        <a href="#series">작품</a>
-        <a href="#episodes">신규 회차</a>
-        <a href="#studio">스튜디오</a>
+        <a href="#featured">작품</a>
+        <a href="#episodes">회차</a>
+        <a href="#author">작가</a>
+        <a href="#feedback">피드백</a>
+        <a href="#goals">목표</a>
+        <a href="#crew">크루</a>
+        <a href="#notes">제작노트</a>
       </nav>
     </div>
   </header>
 
   <main id="main">
     <section id="home" class="hero">
-      <div class="hero-art" aria-hidden="true">
-        <div class="comic-strip">
-          <img src="assets/img/hero-panel-1.svg" alt="">
-          <img src="assets/img/hero-panel-2.svg" alt="">
-          <img src="assets/img/hero-panel-3.svg" alt="">
-        </div>
+      <div class="hero-cover">
+        <img src="assets/img/cover-bd-crew.svg" alt="BD크루 캠핑일지 표지">
       </div>
       <div class="hero-content">
-        <p class="eyebrow">Camping Webtoon Studio</p>
-        <h1>캠핑 크루의 이야기를 연재하는 웹툰 작업실</h1>
-        <p>1차 MVP는 독자용 연재 화면과 AI 웹툰 제작 worker의 회차 작업공간을 함께 검증합니다.</p>
+        <p class="eyebrow">오늘의 대표 작품</p>
+        <h1>BD크루 캠핑일지</h1>
+        <p>비 예보, 타프 각도, 철수 직전의 맑은 하늘까지. 캠핑장에서 만나는 작은 사건을 크루의 농담과 리듬으로 풀어내는 연재 웹툰입니다.</p>
+        <div class="hero-meta" aria-label="작품 정보">
+          <span>캠핑</span>
+          <span>크루</span>
+          <span>일상 코미디</span>
+          <span>연재 준비</span>
+        </div>
         <div class="hero-actions">
-          <a class="button primary" href="#series">작품 보기</a>
-          <a class="button ghost" href="#studio">제작 구조</a>
+          <button id="hero-read" class="button primary" type="button">1화 바로 보기</button>
+          <a class="button ghost" href="#episodes">회차 목록</a>
         </div>
       </div>
     </section>
 
-    <section id="series" class="section">
+    <section id="featured" class="section">
       <div class="section-heading">
-        <p class="eyebrow">Series</p>
-        <h2>연재 작품</h2>
+        <p class="eyebrow">Series Home</p>
+        <h2>작품 홈</h2>
       </div>
-      <div id="series-list" class="series-grid"></div>
+      <div id="series-home" class="series-home"></div>
     </section>
 
     <section id="episodes" class="section muted-band">
       <div class="section-heading">
-        <p class="eyebrow">Latest</p>
-        <h2>신규 회차</h2>
+        <p class="eyebrow">Episodes</p>
+        <h2>회차 목록</h2>
       </div>
+      <div id="episode-toolbar" class="episode-toolbar"></div>
       <div id="episode-list" class="episode-list"></div>
+    </section>
+
+    <section id="author" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Author</p>
+        <h2>작가 프로필</h2>
+      </div>
+      <div id="author-profile" class="author-layout"></div>
+    </section>
+
+    <section id="feedback" class="section muted-band">
+      <div class="section-heading">
+        <p class="eyebrow">Feedback</p>
+        <h2>독자 피드백</h2>
+      </div>
+      <div id="feedback-hub" class="feedback-hub"></div>
+    </section>
+
+    <section id="goals" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Goals</p>
+        <h2>목표와 달성</h2>
+      </div>
+      <div id="goal-board" class="goal-board"></div>
+    </section>
+
+    <section id="crew" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Crew</p>
+        <h2>등장 크루</h2>
+      </div>
+      <div id="crew-list" class="crew-grid"></div>
+    </section>
+
+    <section id="notes" class="section muted-band">
+      <div class="section-heading">
+        <p class="eyebrow">Notes</p>
+        <h2>제작 노트와 다음 업데이트</h2>
+      </div>
+      <div id="note-list" class="note-grid"></div>
     </section>
 
     <section id="reader" class="reader" hidden>
@@ -78,32 +125,11 @@
       </div>
       <div id="reader-panels" class="reader-panels"></div>
     </section>
-
-    <section id="studio" class="section studio-section">
-      <div class="section-heading">
-        <p class="eyebrow">Worker Studio</p>
-        <h2>AI 웹툰 제작환경</h2>
-      </div>
-      <div class="studio-layout">
-        <article>
-          <h3>제한된 회차 작업공간</h3>
-          <p>worker는 캐릭터, 세계관, 제작 스킬을 읽고 회차 폴더 안에서만 산출물을 만듭니다. 최종 게시 반영은 검수 후 사람이 승인합니다.</p>
-        </article>
-        <ol class="workflow">
-          <li><strong>input</strong><span>원본 아이디어와 제작 브리프</span></li>
-          <li><strong>planning</strong><span>줄거리, 등장인물, 장면 목록</span></li>
-          <li><strong>storyboard</strong><span>컷 구성과 대사 배치</span></li>
-          <li><strong>prompts</strong><span>캐릭터 일관성 기반 이미지 프롬프트</span></li>
-          <li><strong>review</strong><span>말투, 외형, 게시 기준 검수</span></li>
-          <li><strong>final</strong><span>최종 웹툰 이미지와 게시 메타데이터</span></li>
-        </ol>
-      </div>
-    </section>
   </main>
 
   <footer class="site-footer">
-    <p>WCAMPER Webtoon MVP</p>
-    <p>Static publishing, worker-based production.</p>
+    <p>WCAMPER Webtoon</p>
+    <p>BD크루 캠핑일지 연재 준비호</p>
   </footer>
 
   <script src="data/catalog.js"></script>
