@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+  <rect width="760" height="760" fill="#e9eff2"/>
+  <rect x="14" y="14" width="732" height="732" fill="#ffffff" stroke="#050505" stroke-width="12"/>
+  <rect x="190" y="94" width="380" height="580" rx="32" fill="#17221b" stroke="#050505" stroke-width="9"/>
+  <rect x="226" y="154" width="308" height="398" fill="#f7faf8"/>
+  <path d="M260 408h240" stroke="#55a7df" stroke-width="20" stroke-linecap="round"/>
+  <path d="M500 408l-48-38v76Z" fill="#55a7df"/>
+  <text x="260" y="238" fill="#111" font-family="Arial, sans-serif" font-size="46" font-weight="900">강수 알림</text>
+  <text x="260" y="316" fill="#111" font-family="Arial, sans-serif" font-size="38" font-weight="900">20분 뒤 비</text>
+  <text x="112" y="710" fill="#111" font-family="Arial, sans-serif" font-size="34" font-weight="900">"20분 뒤에 비 온대요."</text>
+</svg>

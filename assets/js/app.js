@@ -62,15 +62,21 @@
 
   function renderEpisodes() {
     const openCount = data.episodes.filter((episode) => episode.status === "공개").length;
+    const latestPublishedAt = data.episodes
+      .filter((episode) => episode.status === "공개")
+      .map((episode) => episode.publishedAt)
+      .sort()
+      .at(-1);
     episodeToolbar.innerHTML = `
       <span>전체 ${data.episodes.length}화</span>
       <span>공개 ${openCount}화</span>
-      <span>최신 업데이트 ${data.episodes[0].publishedAt}</span>
+      <span>최신 업데이트 ${latestPublishedAt || "준비중"}</span>
     `;
 
     episodeList.innerHTML = data.episodes.map((episode) => {
       const series = getSeries(episode.seriesId);
       const canRead = episode.panels.length > 0;
+      const panelLabel = episode.production ? `${episode.production.panelCount}컷` : `${episode.panels.length}컷`;
       return `
         <article class="episode-card">
           <img src="${episode.thumbnail}" alt="${episode.title} 썸네일">
@@ -79,9 +85,15 @@
               <span>${series.title}</span>
               <span>${episode.status}</span>
               <span>${episode.readTime}</span>
+              <span>${panelLabel}</span>
             </div>
             <h3>${episode.number}화. ${episode.title}</h3>
             <p>${episode.summary}</p>
+            <div class="episode-meta-grid" aria-label="${episode.title} 회차 지표">
+              <span>공개일 <strong>${episode.publishedAt}</strong></span>
+              <span>완독률 <strong>${episode.completionRate || "집계전"}</strong></span>
+              <span>검수 <strong>${episode.production ? "완료" : "대기"}</strong></span>
+            </div>
             <div class="episode-actions">
               <button class="button primary read-button" type="button" data-episode-id="${episode.id}" ${canRead ? "" : "disabled"}>${canRead ? "읽기" : "준비중"}</button>
               <span>좋아요 ${episode.likes}</span>
@@ -280,12 +292,33 @@
     const series = getSeries(episode.seriesId);
     readerSeries.textContent = series.title;
     readerTitle.textContent = `${episode.number}화. ${episode.title}`;
-    readerPanels.innerHTML = episode.panels.map((panel, index) => `
-      <figure class="panel-frame">
-        <img src="${panel.image}" alt="${episode.title} ${index + 1}컷">
-        <figcaption>${panel.caption}</figcaption>
-      </figure>
-    `).join("");
+    const production = episode.production ? `
+      <aside class="reader-production" aria-label="회차 제작 정보">
+        <span>${episode.status}</span>
+        <span>${episode.publishedAt}</span>
+        <span>${episode.production.panelCount}컷</span>
+        <span>${episode.production.review}</span>
+      </aside>
+    ` : "";
+    readerPanels.innerHTML = `
+      ${production}
+      ${episode.panels.map((panel, index) => `
+        <figure class="panel-frame">
+          <img src="${panel.image}" alt="${episode.title} ${index + 1}컷">
+          <figcaption>
+            <span>${String(index + 1).padStart(2, "0")} · ${panel.beat || "장면"} · ${panel.shot || "웹툰 컷"}</span>
+            <strong>${panel.dialogue || ""}</strong>
+            <p>${panel.caption}</p>
+          </figcaption>
+        </figure>
+      `).join("")}
+      <article class="reader-end">
+        <p class="eyebrow">Episode End</p>
+        <h3>${episode.number}화 끝</h3>
+        <p>${episode.production ? episode.production.disclosure : "제작 정보 준비중"}</p>
+        <a class="button ghost" href="#feedback">이번 회차 피드백 남기기</a>
+      </article>
+    `;
     reader.hidden = false;
     reader.scrollIntoView({ behavior: "smooth", block: "start" });
   }

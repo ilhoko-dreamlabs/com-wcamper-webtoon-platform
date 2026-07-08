@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="980" viewBox="0 0 760 980">
+  <rect width="760" height="980" fill="#dfe8dc"/>
+  <rect x="16" y="16" width="728" height="948" fill="#f8faf4" stroke="#050505" stroke-width="12"/>
+  <path d="M16 300c128-82 250-96 364-42 128-64 250-44 364 38v668H16Z" fill="#38463b"/>
+  <path d="M92 520h576l-86 220H178Z" fill="#f5c84b" stroke="#050505" stroke-width="9"/>
+  <line x1="162" y1="742" x2="126" y2="914" stroke="#050505" stroke-width="10"/>
+  <line x1="600" y1="742" x2="640" y2="914" stroke="#050505" stroke-width="10"/>
+  <circle cx="600" cy="160" r="52" fill="#73848a" stroke="#050505" stroke-width="8"/>
+  <path d="M188 180h386" stroke="#050505" stroke-width="9" stroke-linecap="round"/>
+  <text x="70" y="110" fill="#111" font-family="Arial, sans-serif" font-size="39" font-weight="900">먹구름이 올라온다</text>
+  <text x="78" y="888" fill="#fff" font-family="Arial, sans-serif" font-size="34" font-weight="900">"물길부터 봐야 합니다."</text>
+</svg>

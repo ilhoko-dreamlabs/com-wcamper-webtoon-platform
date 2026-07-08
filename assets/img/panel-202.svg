@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="860" viewBox="0 0 760 860">
+  <rect width="760" height="860" fill="#f4ead0"/>
+  <rect x="14" y="14" width="732" height="832" fill="#fffaf0" stroke="#050505" stroke-width="12"/>
+  <path d="M94 324h572L560 520H200Z" fill="#ffcc00" stroke="#050505" stroke-width="9"/>
+  <circle cx="240" cy="610" r="54" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <circle cx="520" cy="610" r="54" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <rect x="186" y="668" width="108" height="118" fill="#ef6b4f" stroke="#050505" stroke-width="7"/>
+  <rect x="466" y="668" width="108" height="118" fill="#39a36d" stroke="#050505" stroke-width="7"/>
+  <path d="M120 98h506v92H120Z" fill="#fff" stroke="#050505" stroke-width="7"/>
+  <text x="146" y="156" fill="#111" font-family="Arial, sans-serif" font-size="34" font-weight="900">크기보다 각도가 먼저입니다</text>
+</svg>

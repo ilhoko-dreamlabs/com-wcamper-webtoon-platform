@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+  <rect width="760" height="760" fill="#eaf2e8"/>
+  <rect x="14" y="14" width="732" height="732" fill="#f9fff7" stroke="#050505" stroke-width="12"/>
+  <rect x="86" y="476" width="588" height="118" fill="#7d5a3a" stroke="#050505" stroke-width="8"/>
+  <circle cx="380" cy="250" r="86" fill="#f2bd7b" stroke="#050505" stroke-width="8"/>
+  <rect x="286" y="336" width="188" height="210" fill="#39a36d" stroke="#050505" stroke-width="8"/>
+  <rect x="248" y="440" width="264" height="100" fill="#ffcc00" stroke="#050505" stroke-width="8"/>
+  <circle cx="344" cy="244" r="10" fill="#050505"/>
+  <circle cx="416" cy="244" r="10" fill="#050505"/>
+  <path d="M342 296q38 28 76 0" fill="none" stroke="#050505" stroke-width="8" stroke-linecap="round"/>
+  <path d="M104 98h420v96H104Z" fill="#fff" stroke="#050505" stroke-width="7"/>
+  <text x="124" y="156" fill="#111" font-family="Arial, sans-serif" font-size="34" font-weight="900">비도 밥 먹고 오라고 해요</text>
+</svg>

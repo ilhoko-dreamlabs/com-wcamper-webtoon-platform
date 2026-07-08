@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+  <rect width="760" height="760" fill="#fff4dc"/>
+  <rect x="14" y="14" width="732" height="732" fill="#fffaf0" stroke="#050505" stroke-width="12"/>
+  <circle cx="380" cy="288" r="84" fill="#f2bd7b" stroke="#050505" stroke-width="8"/>
+  <rect x="278" y="388" width="204" height="220" fill="#39a36d" stroke="#050505" stroke-width="8"/>
+  <rect x="230" y="456" width="300" height="116" fill="#ffcc00" stroke="#050505" stroke-width="8"/>
+  <text x="276" y="526" fill="#111" font-family="Arial, sans-serif" font-size="38" font-weight="900">간식</text>
+  <path d="M112 112h536v96H112Z" fill="#fff" stroke="#050505" stroke-width="7"/>
+  <text x="136" y="170" fill="#111" font-family="Arial, sans-serif" font-size="34" font-weight="900">제일 먼저 지킬 장비가 있습니다</text>
+</svg>

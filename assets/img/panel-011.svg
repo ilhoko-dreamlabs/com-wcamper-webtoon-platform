@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+  <rect width="760" height="760" fill="#f4ead0"/>
+  <rect x="14" y="14" width="732" height="732" fill="#fffaf0" stroke="#050505" stroke-width="12"/>
+  <rect x="92" y="500" width="576" height="132" fill="#7d5a3a" stroke="#050505" stroke-width="8"/>
+  <circle cx="210" cy="310" r="58" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <circle cx="380" cy="296" r="58" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <circle cx="550" cy="310" r="58" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <rect x="156" y="368" width="108" height="156" fill="#ef6b4f" stroke="#050505" stroke-width="7"/>
+  <rect x="326" y="354" width="108" height="170" fill="#39a36d" stroke="#050505" stroke-width="7"/>
+  <rect x="496" y="368" width="108" height="156" fill="#275efe" stroke="#050505" stroke-width="7"/>
+  <path d="M154 132h452v90H154Z" fill="#fff" stroke="#050505" stroke-width="7"/>
+  <text x="178" y="188" fill="#111" font-family="Arial, sans-serif" font-size="33" font-weight="900">앉지는 못해도 먹을 수는 있죠</text>
+</svg>

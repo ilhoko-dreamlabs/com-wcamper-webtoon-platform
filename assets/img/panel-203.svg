@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+  <rect width="760" height="760" fill="#eef2f1"/>
+  <rect x="14" y="14" width="732" height="732" fill="#ffffff" stroke="#050505" stroke-width="12"/>
+  <circle cx="284" cy="350" r="82" fill="#f2bd7b" stroke="#050505" stroke-width="8"/>
+  <circle cx="474" cy="350" r="82" fill="#f2bd7b" stroke="#050505" stroke-width="8"/>
+  <path d="M252 332h20M444 332h20" stroke="#050505" stroke-width="10" stroke-linecap="round"/>
+  <path d="M304 332h20M496 332h20" stroke="#050505" stroke-width="10" stroke-linecap="round"/>
+  <path d="M248 520h-96M512 520h96" stroke="#050505" stroke-width="10" stroke-linecap="round"/>
+  <path d="M96 130h548v94H96Z" fill="#fff" stroke="#050505" stroke-width="7"/>
+  <text x="122" y="188" fill="#111" font-family="Arial, sans-serif" font-size="35" font-weight="900">그럼 물은 어디로 보내요?</text>
+</svg>

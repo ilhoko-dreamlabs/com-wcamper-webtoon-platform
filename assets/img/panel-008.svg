@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="900" viewBox="0 0 760 900">
+  <rect width="760" height="900" fill="#17221b"/>
+  <rect x="16" y="16" width="728" height="868" fill="#1d2b22" stroke="#050505" stroke-width="12"/>
+  <rect x="118" y="504" width="524" height="166" fill="#3b2d24" stroke="#050505" stroke-width="8"/>
+  <circle cx="382" cy="318" r="88" fill="#ffcc66" stroke="#050505" stroke-width="8"/>
+  <circle cx="382" cy="318" r="38" fill="#fff6c8"/>
+  <path d="M178 712c90-54 314-54 404 0" fill="none" stroke="#9ed4ff" stroke-width="16" stroke-linecap="round"/>
+  <text x="74" y="120" fill="#fff" font-family="Arial, sans-serif" font-size="38" font-weight="900">랜턴빛이 젖은 테이블에 번진다</text>
+  <text x="98" y="814" fill="#fff6c8" font-family="Arial, sans-serif" font-size="34" font-weight="900">"소리까지 배경음이네요."</text>
+</svg>

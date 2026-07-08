@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760">
+  <rect width="760" height="760" fill="#fff4dc"/>
+  <rect x="14" y="14" width="732" height="732" fill="#fffaf0" stroke="#050505" stroke-width="12"/>
+  <rect x="62" y="472" width="636" height="160" fill="#73a36c" stroke="#050505" stroke-width="8"/>
+  <circle cx="254" cy="310" r="78" fill="#f1bc80" stroke="#050505" stroke-width="8"/>
+  <circle cx="506" cy="310" r="78" fill="#f1bc80" stroke="#050505" stroke-width="8"/>
+  <rect x="188" y="386" width="132" height="172" fill="#ef6b4f" stroke="#050505" stroke-width="8"/>
+  <rect x="440" y="386" width="132" height="172" fill="#275efe" stroke="#050505" stroke-width="8"/>
+  <path d="M210 276h88M462 276h88" stroke="#050505" stroke-width="8" stroke-linecap="round"/>
+  <path d="M232 338q22 20 44 0M484 338q22 20 44 0" fill="none" stroke="#050505" stroke-width="7" stroke-linecap="round"/>
+  <path d="M92 142h250v92H92Z" fill="#fff" stroke="#050505" stroke-width="7"/>
+  <path d="M418 122h244v112H418Z" fill="#fff" stroke="#050505" stroke-width="7"/>
+  <text x="112" y="198" fill="#111" font-family="Arial, sans-serif" font-size="31" font-weight="900">이쪽이 낮아요</text>
+  <text x="438" y="178" fill="#111" font-family="Arial, sans-serif" font-size="29" font-weight="900">아니, 저쪽!</text>
+</svg>

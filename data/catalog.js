@@ -4,11 +4,11 @@ window.WCAMPER_WEBTOON = {
       id: "bd-crew-camping-log",
       authorId: "bd-crew-studio",
       title: "BD크루 캠핑일지",
-      status: "연재 준비",
+      status: "공개 연재",
       summary: "봉달캠퍼와 BD크루가 캠핑장에서 겪는 작고 진한 에피소드. 장비보다 사람, 정보보다 현장감을 앞세운 캠핑 일상 웹툰.",
       cover: "assets/img/cover-bd-crew.svg",
       tags: ["캠핑", "크루", "일상", "코미디"],
-      schedule: "격주 연재 준비중",
+      schedule: "격주 토요일 공개",
       ageRating: "전체 이용가",
       stats: {
         likes: "128",
@@ -16,9 +16,9 @@ window.WCAMPER_WEBTOON = {
         favorites: "76"
       },
       highlights: [
-        "캠핑을 처음 보는 독자도 따라올 수 있는 쉬운 흐름",
+        "1화와 2화 공개, 3화 제작중인 파일럿 연재",
         "비 예보, 타프, 철수, 아침 커피처럼 실제 캠핑 소재 중심",
-        "크루별 역할이 살아 있는 티키타카와 안전한 캠핑 문화"
+        "컷별 대사와 제작 메타데이터를 포함한 웹툰 뷰어 구성"
       ],
       episodes: [
         "2026-07-04-first-camping",
@@ -43,7 +43,7 @@ window.WCAMPER_WEBTOON = {
       works: [
         {
           title: "BD크루 캠핑일지",
-          status: "연재 준비",
+          status: "공개 연재",
           description: "비 예보, 타프, 철수, 아침 커피처럼 캠핑장에서 실제로 벌어지는 일을 크루물로 풀어내는 메인 연재작.",
           meta: "시즌 1 / 3화 기획 공개"
         },
@@ -104,20 +104,98 @@ window.WCAMPER_WEBTOON = {
       status: "공개",
       thumbnail: "assets/img/thumb-episode-001.svg",
       summary: "비 예보를 앞두고 모인 BD크루가 장비보다 중요한 캠핑의 리듬을 찾아간다.",
-      readTime: "3분",
+      readTime: "6분",
       likes: "43",
+      completionRate: "68%",
+      production: {
+        disclosure: "AI 보조 콘티와 사람이 편집한 공개 파일럿",
+        review: "캐릭터/대사/안전 기준 검수 완료",
+        panelCount: 12
+      },
       panels: [
         {
           image: "assets/img/panel-001.svg",
-          caption: "해 질 무렵, 캠핑장 입구에 BD크루 차량들이 하나씩 들어온다."
+          beat: "오프닝 훅",
+          shot: "와이드",
+          caption: "해 질 무렵, 캠핑장 입구에 BD크루 차량들이 하나씩 들어온다.",
+          dialogue: "봉달캠퍼: 다 왔습니다. 오늘은 순서대로 갑시다."
         },
         {
           image: "assets/img/panel-002.svg",
-          caption: "타프를 치는 손은 바쁘지만 농담은 멈추지 않는다."
+          beat: "세팅 시작",
+          shot: "미디엄",
+          caption: "타프를 치는 손은 바쁘지만 농담은 멈추지 않는다.",
+          dialogue: "부라보: 순서요? 저는 일단 배고픈데요."
         },
         {
           image: "assets/img/panel-003.svg",
-          caption: "첫 번째 밤은 비 소리와 랜턴 불빛 사이에서 천천히 깊어진다."
+          beat: "첫 정착",
+          shot: "클로즈업",
+          caption: "첫 번째 밤은 비 소리와 랜턴 불빛 사이에서 천천히 깊어진다.",
+          dialogue: "독도인별: 랜턴 켜지니까 이제 진짜 캠핑 같네요."
+        },
+        {
+          image: "assets/img/panel-004.svg",
+          beat: "문제 제시",
+          shot: "하이앵글",
+          caption: "먹구름이 능선 뒤에서 천천히 올라오고, 모두의 시선이 하늘로 향한다.",
+          dialogue: "TJ쌤: 비 오기 전에 물길부터 봐야 합니다."
+        },
+        {
+          image: "assets/img/panel-005.svg",
+          beat: "크루 반응",
+          shot: "투샷",
+          caption: "오창브라더스는 팩 위치를 두고 짧게 의견이 갈린다.",
+          dialogue: "오창브라더스: 이쪽이 낮아요. 아니, 저쪽이 더 낮다니까?"
+        },
+        {
+          image: "assets/img/panel-006.svg",
+          beat: "정보 전달",
+          shot: "인서트",
+          caption: "타프 끝선 아래로 작은 물방울이 맺히기 시작한다.",
+          dialogue: "TJ쌤: 한쪽을 낮춰야 물이 고이지 않아요."
+        },
+        {
+          image: "assets/img/panel-007.svg",
+          beat: "완화",
+          shot: "미디엄",
+          caption: "부라보가 준비한 간식이 어색한 침묵을 끊는다.",
+          dialogue: "부라보: 비도 밥 먹고 오라고 해요."
+        },
+        {
+          image: "assets/img/panel-008.svg",
+          beat: "관찰",
+          shot: "클로즈업",
+          caption: "젖은 테이블 위로 랜턴빛이 번지고, 독도인별이 조용히 웃는다.",
+          dialogue: "독도인별: 오늘은 소리까지 배경음이네요."
+        },
+        {
+          image: "assets/img/panel-009.svg",
+          beat: "협업",
+          shot: "와이드",
+          caption: "크루가 각자 한쪽 줄을 맡아 타프 각도를 다시 잡는다.",
+          dialogue: "봉달캠퍼: 장비보다 손발이 먼저 맞아야죠."
+        },
+        {
+          image: "assets/img/panel-010.svg",
+          beat: "해결",
+          shot: "로우앵글",
+          caption: "빗물이 타프 끝을 따라 바깥으로 떨어진다.",
+          dialogue: "지프캠퍼: 물길 빠집니다. 이 정도면 됩니다."
+        },
+        {
+          image: "assets/img/panel-011.svg",
+          beat: "감정 정리",
+          shot: "미디엄 클로즈업",
+          caption: "크루는 젖은 의자 대신 서서 첫 저녁을 나눈다.",
+          dialogue: "부라보: 앉지는 못해도 먹을 수는 있죠."
+        },
+        {
+          image: "assets/img/panel-012.svg",
+          beat: "다음 화 훅",
+          shot: "와이드",
+          caption: "비가 잦아든 밤, 누군가 타프 밖에서 접힌 의자를 발견한다.",
+          dialogue: "봉달캠퍼: 잠깐만요. 저 의자, 우리 거 맞아요?"
         }
       ]
     },
@@ -126,20 +204,69 @@ window.WCAMPER_WEBTOON = {
       seriesId: "bd-crew-camping-log",
       number: 2,
       title: "비 예보와 타프 각도",
-      publishedAt: "2026-07-18",
-      status: "예고",
-      thumbnail: "assets/img/hero-panel-2.svg",
+      publishedAt: "2026-07-08",
+      status: "공개",
+      thumbnail: "assets/img/thumb-episode-002.svg",
       summary: "비가 온다는 말 한마디에 크루의 장비 철학이 갈린다. 초보 질문과 고수의 잔소리가 만나는 회차.",
-      readTime: "4분",
-      likes: "예정",
-      panels: []
+      readTime: "5분",
+      likes: "27",
+      completionRate: "파일럿 집계중",
+      production: {
+        disclosure: "AI 보조 패널 프롬프트 기반, 사람이 대사와 안전 정보를 편집",
+        review: "위험 행동 미화 없음, 장비 브랜드 노출 없음",
+        panelCount: 6
+      },
+      panels: [
+        {
+          image: "assets/img/panel-201.svg",
+          beat: "날씨 경보",
+          shot: "인서트",
+          caption: "휴대폰 날씨 앱에 강수 알림이 뜨고, 테이블 위 장비들이 잠깐 멈춘다.",
+          dialogue: "독도인별: 20분 뒤에 비 온대요."
+        },
+        {
+          image: "assets/img/panel-202.svg",
+          beat: "갈등 시작",
+          shot: "미디엄",
+          caption: "부라보는 큰 타프를 펼치고 TJ쌤은 바닥 경사를 먼저 확인한다.",
+          dialogue: "TJ쌤: 크기보다 각도가 먼저입니다."
+        },
+        {
+          image: "assets/img/panel-203.svg",
+          beat: "초보 질문",
+          shot: "클로즈업",
+          caption: "오창브라더스가 팩과 스트링을 들고 서로 다른 방향을 가리킨다.",
+          dialogue: "오창브라더스: 그럼 물은 어디로 보내요?"
+        },
+        {
+          image: "assets/img/panel-204.svg",
+          beat: "실전 팁",
+          shot: "다이어그램 컷",
+          caption: "타프 한쪽이 낮아지고 빗물 방향이 화살표처럼 정리된다.",
+          dialogue: "봉달캠퍼: 사람 다니는 길 반대쪽으로요."
+        },
+        {
+          image: "assets/img/panel-205.svg",
+          beat: "코미디 완화",
+          shot: "미디엄",
+          caption: "부라보가 간식 박스를 방수백처럼 품에 안고 뛰어온다.",
+          dialogue: "부라보: 제일 먼저 지켜야 할 장비가 있습니다."
+        },
+        {
+          image: "assets/img/panel-206.svg",
+          beat: "후킹",
+          shot: "와이드",
+          caption: "비가 시작되고, 타프 밖에 놓인 낯선 장비 상자가 빗물에 젖기 시작한다.",
+          dialogue: "지프캠퍼: 저 박스, 우리 짐 아닙니다."
+        }
+      ]
     },
     {
       id: "2026-08-01-morning-coffee",
       seriesId: "bd-crew-camping-log",
       number: 3,
       title: "철수 전 아침 커피",
-      publishedAt: "2026-08-01",
+      publishedAt: "2026-07-22",
       status: "제작중",
       thumbnail: "assets/img/hero-panel-3.svg",
       summary: "철수만 남은 아침, 커피 한 잔 때문에 모두의 속도가 달라진다. 가장 조용한 시간이 가장 시끄러운 이야기가 된다.",
@@ -151,8 +278,8 @@ window.WCAMPER_WEBTOON = {
   notes: [
     {
       title: "다음 업데이트",
-      body: "2화는 비 예보를 중심으로 타프 각도, 배수 방향, 장비 욕심을 다룹니다.",
-      meta: "2026.07.18 공개 예정"
+      body: "2화까지 공개되었고, 3화는 철수 전 아침 커피를 중심으로 조용한 아침과 느려지는 철수 속도를 다룹니다.",
+      meta: "2026.07.22 공개 예정"
     },
     {
       title: "이번 시즌 톤",
@@ -218,6 +345,20 @@ window.WCAMPER_WEBTOON = {
         samples: [
           { mode: "member", body: "첫 컷에서 차량이 들어오는 장면이 좋아서 시작 몰입감이 있습니다." },
           { mode: "anonymous", body: "컷 수가 조금 더 많으면 회차로서 만족도가 올라갈 것 같습니다." }
+        ]
+      },
+      {
+        id: "episode-2026-07-18-rain-tarp",
+        type: "episode",
+        label: "회차",
+        title: "2화. 비 예보와 타프 각도",
+        prompt: "이번 회차의 캠핑 정보, 코미디 호흡, 다음 화 후킹에 대한 의견",
+        score: 82,
+        anonymousCount: 7,
+        memberCount: 4,
+        samples: [
+          { mode: "member", body: "타프 각도 설명이 컷으로 보이니까 초보자도 이해하기 쉽습니다." },
+          { mode: "anonymous", body: "낯선 장비 상자 후킹이 좋아서 다음 회차가 궁금합니다." }
         ]
       }
     ]

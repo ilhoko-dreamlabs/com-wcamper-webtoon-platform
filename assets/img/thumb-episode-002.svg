@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="520" viewBox="0 0 720 520">
+  <rect width="720" height="520" fill="#dfe8dc"/>
+  <rect x="18" y="18" width="684" height="484" fill="#f8faf4" stroke="#050505" stroke-width="12"/>
+  <path d="M86 204h548L526 360H194Z" fill="#ffcc00" stroke="#050505" stroke-width="9"/>
+  <path d="M520 372c24 34 36 60 36 80 0 28-22 50-50 50s-50-22-50-50c0-20 14-46 42-80Z" fill="#55a7df" stroke="#050505" stroke-width="7"/>
+  <text x="60" y="110" fill="#111" font-family="Arial, sans-serif" font-size="46" font-weight="900">2화</text>
+  <text x="60" y="166" fill="#111" font-family="Arial, sans-serif" font-size="42" font-weight="900">비 예보와 타프 각도</text>
+</svg>

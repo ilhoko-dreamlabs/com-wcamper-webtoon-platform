@@ -1,12 +1,12 @@
 {
-  "id": "2026-07-04-first-camping",
+  "id": "2026-07-18-rain-tarp",
   "seriesId": "bd-crew-camping-log",
-  "number": 1,
-  "title": "첫 번째 밤, 타프 아래에서",
+  "number": 2,
+  "title": "비 예보와 타프 각도",
   "status": "published",
-  "publishedAt": "2026-07-07",
-  "readTime": "6분",
-  "panelCount": 12,
+  "publishedAt": "2026-07-08",
+  "readTime": "5분",
+  "panelCount": 6,
   "creationDisclosure": {
     "usedAiTools": true,
     "humanEdited": true,

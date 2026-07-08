@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="620" viewBox="0 0 760 620">
+  <rect width="760" height="620" fill="#f8faf9"/>
+  <rect x="14" y="14" width="732" height="592" fill="#ffffff" stroke="#050505" stroke-width="12"/>
+  <path d="M94 216h572L552 392H208Z" fill="#ffcc00" stroke="#050505" stroke-width="9"/>
+  <path d="M198 460h322" stroke="#55a7df" stroke-width="20" stroke-linecap="round"/>
+  <path d="M528 460l-50-40v80Z" fill="#55a7df"/>
+  <rect x="88" y="492" width="154" height="54" fill="#39a36d" stroke="#050505" stroke-width="6"/>
+  <text x="88" y="116" fill="#111" font-family="Arial, sans-serif" font-size="39" font-weight="900">길 반대쪽으로 물을 뺀다</text>
+  <text x="96" y="570" fill="#111" font-family="Arial, sans-serif" font-size="25" font-weight="900">사람 다니는 길</text>
+</svg>

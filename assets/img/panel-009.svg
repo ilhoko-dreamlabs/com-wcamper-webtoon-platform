@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="940" viewBox="0 0 760 940">
+  <rect width="760" height="940" fill="#dce6dc"/>
+  <rect x="16" y="16" width="728" height="908" fill="#f8faf4" stroke="#050505" stroke-width="12"/>
+  <path d="M92 338h576L568 578H192Z" fill="#ffcc00" stroke="#050505" stroke-width="9"/>
+  <line x1="130" y1="580" x2="88" y2="838" stroke="#050505" stroke-width="10"/>
+  <line x1="630" y1="580" x2="672" y2="838" stroke="#050505" stroke-width="10"/>
+  <circle cx="180" cy="650" r="38" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <circle cx="318" cy="682" r="38" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <circle cx="450" cy="682" r="38" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <circle cx="584" cy="650" r="38" fill="#f2bd7b" stroke="#050505" stroke-width="7"/>
+  <path d="M152 704h56M290 736h56M422 736h56M556 704h56" stroke="#050505" stroke-width="8"/>
+  <text x="70" y="126" fill="#111" font-family="Arial, sans-serif" font-size="42" font-weight="900">각자 한 줄씩 잡는다</text>
+  <text x="78" y="880" fill="#111" font-family="Arial, sans-serif" font-size="33" font-weight="900">"장비보다 손발이 먼저 맞아야죠."</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="620" viewBox="0 0 760 620">
+  <rect width="760" height="620" fill="#eef4f8"/>
+  <rect x="14" y="14" width="732" height="592" fill="#ffffff" stroke="#050505" stroke-width="12"/>
+  <path d="M98 232h564L552 408H206Z" fill="#f7d45b" stroke="#050505" stroke-width="9"/>
+  <path d="M536 428c22 38 32 66 32 86 0 28-22 50-50 50s-50-22-50-50c0-20 14-48 42-86Z" fill="#55a7df" stroke="#050505" stroke-width="7"/>
+  <path d="M192 444h364" stroke="#55a7df" stroke-width="18" stroke-linecap="round"/>
+  <path d="M564 444l-50-42v84Z" fill="#55a7df"/>
+  <text x="80" y="108" fill="#111" font-family="Arial, sans-serif" font-size="42" font-weight="900">한쪽을 낮춰 물길 만들기</text>
+  <text x="92" y="556" fill="#111" font-family="Arial, sans-serif" font-size="30" font-weight="900">사람이 다니는 길 반대쪽으로 빼기</text>
+</svg>
