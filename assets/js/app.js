@@ -159,6 +159,26 @@
       };
     }
 
+    if (route.name === "mypage") {
+      return {
+        title: "마이페이지 | WCAMPER Webtoon",
+        description: "회원의 웹툰 보기, 관심작, 피드백, 활동 내역을 확인하는 독자용 마이페이지 설계 화면입니다.",
+        image: defaultOgImage,
+        path: "/mypage",
+        type: "website"
+      };
+    }
+
+    if (route.name === "creatorStudio") {
+      return {
+        title: "작가페이지 | WCAMPER Webtoon",
+        description: "작가의 작품 관리, 회차 제작, 독자 피드백, 광고 협의 현황을 확인하는 작가페이지 설계 화면입니다.",
+        image: "assets/img/authors/bongdal-universe-comics-logo.png",
+        path: "/creator-studio",
+        type: "website"
+      };
+    }
+
     return {
       title: "AI로 만드는 캠핑 웹툰 플랫폼 | WCAMPER Webtoon",
       description: "캠핑, 크루, 가족 여행, 브랜드 이야기를 AI 웹툰으로 제작하고 공개 연재하는 WCAMPER 웹툰 플랫폼입니다.",
@@ -451,46 +471,68 @@
   }
 
   function renderWebtoonsPage() {
+    const query = new URLSearchParams(window.location.search).get("q")?.trim() || "";
+    const normalizedQuery = query.toLowerCase();
     const latestEpisodes = getPublishedEpisodes().slice(0, 6);
     const popularSeries = data.series.slice().sort((a, b) => Number.parseFloat(b.stats.views) - Number.parseFloat(a.stats.views));
     const authors = data.authors;
+    const filteredEpisodes = query
+      ? getPublishedEpisodes().filter((episode) => {
+        const series = getSeries(episode.seriesId);
+        return [episode.title, episode.summary, series?.title].join(" ").toLowerCase().includes(normalizedQuery);
+      })
+      : latestEpisodes;
+    const filteredSeries = query
+      ? popularSeries.filter((series) => [series.title, series.summary, series.tags.join(" ")].join(" ").toLowerCase().includes(normalizedQuery))
+      : popularSeries;
+    const filteredAuthors = query
+      ? authors.filter((author) => [author.name, author.bio, author.keywords.join(" ")].join(" ").toLowerCase().includes(normalizedQuery))
+      : authors;
 
     main.innerHTML = `
       <section class="page-hero">
         <div class="section-heading">
           <p class="eyebrow">Webtoons</p>
           <h1>웹툰</h1>
-          <p>WCAMPER에서 공개 중인 AI 웹툰과 기획작을 최신 회차, 작가, 인기 작품 기준으로 탐색합니다.</p>
+          <p>${query
+            ? `검색어 "${escapeHtml(query)}"에 맞는 작품, 회차, 작가를 보여줍니다.`
+            : "WCAMPER에서 공개 중인 AI 웹툰과 기획작을 최신 회차, 작가, 인기 작품 기준으로 탐색합니다."}</p>
         </div>
       </section>
 
       <section id="latest" class="section">
         <div class="section-heading">
           <p class="eyebrow">Latest</p>
-          <h2>최신웹툰</h2>
+          <h2>${query ? "검색된 회차" : "최신웹툰"}</h2>
         </div>
         <div class="episode-grid">
-          ${latestEpisodes.map(renderEpisodeTile).join("")}
+          ${filteredEpisodes.map(renderEpisodeTile).join("") || `
+            <article class="empty-state"><h2>검색된 회차가 없습니다.</h2><p>다른 검색어로 다시 찾아보세요.</p></article>
+          `}
         </div>
       </section>
 
       <section id="rookies" class="section muted-band">
         <div class="section-heading">
           <p class="eyebrow">Rookie Creators</p>
-          <h2>신인작가</h2>
+          <h2>${query ? "검색된 작가" : "신인작가"}</h2>
         </div>
         <div class="author-grid">
-          ${authors.map(renderAuthorCard).join("")}
+          ${filteredAuthors.map(renderAuthorCard).join("") || `
+            <article class="empty-state"><h2>검색된 작가가 없습니다.</h2><p>작가명이나 키워드를 바꿔보세요.</p></article>
+          `}
         </div>
       </section>
 
       <section id="popular-webtoons" class="section">
         <div class="section-heading">
           <p class="eyebrow">Popular Webtoons</p>
-          <h2>인기웹툰</h2>
+          <h2>${query ? "검색된 작품" : "인기웹툰"}</h2>
         </div>
         <div class="webtoon-grid">
-          ${popularSeries.map(renderSeriesCard).join("")}
+          ${filteredSeries.map(renderSeriesCard).join("") || `
+            <article class="empty-state"><h2>검색된 작품이 없습니다.</h2><p>작품명, 장르, 설명 기준으로 검색합니다.</p></article>
+          `}
         </div>
       </section>
 
@@ -649,6 +691,146 @@
     `;
   }
 
+  function renderMypage() {
+    main.innerHTML = `
+      <section class="page-hero split">
+        <div>
+          <p class="eyebrow">Member</p>
+          <h1>마이페이지</h1>
+          <p>일반회원이 웹툰 감상, 관심작 관리, 피드백 작성, 활동 내역을 확인하는 독자용 공간입니다. 실제 로그인 연동 후 상단의 일반회원 로그인 버튼은 마이페이지로 전환됩니다.</p>
+          <div class="hero-actions">
+            ${link("/webtoons", "웹툰 보러가기", "button primary")}
+            ${link("/creators", "작가로 참여하기", "button ghost")}
+          </div>
+        </div>
+        <div class="info-panel">
+          <strong>회원 상태</strong>
+          <p>통합인증 연결 전 설계 화면입니다. 로그인 완료 시 최근 본 웹툰과 피드백 현황을 개인 데이터로 표시합니다.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Dashboard</p>
+          <h2>회원 활동 요약</h2>
+        </div>
+        <div class="dashboard-grid">
+          ${[
+            ["최근 본 웹툰", "마지막으로 읽은 회차와 이어보기 진입점을 제공합니다."],
+            ["관심작", "구독/관심 등록한 작품의 새 회차와 공지 상태를 보여줍니다."],
+            ["내 피드백", "작성한 피드백, 반영 상태, 작가 답변 여부를 확인합니다."],
+            ["완독/조회 기록", "회차별 감상 진행률과 재방문 기록을 정리합니다."]
+          ].map(([title, body]) => `
+            <article class="dashboard-card">
+              <h3>${escapeHtml(title)}</h3>
+              <p>${escapeHtml(body)}</p>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="section muted-band">
+        <div class="section-heading">
+          <p class="eyebrow">Feedback</p>
+          <h2>피드백 활동</h2>
+        </div>
+        <div class="account-layout">
+          <article class="account-panel">
+            <h3>작성 가능한 피드백</h3>
+            <p>작품, 회차, 작가 단위로 감상 의견을 남기고 인증 회원 피드백으로 집계합니다.</p>
+            <div class="tag-row">
+              <span>회차 의견</span>
+              <span>작품 평가</span>
+              <span>작가 응원</span>
+            </div>
+          </article>
+          <article class="account-panel">
+            <h3>내 활동 기준</h3>
+            <p>익명 피드백과 구분되는 회원 활동으로 완독률, 재방문, 관심작 데이터를 개인화에 활용합니다.</p>
+            <div class="tag-row">
+              <span>인증 회원</span>
+              <span>관심작</span>
+              <span>활동 이력</span>
+            </div>
+          </article>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderCreatorStudio() {
+    main.innerHTML = `
+      <section class="page-hero split">
+        <div>
+          <p class="eyebrow">Creator Studio</p>
+          <h1>작가페이지</h1>
+          <p>작가가 작품과 회차를 관리하고 독자 피드백, 제작 진행률, 광고/협업 문의를 확인하는 운영 공간입니다. 실제 작가 인증 후 상단의 작가 로그인 버튼은 작가페이지로 전환됩니다.</p>
+          <div class="hero-actions">
+            ${link("/creators", "작가모집 보기", "button primary")}
+            ${link("/partnership", "협업문의 보기", "button ghost")}
+          </div>
+        </div>
+        <div class="info-panel">
+          <strong>작가 운영 범위</strong>
+          <div class="tag-row">
+            <span>피드백</span>
+            <span>웹툰 관리</span>
+            <span>회차 제작</span>
+            <span>광고 협의</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Management</p>
+          <h2>작품 관리</h2>
+        </div>
+        <div class="dashboard-grid">
+          ${[
+            ["작품 현황", "연재중, 준비중, 기획중 작품과 공개 상태를 관리합니다."],
+            ["회차 제작", "기획안, 콘티, 이미지, 검수, 공개 예약 단계를 추적합니다."],
+            ["독자 피드백", "작품/회차별 피드백 점수와 반복 의견을 모아 다음 회차에 반영합니다."],
+            ["협업 제안", "PPL, 광고 의뢰, 브랜드 협업 문의를 작품별로 검토합니다."]
+          ].map(([title, body]) => `
+            <article class="dashboard-card">
+              <h3>${escapeHtml(title)}</h3>
+              <p>${escapeHtml(body)}</p>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="section muted-band">
+        <div class="section-heading">
+          <p class="eyebrow">Workflow</p>
+          <h2>작가 작업 흐름</h2>
+        </div>
+        <div class="process-grid">
+          ${["기획 등록", "샘플 제작", "검수 요청", "공개 예약", "피드백 반영"].map((step, index) => `
+            <article class="process-step">
+              <span>${String(index + 1).padStart(2, "0")}</span>
+              <strong>${escapeHtml(step)}</strong>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="contact-band">
+        <article class="contact-card">
+          <p class="eyebrow">Feedback</p>
+          <h2>작가 피드백 보드</h2>
+          <p>회차별 독자 반응, 완독률, 관심작 전환, 댓글성 피드백을 한 화면에서 확인하는 구성을 기준으로 합니다.</p>
+        </article>
+        <article class="contact-card">
+          <p class="eyebrow">Webtoon Ops</p>
+          <h2>웹툰 관리 보드</h2>
+          <p>작품 정보, 회차 상태, 공개 일정, 썸네일, AI 사용 고지와 검수 상태를 관리합니다.</p>
+        </article>
+      </section>
+    `;
+  }
+
   function renderAuthorPage(authorId) {
     const author = getAuthor(authorId);
     if (!author) return renderNotFound();
@@ -782,6 +964,8 @@
     if (cleanPath === "/webtoons") return { name: "webtoons" };
     if (cleanPath === "/creators") return { name: "creators" };
     if (cleanPath === "/partnership") return { name: "partnership" };
+    if (cleanPath === "/mypage") return { name: "mypage" };
+    if (cleanPath === "/creator-studio") return { name: "creatorStudio" };
     const parts = cleanPath.split("/").filter(Boolean);
     if (parts[0] && parts[0].startsWith("@") && parts.length === 1) {
       return { name: "author", authorId: parts[0].slice(1) };
@@ -803,6 +987,8 @@
     if (route.name === "webtoons") renderWebtoonsPage();
     if (route.name === "creators") renderCreatorsPage();
     if (route.name === "partnership") renderPartnershipPage();
+    if (route.name === "mypage") renderMypage();
+    if (route.name === "creatorStudio") renderCreatorStudio();
     if (route.name === "author") renderAuthorPage(route.authorId);
     if (route.name === "series") renderSeriesPage(route.authorId, route.seriesId);
     if (route.name === "episode") renderEpisodePage(route.authorId, route.seriesId, route.number);
@@ -823,7 +1009,17 @@
     const url = new URL(anchor.href);
     if (url.origin !== window.location.origin) return;
     event.preventDefault();
-    window.history.pushState({}, "", `${url.pathname}${url.hash}`);
+    window.history.pushState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    render();
+  });
+
+  document.addEventListener("submit", (event) => {
+    const form = event.target.closest("form[data-search-form]");
+    if (!form) return;
+    event.preventDefault();
+    const query = new FormData(form).get("q")?.toString().trim() || "";
+    const nextPath = query ? `/webtoons?q=${encodeURIComponent(query)}` : "/webtoons";
+    window.history.pushState({}, "", nextPath);
     render();
   });
 

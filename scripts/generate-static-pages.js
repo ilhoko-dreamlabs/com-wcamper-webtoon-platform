@@ -111,6 +111,20 @@ function pagesForCatalog(data) {
       type: "website"
     }),
     normalizePage({
+      routePath: "/mypage",
+      title: "마이페이지 | WCAMPER Webtoon",
+      description: "회원의 웹툰 보기, 관심작, 피드백, 활동 내역을 확인하는 독자용 마이페이지 설계 화면입니다.",
+      image: DEFAULT_OG_IMAGE,
+      type: "website"
+    }),
+    normalizePage({
+      routePath: "/creator-studio",
+      title: "작가페이지 | WCAMPER Webtoon",
+      description: "작가의 작품 관리, 회차 제작, 독자 피드백, 광고 협의 현황을 확인하는 작가페이지 설계 화면입니다.",
+      image: "assets/img/authors/bongdal-universe-comics-logo.png",
+      type: "website"
+    }),
+    normalizePage({
       routePath: "/404",
       title: "페이지를 찾을 수 없습니다 | WCAMPER Webtoon",
       description: "WCAMPER Webtoon에서 작가, 작품, 회차 순서로 다시 이동해주세요.",
@@ -183,7 +197,7 @@ function bodyHtml() {
   <a class="skip" href="#main">본문으로 이동</a>
 
   <header class="site-header">
-    <div class="header-inner">
+    <div class="header-top">
       <a class="brand" href="/" aria-label="WCAMPER Webtoon 홈" data-link>
         <span class="brand-mark">W</span>
         <span>
@@ -191,6 +205,17 @@ function bodyHtml() {
           <small>WEBTOON</small>
         </span>
       </a>
+      <form class="site-search" role="search" data-search-form>
+        <label class="sr-only" for="site-search-input">웹툰 검색</label>
+        <input id="site-search-input" name="q" type="search" placeholder="제목/작가로 검색할 수 있습니다.">
+        <button type="submit" aria-label="검색">⌕</button>
+      </form>
+      <div class="auth-actions" aria-label="로그인 메뉴">
+        <a class="button utility" href="/mypage" data-link data-auth-label="member">일반회원 로그인</a>
+        <a class="button utility primary-utility" href="/creator-studio" data-link data-auth-label="creator">작가 로그인</a>
+      </div>
+    </div>
+    <div class="header-inner">
       <nav class="nav" aria-label="주요 메뉴">
         <a href="/" data-link>홈</a>
         <a href="/webtoons" data-link>웹툰</a>
