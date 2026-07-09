@@ -129,10 +129,11 @@
   function renderSeriesCard(series) {
     const author = getAuthor(series.authorId);
     const episodes = getEpisodesForSeries(series.id);
+    const image = series.thumbnail || series.cover;
     return `
       <article class="webtoon-card">
         <a href="${pathForSeries(series)}" data-link>
-          <img src="/${series.cover}" alt="${escapeHtml(series.title)} 표지">
+          <img src="/${image}" alt="${escapeHtml(series.title)} 썸네일">
         </a>
         <div class="webtoon-card-body">
           <div class="meta-row">
@@ -182,11 +183,12 @@
     const authors = data.authors;
     const heroSeries = popularSeries[0];
     const heroAuthor = getAuthor(heroSeries.authorId);
+    const heroImage = heroSeries.thumbnail || heroSeries.cover;
 
     main.innerHTML = `
       <section class="hero">
         <div class="hero-cover">
-          <img src="/${heroSeries.cover}" alt="${escapeHtml(heroSeries.title)} 대표 이미지">
+          <img src="/${heroImage}" alt="${escapeHtml(heroSeries.title)} 대표 이미지">
         </div>
         <div class="hero-content">
           <p class="eyebrow">Camping Webtoon Platform</p>

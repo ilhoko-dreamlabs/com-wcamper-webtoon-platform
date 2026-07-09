@@ -72,6 +72,7 @@ const bdCrewPanels = [
 ];
 
 const bravoCampCover = season2DriveImage("BRAVOCAMP-WEBTOON-작품페이지.png");
+const bravoCampThumbnail = "assets/img/thumbnails/bravo-camp-thumbnail.webp";
 
 const bravoCampPanels = [
   {
@@ -198,6 +199,7 @@ window.WCAMPER_WEBTOON = {
       status: "공개 연재",
       summary: "부라보캠프 멤버들이 캠핑장에서 주고받는 밝은 리액션과 소동을 짧은 컷으로 묶은 시즌 2.",
       cover: bravoCampCover,
+      thumbnail: bravoCampThumbnail,
       tags: ["부라보캠프", "캠핑", "단톡방", "시즌 2"],
       schedule: "시즌 2 공개중",
       ageRating: "전체 이용가",
