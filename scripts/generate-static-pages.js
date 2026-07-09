@@ -6,6 +6,7 @@ const ROOT = path.resolve(__dirname, "..");
 const SITE_ORIGIN = "https://webtoon.wcamper.com";
 const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
 const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
+const ASSET_VERSION = "20260709-auth-feedback";
 
 function loadCatalog() {
   const catalogPath = path.join(ROOT, "data", "catalog.js");
@@ -190,7 +191,7 @@ function headHtml(page) {
   <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${escapeHtml(image)}">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/assets/css/style.css">`;
+  <link rel="stylesheet" href="/assets/css/style.css?v=${ASSET_VERSION}">`;
 }
 
 function bodyHtml() {
@@ -251,7 +252,7 @@ function bodyHtml() {
   </footer>
 
   <script src="/data/catalog.js"></script>
-  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/app.js?v=${ASSET_VERSION}"></script>
 </body>`;
 }
 
