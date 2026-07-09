@@ -5,6 +5,7 @@ const vm = require("vm");
 const ROOT = path.resolve(__dirname, "..");
 const SITE_ORIGIN = "https://webtoon.wcamper.com";
 const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
+const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
 
 function loadCatalog() {
   const catalogPath = path.join(ROOT, "data", "catalog.js");
@@ -86,7 +87,7 @@ function pagesForCatalog(data) {
       routePath: "/",
       title: "AI로 만드는 캠핑 웹툰 플랫폼 | WCAMPER Webtoon",
       description: "캠핑, 크루, 가족 여행, 브랜드 이야기를 AI 웹툰으로 제작하고 공개 연재하는 WCAMPER 웹툰 플랫폼입니다.",
-      image: DEFAULT_OG_IMAGE,
+      image: HOME_MAIN_IMAGE,
       type: "website"
     }),
     normalizePage({
