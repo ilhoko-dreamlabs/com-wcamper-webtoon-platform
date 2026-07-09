@@ -1,63 +1,106 @@
+const panelImage = (season, number) =>
+  `assets/img/drive/season-${season}/s${season}-${String(number).padStart(2, "0")}.png`;
+
 window.WCAMPER_WEBTOON = {
   series: [
     {
-      id: "bd-crew-camping-log",
-      authorId: "bd-crew-studio",
-      title: "BD크루 캠핑일지",
+      id: "bd-crew-chat-season-1",
+      authorId: "bongdal-universe-comics",
+      title: "BD-Crew 단톡방",
       status: "공개 연재",
-      summary: "봉달캠퍼와 BD크루가 캠핑장에서 겪는 작고 진한 에피소드. 장비보다 사람, 정보보다 현장감을 앞세운 캠핑 일상 웹툰.",
-      cover: "assets/img/cover-bd-crew.svg",
-      tags: ["캠핑", "크루", "일상", "코미디"],
-      schedule: "격주 토요일 공개",
+      summary: "BD-Crew의 캠핑, 차량, 웹툰 제작, 일상 대화가 단톡방처럼 이어지는 봉달캠퍼 유니버스 시즌 1.",
+      cover: panelImage(1, 1),
+      tags: ["캠핑", "BD-Crew", "단톡방", "일상 코미디"],
+      schedule: "시즌 1 공개중",
       ageRating: "전체 이용가",
       stats: {
-        likes: "128",
-        views: "2.4천",
-        favorites: "76"
+        likes: "312",
+        views: "5.8천",
+        favorites: "146"
       },
       highlights: [
-        "1화와 2화 공개, 3화 제작중인 파일럿 연재",
-        "비 예보, 타프, 철수, 아침 커피처럼 실제 캠핑 소재 중심",
-        "컷별 대사와 제작 메타데이터를 포함한 웹툰 뷰어 구성"
+        "Google Drive 원본 이미지 13컷으로 구성한 실제 공개 회차",
+        "캠핑, 차량 점검, 아침 회의, 웹툰 제작 모임을 단톡방 에피소드로 연결",
+        "봉달캠퍼 유니버스 코믹스 작가 프로필 기준으로 공개 연재 편성"
       ],
-      episodes: [
-        "2026-07-04-first-camping",
-        "2026-07-18-rain-tarp",
-        "2026-08-01-morning-coffee"
-      ]
+      episodes: ["2026-07-09-bd-crew-chat-open"]
+    },
+    {
+      id: "bravo-camp-chat-season-2",
+      authorId: "bongdal-universe-comics",
+      title: "부라보캠프 단톡방",
+      status: "공개 연재",
+      summary: "부라보캠프 멤버들이 캠핑장에서 주고받는 밝은 리액션과 소동을 짧은 컷으로 묶은 시즌 2.",
+      cover: panelImage(2, 5),
+      tags: ["부라보캠프", "캠핑", "단톡방", "시즌 2"],
+      schedule: "시즌 2 공개중",
+      ageRating: "전체 이용가",
+      stats: {
+        likes: "94",
+        views: "1.7천",
+        favorites: "52"
+      },
+      highlights: [
+        "Google Drive 원본 이미지 5컷 공개",
+        "시즌 1과 같은 유니버스 안에서 별도 단톡방 톤으로 전개",
+        "짧은 모바일 스크롤에 맞춘 공개 파일럿"
+      ],
+      episodes: ["2026-07-09-bravo-camp-chat-open"]
+    },
+    {
+      id: "bongbong-family-camping",
+      authorId: "bongdal-universe-comics",
+      title: "봉봉패미리 캠핑",
+      status: "기획중",
+      summary: "가족 캠핑의 작은 준비와 현장 리듬을 봉봉패미리 중심으로 풀어낼 예정작.",
+      cover: "assets/img/hero-panel-3.svg",
+      tags: ["봉봉패미리", "가족 캠핑", "기획중"],
+      schedule: "기획 정리중",
+      ageRating: "전체 이용가",
+      stats: {
+        likes: "예정",
+        views: "예정",
+        favorites: "예정"
+      },
+      highlights: [
+        "캐릭터와 회차 구조 기획중",
+        "공개 연재 시즌 1, 2 반응을 보고 편성",
+        "가족 캠핑과 생활형 코미디 중심"
+      ],
+      episodes: ["2026-07-23-bongbong-family-planning"]
     }
   ],
   authors: [
     {
-      id: "bd-crew-studio",
-      name: "BD크루 스튜디오",
-      title: "캠핑 현장 기반 웹툰 팀",
-      avatar: "BD",
-      bio: "봉달캠퍼의 캠핑 기록과 크루의 실제 대화를 바탕으로, 초보자도 편하게 읽을 수 있는 캠핑 일상 웹툰을 만듭니다.",
-      debut: "2026년 WCAMPER Webtoon 파일럿",
-      keywords: ["캠핑 일상", "크루 코미디", "현장 에피소드", "안전한 캠핑"],
+      id: "bongdal-universe-comics",
+      name: "봉달캠퍼 유니버스 코믹스",
+      title: "캠핑 단톡방 유니버스 작가",
+      avatar: "BU",
+      bio: "캠핑 크루와 가족, 모임의 대화를 웹툰 컷으로 엮어 공개 연재하는 봉달캠퍼 기반 코믹스 레이블입니다.",
+      debut: "2026년 WCAMPER Webtoon 공개연재",
+      keywords: ["캠핑 유니버스", "단톡방 코미디", "크루 일상", "공개 연재"],
       links: [
-        { label: "작품 홈", href: "#featured" },
-        { label: "회차 목록", href: "#episodes" }
+        { label: "시즌 1", href: "#episodes" },
+        { label: "시즌 2", href: "#episodes" }
       ],
       works: [
         {
-          title: "BD크루 캠핑일지",
-          status: "공개 연재",
-          description: "비 예보, 타프, 철수, 아침 커피처럼 캠핑장에서 실제로 벌어지는 일을 크루물로 풀어내는 메인 연재작.",
-          meta: "시즌 1 / 3화 기획 공개"
+          title: "BD-Crew 단톡방",
+          status: "공개 연재 시즌 1",
+          description: "BD-Crew의 캠핑과 제작 모임, 차량 점검, 아침 인사를 단톡방식 컷 흐름으로 묶은 메인 시즌.",
+          meta: "13컷 공개"
         },
         {
-          title: "캠핑장 옆 한 컷",
+          title: "부라보캠프 단톡방",
+          status: "공개 연재 시즌 2",
+          description: "부라보캠프의 밝은 리액션과 캠핑장 소동을 짧은 모바일 회차로 구성한 두 번째 시즌.",
+          meta: "5컷 공개"
+        },
+        {
+          title: "봉봉패미리 캠핑",
           status: "기획중",
-          description: "장비 설치, 매너, 날씨 대응처럼 짧게 읽히는 캠핑 팁을 4컷 구성으로 정리하는 숏폼 웹툰.",
-          meta: "컷툰 파일럿"
-        },
-        {
-          title: "철수 10분 전",
-          status: "준비중",
-          description: "철수 직전 생기는 작은 소동과 크루의 역할 분담을 코미디 톤으로 다루는 스핀오프.",
-          meta: "스핀오프 후보"
+          description: "가족 캠핑의 준비, 이동, 현장 대화를 중심으로 확장할 봉달캠퍼 유니버스 예정작.",
+          meta: "기획 개발"
         }
       ]
     }
@@ -65,231 +108,223 @@ window.WCAMPER_WEBTOON = {
   crew: [
     {
       name: "봉달캠퍼",
-      role: "현장 진행자",
-      description: "크루를 모으고 판을 정리하는 중심축. 웃고 넘기지만 중요한 순간에는 기준을 잡는다."
+      role: "유니버스 진행자",
+      description: "크루와 가족, 캠핑 모임을 연결하는 중심 인물. 단톡방의 흐름을 현장 이야기로 바꾼다."
     },
     {
-      name: "독도인별",
-      role: "분위기 관찰자",
-      description: "캠핑장의 빛, 소리, 사람 표정을 놓치지 않는다. 회차의 감정선을 부드럽게 이어준다."
+      name: "BD-Crew",
+      role: "시즌 1 메인 크루",
+      description: "캠핑 준비, 차량 점검, 웹툰 제작 회의까지 여러 일상 에피소드를 함께 만든다."
     },
     {
-      name: "부라보",
-      role: "먹거리와 텐션",
-      description: "배고픈 타이밍을 정확히 알고 분위기를 끌어올린다. 작은 실수도 에피소드로 만든다."
+      name: "부라보캠프",
+      role: "시즌 2 메인 크루",
+      description: "밝은 반응과 빠른 농담으로 캠핑장의 작은 사건을 가볍게 밀어 올린다."
     },
     {
-      name: "TJ쌤",
-      role: "안전과 팁",
-      description: "초보 독자를 대신해 질문하고, 장비 사용법과 안전 기준을 자연스럽게 알려준다."
-    },
-    {
-      name: "지프캠퍼",
-      role: "이동과 오버랜드",
-      description: "차량 동선, 짐 배치, 이동 중 돌발 상황을 담당한다. 말수는 적지만 존재감이 크다."
-    },
-    {
-      name: "오창브라더스",
-      role: "돌발 상황",
-      description: "예상 밖의 상황을 몰고 오지만, 결국 현장을 더 유쾌하게 만드는 티키타카 담당."
+      name: "봉봉패미리",
+      role: "기획중 가족 라인",
+      description: "가족 캠핑의 준비와 생활형 장면을 담당할 다음 유니버스 후보."
     }
   ],
   episodes: [
     {
-      id: "2026-07-04-first-camping",
-      seriesId: "bd-crew-camping-log",
+      id: "2026-07-09-bd-crew-chat-open",
+      seriesId: "bd-crew-chat-season-1",
       number: 1,
-      title: "첫 번째 밤, 타프 아래에서",
-      publishedAt: "2026-07-07",
+      title: "공개연재 시즌 1 - BD-Crew 단톡방",
+      publishedAt: "2026-07-09",
       status: "공개",
-      thumbnail: "assets/img/thumb-episode-001.svg",
-      summary: "비 예보를 앞두고 모인 BD크루가 장비보다 중요한 캠핑의 리듬을 찾아간다.",
-      readTime: "6분",
-      likes: "43",
-      completionRate: "68%",
+      thumbnail: panelImage(1, 1),
+      summary: "차량 점검으로 시작해 웹툰 제작 모임, 첫 합동 캠핑, 아침 인사, 축구와 우정, 사기 경고까지 이어지는 BD-Crew 공개 회차.",
+      readTime: "8분",
+      likes: "86",
+      completionRate: "집계중",
       production: {
-        disclosure: "AI 보조 콘티와 사람이 편집한 공개 파일럿",
-        review: "캐릭터/대사/안전 기준 검수 완료",
-        panelCount: 12
+        disclosure: "Google Drive 원본 컷 기반 공개 게시",
+        review: "공개 가능 이미지 확인 및 정적 사이트 연결 완료",
+        panelCount: 13
       },
+      sourceFolder: "https://drive.google.com/drive/u/1/folders/1GOzAIjrGRVsMAeaF5eam25zVKZ-Ba2ar",
       panels: [
         {
-          image: "assets/img/panel-001.svg",
-          beat: "오프닝 훅",
-          shot: "와이드",
-          caption: "해 질 무렵, 캠핑장 입구에 BD크루 차량들이 하나씩 들어온다.",
-          dialogue: "봉달캠퍼: 다 왔습니다. 오늘은 순서대로 갑시다."
+          image: panelImage(1, 1),
+          beat: "오프닝",
+          shot: "세로 컷",
+          caption: "새로운 차량 검사와 즐거운 만남으로 BD-Crew 단톡방 시즌이 열린다.",
+          dialogue: "BD-Crew: 오늘도 출발 전 점검부터."
         },
         {
-          image: "assets/img/panel-002.svg",
-          beat: "세팅 시작",
-          shot: "미디엄",
-          caption: "타프를 치는 손은 바쁘지만 농담은 멈추지 않는다.",
-          dialogue: "부라보: 순서요? 저는 일단 배고픈데요."
+          image: panelImage(1, 2),
+          beat: "아침 회의",
+          shot: "세로 컷",
+          caption: "웹툰 팀의 행복한 아침 회의가 캠핑 일정과 맞물린다.",
+          dialogue: "봉달캠퍼: 회의도 캠핑처럼 역할 분담이 먼저죠."
         },
         {
-          image: "assets/img/panel-003.svg",
-          beat: "첫 정착",
-          shot: "클로즈업",
-          caption: "첫 번째 밤은 비 소리와 랜턴 불빛 사이에서 천천히 깊어진다.",
-          dialogue: "독도인별: 랜턴 켜지니까 이제 진짜 캠핑 같네요."
+          image: panelImage(1, 3),
+          beat: "제작 모임",
+          shot: "세로 컷",
+          caption: "웹툰 제작 모임과 함께한 하루가 크루의 기록으로 남는다.",
+          dialogue: "BD-Crew: 오늘 장면은 바로 업로드 갑시다."
         },
         {
-          image: "assets/img/panel-004.svg",
-          beat: "문제 제시",
-          shot: "하이앵글",
-          caption: "먹구름이 능선 뒤에서 천천히 올라오고, 모두의 시선이 하늘로 향한다.",
-          dialogue: "TJ쌤: 비 오기 전에 물길부터 봐야 합니다."
+          image: panelImage(1, 4),
+          beat: "합동 캠핑",
+          shot: "세로 컷",
+          caption: "첫 합동 캠핑 대모험에서 각자의 장비와 농담이 한 자리에 모인다.",
+          dialogue: "부라보: 이 정도면 대모험 맞습니다."
         },
         {
-          image: "assets/img/panel-005.svg",
-          beat: "크루 반응",
-          shot: "투샷",
-          caption: "오창브라더스는 팩 위치를 두고 짧게 의견이 갈린다.",
-          dialogue: "오창브라더스: 이쪽이 낮아요. 아니, 저쪽이 더 낮다니까?"
+          image: panelImage(1, 5),
+          beat: "먹거리",
+          shot: "세로 컷",
+          caption: "캠핑 이야기, 모임, 음식들이 단톡방의 속도를 올린다.",
+          dialogue: "BD-Crew: 사진보다 먼저 젓가락이 나갔는데요?"
         },
         {
-          image: "assets/img/panel-006.svg",
-          beat: "정보 전달",
-          shot: "인서트",
-          caption: "타프 끝선 아래로 작은 물방울이 맺히기 시작한다.",
-          dialogue: "TJ쌤: 한쪽을 낮춰야 물이 고이지 않아요."
+          image: panelImage(1, 6),
+          beat: "아침 인사",
+          shot: "세로 컷",
+          caption: "따뜻한 아침 인사가 밤새 이어진 대화를 정리한다.",
+          dialogue: "봉달캠퍼: 좋은 아침입니다. 커피부터 갑시다."
         },
         {
-          image: "assets/img/panel-007.svg",
-          beat: "완화",
-          shot: "미디엄",
-          caption: "부라보가 준비한 간식이 어색한 침묵을 끊는다.",
-          dialogue: "부라보: 비도 밥 먹고 오라고 해요."
+          image: panelImage(1, 7),
+          beat: "꿈꾸는 크루",
+          shot: "세로 컷",
+          caption: "함께 꿈꾸는 캠핑 프로그래머들이 다음 장면을 상상한다.",
+          dialogue: "BD-Crew: 캠핑도 개발도 결국 배포가 중요하죠."
         },
         {
-          image: "assets/img/panel-008.svg",
-          beat: "관찰",
-          shot: "클로즈업",
-          caption: "젖은 테이블 위로 랜턴빛이 번지고, 독도인별이 조용히 웃는다.",
-          dialogue: "독도인별: 오늘은 소리까지 배경음이네요."
+          image: panelImage(1, 8),
+          beat: "우정",
+          shot: "세로 컷",
+          caption: "축구와 우정, 일상 웹툰의 가벼운 리듬이 들어온다.",
+          dialogue: "BD-Crew: 오늘의 MVP는 공보다 텐트팩입니다."
         },
         {
-          image: "assets/img/panel-009.svg",
-          beat: "협업",
-          shot: "와이드",
-          caption: "크루가 각자 한쪽 줄을 맡아 타프 각도를 다시 잡는다.",
-          dialogue: "봉달캠퍼: 장비보다 손발이 먼저 맞아야죠."
+          image: panelImage(1, 9),
+          beat: "금요일",
+          shot: "세로 컷",
+          caption: "금요일의 웹툰 이야기가 다음 업로드 기대감을 만든다.",
+          dialogue: "봉달캠퍼: 금요일엔 한 컷이라도 올려야죠."
         },
         {
-          image: "assets/img/panel-010.svg",
-          beat: "해결",
-          shot: "로우앵글",
-          caption: "빗물이 타프 끝을 따라 바깥으로 떨어진다.",
-          dialogue: "지프캠퍼: 물길 빠집니다. 이 정도면 됩니다."
+          image: panelImage(1, 10),
+          beat: "따뜻한 하루",
+          shot: "세로 컷",
+          caption: "캠핑에서의 따뜻한 하루가 시즌의 정서를 잡는다.",
+          dialogue: "BD-Crew: 장비보다 오래 남는 건 이 분위기네요."
         },
         {
-          image: "assets/img/panel-011.svg",
-          beat: "감정 정리",
-          shot: "미디엄 클로즈업",
-          caption: "크루는 젖은 의자 대신 서서 첫 저녁을 나눈다.",
-          dialogue: "부라보: 앉지는 못해도 먹을 수는 있죠."
+          image: panelImage(1, 11),
+          beat: "인터뷰",
+          shot: "세로 컷",
+          caption: "BD-Crew Weekly 독도인별 인터뷰가 캐릭터의 목소리를 더한다.",
+          dialogue: "독도인별: 기록은 결국 사람 표정을 남기는 일이에요."
         },
         {
-          image: "assets/img/panel-012.svg",
-          beat: "다음 화 훅",
-          shot: "와이드",
-          caption: "비가 잦아든 밤, 누군가 타프 밖에서 접힌 의자를 발견한다.",
-          dialogue: "봉달캠퍼: 잠깐만요. 저 의자, 우리 거 맞아요?"
+          image: panelImage(1, 12),
+          beat: "일상",
+          shot: "세로 컷",
+          caption: "캠핑과 함께한 BD-Crew 일상이 시즌의 중심으로 이어진다.",
+          dialogue: "BD-Crew: 별일 없는 날이 제일 웹툰 같을 때가 있죠."
+        },
+        {
+          image: panelImage(1, 13),
+          beat: "주의 환기",
+          shot: "세로 컷",
+          caption: "공무원 사칭 사기 경고가 단톡방의 현실감을 남기며 회차를 닫는다.",
+          dialogue: "봉달캠퍼: 좋은 정보도 같이 공유해야 크루죠."
         }
       ]
     },
     {
-      id: "2026-07-18-rain-tarp",
-      seriesId: "bd-crew-camping-log",
-      number: 2,
-      title: "비 예보와 타프 각도",
-      publishedAt: "2026-07-08",
+      id: "2026-07-09-bravo-camp-chat-open",
+      seriesId: "bravo-camp-chat-season-2",
+      number: 1,
+      title: "공개연재 시즌 2 - 부라보캠프 단톡방",
+      publishedAt: "2026-07-09",
       status: "공개",
-      thumbnail: "assets/img/thumb-episode-002.svg",
-      summary: "비가 온다는 말 한마디에 크루의 장비 철학이 갈린다. 초보 질문과 고수의 잔소리가 만나는 회차.",
-      readTime: "5분",
-      likes: "27",
-      completionRate: "파일럿 집계중",
+      thumbnail: panelImage(2, 5),
+      summary: "부라보캠프 단톡방의 짧고 빠른 리액션을 5컷 공개 회차로 구성했다.",
+      readTime: "3분",
+      likes: "39",
+      completionRate: "집계중",
       production: {
-        disclosure: "AI 보조 패널 프롬프트 기반, 사람이 대사와 안전 정보를 편집",
-        review: "위험 행동 미화 없음, 장비 브랜드 노출 없음",
-        panelCount: 6
+        disclosure: "Google Drive 원본 컷 기반 공개 게시",
+        review: "공개 가능 이미지 확인 및 정적 사이트 연결 완료",
+        panelCount: 5
       },
+      sourceFolder: "https://drive.google.com/drive/u/1/folders/1LkHLlwrBcpuf1qL-RSMz70fS0WlK7Fss",
       panels: [
         {
-          image: "assets/img/panel-201.svg",
-          beat: "날씨 경보",
-          shot: "인서트",
-          caption: "휴대폰 날씨 앱에 강수 알림이 뜨고, 테이블 위 장비들이 잠깐 멈춘다.",
-          dialogue: "독도인별: 20분 뒤에 비 온대요."
+          image: panelImage(2, 1),
+          beat: "시즌 시작",
+          shot: "세로 컷",
+          caption: "부라보캠프 단톡방이 새 시즌의 톤을 연다.",
+          dialogue: "부라보캠프: 시즌 2는 더 가볍게 갑니다."
         },
         {
-          image: "assets/img/panel-202.svg",
-          beat: "갈등 시작",
-          shot: "미디엄",
-          caption: "부라보는 큰 타프를 펼치고 TJ쌤은 바닥 경사를 먼저 확인한다.",
-          dialogue: "TJ쌤: 크기보다 각도가 먼저입니다."
+          image: panelImage(2, 2),
+          beat: "리액션",
+          shot: "세로 컷",
+          caption: "짧은 리액션과 캠핑장 농담이 빠르게 오간다.",
+          dialogue: "부라보캠프: 일단 웃고, 그다음 정리하죠."
         },
         {
-          image: "assets/img/panel-203.svg",
-          beat: "초보 질문",
-          shot: "클로즈업",
-          caption: "오창브라더스가 팩과 스트링을 들고 서로 다른 방향을 가리킨다.",
-          dialogue: "오창브라더스: 그럼 물은 어디로 보내요?"
+          image: panelImage(2, 3),
+          beat: "현장감",
+          shot: "세로 컷",
+          caption: "캠핑장 분위기가 단톡방 캡처처럼 이어진다.",
+          dialogue: "부라보캠프: 이 컷은 저장해야 합니다."
         },
         {
-          image: "assets/img/panel-204.svg",
-          beat: "실전 팁",
-          shot: "다이어그램 컷",
-          caption: "타프 한쪽이 낮아지고 빗물 방향이 화살표처럼 정리된다.",
-          dialogue: "봉달캠퍼: 사람 다니는 길 반대쪽으로요."
+          image: panelImage(2, 4),
+          beat: "전환",
+          shot: "세로 컷",
+          caption: "작은 소동이 다음 컷의 기대감을 만든다.",
+          dialogue: "부라보캠프: 누가 마지막으로 확인했죠?"
         },
         {
-          image: "assets/img/panel-205.svg",
-          beat: "코미디 완화",
-          shot: "미디엄",
-          caption: "부라보가 간식 박스를 방수백처럼 품에 안고 뛰어온다.",
-          dialogue: "부라보: 제일 먼저 지켜야 할 장비가 있습니다."
-        },
-        {
-          image: "assets/img/panel-206.svg",
-          beat: "후킹",
-          shot: "와이드",
-          caption: "비가 시작되고, 타프 밖에 놓인 낯선 장비 상자가 빗물에 젖기 시작한다.",
-          dialogue: "지프캠퍼: 저 박스, 우리 짐 아닙니다."
+          image: panelImage(2, 5),
+          beat: "엔딩",
+          shot: "세로 컷",
+          caption: "부라보캠프 시즌 2 첫 공개 회차가 다음 대화를 예고한다.",
+          dialogue: "부라보캠프: 다음 알림에서 계속됩니다."
         }
       ]
     },
     {
-      id: "2026-08-01-morning-coffee",
-      seriesId: "bd-crew-camping-log",
-      number: 3,
-      title: "철수 전 아침 커피",
-      publishedAt: "2026-07-22",
-      status: "제작중",
+      id: "2026-07-23-bongbong-family-planning",
+      seriesId: "bongbong-family-camping",
+      number: 1,
+      title: "기획중 - 봉봉패미리 캠핑",
+      publishedAt: "2026-07-23",
+      status: "기획중",
       thumbnail: "assets/img/hero-panel-3.svg",
-      summary: "철수만 남은 아침, 커피 한 잔 때문에 모두의 속도가 달라진다. 가장 조용한 시간이 가장 시끄러운 이야기가 된다.",
-      readTime: "4분",
+      summary: "봉봉패미리 캠핑은 캐릭터와 첫 에피소드 구조를 기획중입니다.",
+      readTime: "예정",
       likes: "예정",
       panels: []
     }
   ],
   notes: [
     {
-      title: "다음 업데이트",
-      body: "2화까지 공개되었고, 3화는 철수 전 아침 커피를 중심으로 조용한 아침과 느려지는 철수 속도를 다룹니다.",
-      meta: "2026.07.22 공개 예정"
+      title: "Drive 원본 공개 반영",
+      body: "시즌 1 BD-Crew 단톡방 13컷과 시즌 2 부라보캠프 단톡방 5컷을 Google Drive에서 내려받은 정적 이미지 기반으로 연결했습니다.",
+      meta: "2026.07.09 업데이트"
     },
     {
-      title: "이번 시즌 톤",
-      body: "과장된 사건보다 캠핑장에서 실제로 자주 생기는 작은 문제와 크루의 대화를 중심에 둡니다.",
-      meta: "시즌 1 기획"
+      title: "작가 프로필",
+      body: "작가명은 봉달캠퍼 유니버스 코믹스로 통일하고, 공개연재 시즌 1, 시즌 2, 기획중 작품을 같은 레이블 안에 배치했습니다.",
+      meta: "작가/작품 편성"
     },
     {
-      title: "제작 기준",
-      body: "캐릭터 말투, 안전한 캠핑 문화, 초보 독자가 이해할 수 있는 정보 흐름을 검수 기준으로 둡니다.",
-      meta: "worker 제작 노트"
+      title: "다음 기획",
+      body: "봉봉패미리 캠핑은 시즌 1, 2 반응을 확인한 뒤 가족 캠핑 중심의 회차 구조와 캐릭터 톤을 확정합니다.",
+      meta: "기획중"
     }
   ],
   feedback: {
@@ -306,120 +341,106 @@ window.WCAMPER_WEBTOON = {
     },
     targets: [
       {
-        id: "author-bd-crew-studio",
+        id: "author-bongdal-universe-comics",
         type: "author",
         label: "작가",
-        title: "BD크루 스튜디오",
-        prompt: "작가의 세계관, 말투, 연재 방향에 대한 의견",
-        score: 87,
-        anonymousCount: 12,
-        memberCount: 8,
+        title: "봉달캠퍼 유니버스 코믹스",
+        prompt: "작가의 유니버스, 단톡방 톤, 시즌 확장에 대한 의견",
+        score: 90,
+        anonymousCount: 16,
+        memberCount: 11,
         samples: [
-          { mode: "member", body: "캠핑 현장감이 좋아서 작가 톤을 계속 유지하면 좋겠습니다." },
-          { mode: "anonymous", body: "캐릭터 소개가 조금 더 있으면 따라가기 쉬울 것 같습니다." }
+          { mode: "member", body: "캠핑 단톡방처럼 읽혀서 연재 콘셉트가 명확합니다." },
+          { mode: "anonymous", body: "시즌별 캐릭터 소개가 조금 더 있으면 좋겠습니다." }
         ]
       },
       {
-        id: "series-bd-crew-camping-log",
+        id: "series-bd-crew-chat-season-1",
         type: "series",
         label: "작품",
-        title: "BD크루 캠핑일지",
-        prompt: "작품 콘셉트, 장르, 연재 기대감에 대한 의견",
-        score: 91,
-        anonymousCount: 18,
-        memberCount: 14,
+        title: "BD-Crew 단톡방",
+        prompt: "시즌 1의 컷 흐름, 캠핑 정서, 다음 화 기대감에 대한 의견",
+        score: 88,
+        anonymousCount: 24,
+        memberCount: 13,
         samples: [
-          { mode: "member", body: "캠핑 초보도 읽을 수 있게 정보와 코미디 균형이 좋습니다." },
-          { mode: "anonymous", body: "메인 표지가 더 웹툰스럽게 강해지면 좋겠습니다." }
+          { mode: "member", body: "실제 이미지가 들어오니 사이트가 연재물처럼 보입니다." },
+          { mode: "anonymous", body: "컷 사이에 짧은 대사가 붙어서 읽기 편합니다." }
         ]
       },
       {
-        id: "episode-2026-07-04-first-camping",
-        type: "episode",
-        label: "회차",
-        title: "1화. 첫 번째 밤, 타프 아래에서",
-        prompt: "이번 회차의 컷 흐름, 재미, 다음 화 기대감에 대한 의견",
-        score: 84,
-        anonymousCount: 21,
-        memberCount: 9,
+        id: "series-bravo-camp-chat-season-2",
+        type: "series",
+        label: "작품",
+        title: "부라보캠프 단톡방",
+        prompt: "시즌 2의 짧은 회차감, 리액션, 캐릭터 톤에 대한 의견",
+        score: 81,
+        anonymousCount: 9,
+        memberCount: 5,
         samples: [
-          { mode: "member", body: "첫 컷에서 차량이 들어오는 장면이 좋아서 시작 몰입감이 있습니다." },
-          { mode: "anonymous", body: "컷 수가 조금 더 많으면 회차로서 만족도가 올라갈 것 같습니다." }
-        ]
-      },
-      {
-        id: "episode-2026-07-18-rain-tarp",
-        type: "episode",
-        label: "회차",
-        title: "2화. 비 예보와 타프 각도",
-        prompt: "이번 회차의 캠핑 정보, 코미디 호흡, 다음 화 후킹에 대한 의견",
-        score: 82,
-        anonymousCount: 7,
-        memberCount: 4,
-        samples: [
-          { mode: "member", body: "타프 각도 설명이 컷으로 보이니까 초보자도 이해하기 쉽습니다." },
-          { mode: "anonymous", body: "낯선 장비 상자 후킹이 좋아서 다음 회차가 궁금합니다." }
+          { mode: "member", body: "시즌 1과 구분되는 빠른 톤이 좋습니다." },
+          { mode: "anonymous", body: "다음 회차에는 컷 수가 조금 더 늘면 좋겠습니다." }
         ]
       }
     ]
   },
   goals: {
     summary: {
-      title: "1차 운영 목표",
-      description: "초기 연재 품질을 숫자로만 판단하지 않고, 방문, 조회, 완독, 피드백, 관심 등록을 함께 보면서 작가/작품/회차별 목표 달성 여부를 판정합니다.",
-      scoringLink: "목표 달성 결과는 공개 뱃지와 내부 스코어링 보정값으로 분리해 사용합니다."
+      title: "공개연재 운영 목표",
+      description: "Drive 원본 컷을 실제 사이트에 연결한 뒤, 시즌별 조회, 완독, 피드백을 분리해 다음 기획과 공개 우선순위를 판단합니다.",
+      scoringLink: "시즌별 반응은 공개 뱃지와 내부 편성 점수로 분리해 사용합니다."
     },
     rules: [
-      "목표는 운영자가 작가, 작품, 회차 단위로 설정한다.",
+      "목표는 작가, 작품, 회차 단위로 설정한다.",
       "방문/조회/완독/피드백 이벤트가 백그라운드에서 목표 진행률을 갱신한다.",
       "인증 회원의 달성 기여도는 익명 사용자보다 높은 신뢰도로 반영한다.",
       "달성 여부는 공개 숫자보다 단계, 뱃지, 운영자 리포트로 먼저 노출한다."
     ],
     items: [
       {
-        id: "goal-author-feedback-quality",
+        id: "goal-author-universe-feedback",
         targetType: "author",
         targetLabel: "작가",
-        targetTitle: "BD크루 스튜디오",
-        title: "작가 톤 검증",
+        targetTitle: "봉달캠퍼 유니버스 코믹스",
+        title: "유니버스 톤 검증",
         metric: "인증 회원 작가 피드백",
-        current: 8,
-        target: 10,
+        current: 11,
+        target: 15,
         unit: "건",
         status: "진행중",
         due: "2026-07-31",
         events: ["author_page_view", "feedback_created", "feedback_reacted"],
-        achievement: "작가 신뢰 뱃지 후보"
+        achievement: "유니버스 연재 유지 기준"
       },
       {
-        id: "goal-series-first-readers",
+        id: "goal-season-1-readers",
         targetType: "series",
         targetLabel: "작품",
-        targetTitle: "BD크루 캠핑일지",
-        title: "첫 작품 관심 전환",
+        targetTitle: "BD-Crew 단톡방",
+        title: "시즌 1 관심 전환",
         metric: "관심 등록",
-        current: 76,
-        target: 100,
+        current: 146,
+        target: 200,
         unit: "명",
         status: "진행중",
         due: "2026-08-01",
         events: ["series_view", "favorite_added", "return_visit"],
-        achievement: "초기 연재 유지 기준"
+        achievement: "시즌 1 추가 회차 제작 기준"
       },
       {
-        id: "goal-episode-completion",
+        id: "goal-season-2-completion",
         targetType: "episode",
         targetLabel: "회차",
-        targetTitle: "1화. 첫 번째 밤, 타프 아래에서",
-        title: "1화 완독 경험 확인",
+        targetTitle: "부라보캠프 단톡방 1화",
+        title: "시즌 2 완독 확인",
         metric: "완독률",
-        current: 68,
-        target: 70,
+        current: 0,
+        target: 65,
         unit: "%",
-        status: "거의 달성",
-        due: "2026-07-18",
+        status: "집계중",
+        due: "2026-07-31",
         events: ["episode_view", "panel_impression", "episode_complete"],
-        achievement: "다음 회차 제작 우선순위 상승"
+        achievement: "부라보캠프 추가 편성 후보"
       }
     ]
   }

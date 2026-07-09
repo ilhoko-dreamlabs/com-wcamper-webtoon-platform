@@ -270,14 +270,14 @@ h1 {
 
 .series-home {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  grid-template-columns: 1fr;
   gap: 18px;
   align-items: start;
 }
 
 .series-profile {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
+  grid-template-columns: 180px minmax(0, 1fr) minmax(260px, 0.75fr);
   overflow: hidden;
 }
 

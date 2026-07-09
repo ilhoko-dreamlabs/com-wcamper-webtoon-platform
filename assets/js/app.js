@@ -28,36 +28,37 @@
   }
 
   function renderSeriesHome() {
-    const series = data.series[0];
-    const count = series.episodes.length;
-    seriesHome.innerHTML = `
-      <article class="series-profile">
-        <img src="${series.cover}" alt="${series.title} 표지">
-        <div class="series-body">
-          <div class="meta-row">
-            <span>${series.status}</span>
-            <span>${series.schedule}</span>
-            <span>${series.ageRating}</span>
+    seriesHome.innerHTML = data.series.map((series) => {
+      const count = series.episodes.length;
+      return `
+        <article class="series-profile">
+          <img src="${series.cover}" alt="${series.title} 표지">
+          <div class="series-body">
+            <div class="meta-row">
+              <span>${series.status}</span>
+              <span>${series.schedule}</span>
+              <span>${series.ageRating}</span>
+            </div>
+            <h3>${series.title}</h3>
+            <p>${series.summary}</p>
+            <div class="tag-row">
+              ${series.tags.map((tag) => `<span>${tag}</span>`).join("")}
+            </div>
           </div>
-          <h3>${series.title}</h3>
-          <p>${series.summary}</p>
-          <div class="tag-row">
-            ${series.tags.map((tag) => `<span>${tag}</span>`).join("")}
+          <div class="series-side">
+            <div class="stat-grid" aria-label="${series.title} 작품 지표">
+              <div><strong>${series.stats.views}</strong><span>조회</span></div>
+              <div><strong>${series.stats.likes}</strong><span>좋아요</span></div>
+              <div><strong>${series.stats.favorites}</strong><span>관심</span></div>
+              <div><strong>${count}</strong><span>회차</span></div>
+            </div>
+            <ul class="highlight-list">
+              ${series.highlights.map((highlight) => `<li>${highlight}</li>`).join("")}
+            </ul>
           </div>
-        </div>
-      </article>
-      <div class="series-side">
-        <div class="stat-grid" aria-label="작품 지표">
-          <div><strong>${series.stats.views}</strong><span>조회</span></div>
-          <div><strong>${series.stats.likes}</strong><span>좋아요</span></div>
-          <div><strong>${series.stats.favorites}</strong><span>관심</span></div>
-          <div><strong>${count}</strong><span>회차</span></div>
-        </div>
-        <ul class="highlight-list">
-          ${series.highlights.map((highlight) => `<li>${highlight}</li>`).join("")}
-        </ul>
-      </div>
-    `;
+        </article>
+      `;
+    }).join("");
   }
 
   function renderEpisodes() {
