@@ -75,20 +75,28 @@ const bravoCampCover = season2DriveImage("BRAVOCAMP-WEBTOON-작품페이지.png"
 
 const bravoCampPanels = [
   {
-    title: "공개연재 시즌 2 - EP001-2 - 부라보캠프 전체 캐릭터 그리드",
-    beat: "전체 캐릭터 그리드",
-    caption: "부라보캠프 시즌 2의 전체 캐릭터 로스터를 한눈에 보여주는 소개 회차.",
-    dialogue: "부라보캠프: 전체 멤버부터 정리하고 갑니다.",
-    sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png",
-    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png")
-  },
-  {
-    title: "공개연재 시즌 2 - EP001-3 - 부라보캠프 자기소개 타임",
-    beat: "자기소개 타임",
-    caption: "부라보tv가 캠핑장 멤버들을 한 명씩 소개하며 시즌 2의 단톡방 톤을 연다.",
-    dialogue: "부라보tv: 멤버로 부라보캠프 웹툰, 이제 시작합니다!",
-    sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
-    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png")
+    title: "공개연재 시즌 2 - EP001 - 부라보캠프 첫 소개",
+    beat: "부라보캠프 첫 소개",
+    caption: "부라보캠프 시즌 2의 전체 캐릭터 로스터와 자기소개를 이어서 보여주는 첫 회차.",
+    dialogue: "부라보캠프: 전체 멤버부터 정리하고 자기소개까지 갑니다.",
+    sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png / BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
+    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png"),
+    panels: [
+      {
+        beat: "전체 캐릭터 그리드",
+        caption: "부라보캠프 시즌 2의 전체 캐릭터 로스터를 한눈에 보여준다.",
+        dialogue: "부라보캠프: 전체 멤버부터 정리하고 갑니다.",
+        sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png",
+        image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png")
+      },
+      {
+        beat: "자기소개 타임",
+        caption: "부라보tv가 캠핑장 멤버들을 한 명씩 소개하며 시즌 2의 단톡방 톤을 연다.",
+        dialogue: "부라보tv: 멤버로 부라보캠프 웹툰, 이제 시작합니다!",
+        sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
+        image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png")
+      }
+    ]
   },
   {
     title: "공개연재 시즌 2 - EP002 - 워킹데드",
@@ -118,7 +126,9 @@ const createSingleImageEpisode = ({
   publishedAt = "2026-07-09"
 }) => {
   const panel = season === 1 ? bdCrewPanels[number - 1] : bravoCampPanels[number - 1];
-  const image = panel.image || panelImage(season, number);
+  const episodePanels = panel.panels || [panel];
+  const image = panel.image || episodePanels[0].image || panelImage(season, number);
+  const panelCount = episodePanels.length;
   return {
     id: `2026-07-09-season-${season}-${String(number).padStart(2, "0")}`,
     seriesId,
@@ -132,22 +142,20 @@ const createSingleImageEpisode = ({
     likes: String(likes),
     completionRate: "집계중",
     production: {
-      disclosure: "Google Drive 원본 이미지 1장을 1회차로 공개 게시",
+      disclosure: `Google Drive 원본 이미지 ${panelCount}장을 1회차로 공개 게시`,
       review: panel.sourceFilename ? `Drive 파일명 기준 배치: ${panel.sourceFilename}` : "공개 가능 이미지 확인 및 정적 사이트 연결 완료",
       sourceFilename: panel.sourceFilename,
-      panelCount: 1
+      panelCount
     },
     sourceFolder,
-    panels: [
-      {
-        image,
-        beat: panel.beat,
-        shot: "세로 컷",
-        caption: panel.caption,
-        dialogue: panel.dialogue,
-        sourceFilename: panel.sourceFilename
-      }
-    ]
+    panels: episodePanels.map((episodePanel) => ({
+      image: episodePanel.image || image,
+      beat: episodePanel.beat,
+      shot: "세로 컷",
+      caption: episodePanel.caption,
+      dialogue: episodePanel.dialogue,
+      sourceFilename: episodePanel.sourceFilename
+    }))
   };
 };
 
@@ -199,9 +207,10 @@ window.WCAMPER_WEBTOON = {
         favorites: "52"
       },
       highlights: [
-        "Google Drive 원본 파일명 기준으로 작품페이지 1장과 공개 회차 4장을 분리 배치",
+        "Google Drive 원본 파일명 기준으로 작품페이지 1장과 공개 회차 3장을 분리 배치",
+        "EP001-2, EP001-3 이미지는 1화 안에서 연속 스크롤로 노출",
         "시즌 1과 같은 유니버스 안에서 별도 단톡방 톤으로 전개",
-        "짧은 모바일 스크롤에 맞춘 단일 이미지 회차 편성"
+        "짧은 모바일 스크롤에 맞춘 이미지 회차 편성"
       ],
       episodes: bravoCampEpisodeIds
     },
@@ -251,8 +260,8 @@ window.WCAMPER_WEBTOON = {
         {
           title: "부라보캠프 단톡방",
           status: "공개 연재 시즌 2",
-          description: "부라보캠프의 캐릭터 소개, 워킹데드, 데쓰노트 에피소드를 Drive 파일명 기준 단일 이미지 회차로 구성한 두 번째 시즌.",
-          meta: "4화 공개"
+          description: "부라보캠프의 캐릭터 소개, 워킹데드, 데쓰노트 에피소드를 Drive 파일명 기준으로 구성한 두 번째 시즌.",
+          meta: "3화 공개"
         },
         {
           title: "봉봉패미리 캠핑",
@@ -319,7 +328,7 @@ window.WCAMPER_WEBTOON = {
   notes: [
     {
       title: "Drive 원본 공개 반영",
-      body: "시즌 1 BD-Crew 단톡방 13장과 시즌 2 부라보캠프 단톡방 4장을 Google Drive 파일명 기준 정적 이미지 회차로 연결했습니다. 시즌 2 작품페이지 이미지는 작품 표지로 분리 배치했습니다.",
+      body: "시즌 1 BD-Crew 단톡방 13장과 시즌 2 부라보캠프 단톡방 4장을 Google Drive 파일명 기준으로 연결했습니다. 시즌 2는 EP001-2, EP001-3 두 이미지를 1화에 함께 배치하고, 작품페이지 이미지는 작품 표지로 분리했습니다.",
       meta: "2026.07.09 업데이트"
     },
     {
