@@ -40,6 +40,7 @@ img {
 }
 
 button,
+input,
 select,
 textarea {
   font: inherit;
@@ -723,6 +724,7 @@ h1 {
   gap: 6px;
 }
 
+.feedback-form input,
 .feedback-form select,
 .feedback-form textarea {
   width: 100%;
@@ -732,15 +734,36 @@ h1 {
   color: var(--ink);
 }
 
+.feedback-form input,
 .feedback-form select {
   min-height: 40px;
   padding: 0 10px;
+}
+
+.feedback-form input[readonly],
+.feedback-form textarea:disabled {
+  background: #f5f7f3;
+  color: #667064;
 }
 
 .feedback-form textarea {
   min-height: 106px;
   padding: 10px;
   resize: vertical;
+}
+
+.feedback-auth-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.feedback-auth-cta p {
+  flex-basis: 100%;
+  margin: 0;
+  color: #344039;
+  font-size: 14px;
 }
 
 .feedback-samples {

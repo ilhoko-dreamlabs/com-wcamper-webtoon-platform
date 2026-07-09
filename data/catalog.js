@@ -354,14 +354,17 @@ window.WCAMPER_WEBTOON = {
   feedback: {
     authProvider: {
       name: "WCAMPER 통합인증",
+      service: "wcamper-webtoon",
       loginUrl: "https://auth.wcamper.com/login",
-      description: "인증 회원 피드백은 auth.wcamper.com 계정과 연결해 작성자 신뢰도, 반복 참여, 신고 이력을 스코어링에 반영합니다."
+      signupUrl: "https://auth.wcamper.com/signup",
+      sessionUrl: "https://auth.wcamper.com/api/auth/session",
+      description: "피드백은 auth.wcamper.com 통합 계정으로 로그인한 회원만 작성할 수 있으며, 작성자 신뢰도, 반복 참여, 신고 이력을 스코어링에 반영합니다."
     },
     scoring: {
-      anonymousWeight: 0.35,
+      anonymousWeight: 0,
       memberWeight: 1,
       signals: ["공감", "완독", "재방문", "신고", "운영자 검수"],
-      note: "익명 피드백은 초반 반응 수집에 쓰고, 인증 회원 피드백은 작가/작품/회차 점수의 주 신호로 사용합니다."
+      note: "익명 피드백 작성은 중단하고, 로그인 회원 피드백만 작가/작품/회차 점수의 입력 신호로 사용합니다."
     },
     targets: [
       {
@@ -371,11 +374,9 @@ window.WCAMPER_WEBTOON = {
         title: "봉달캠퍼 유니버스 코믹스",
         prompt: "작가의 유니버스, 단톡방 톤, 시즌 확장에 대한 의견",
         score: 90,
-        anonymousCount: 16,
         memberCount: 11,
         samples: [
-          { mode: "member", body: "캠핑 단톡방처럼 읽혀서 연재 콘셉트가 명확합니다." },
-          { mode: "anonymous", body: "시즌별 캐릭터 소개가 조금 더 있으면 좋겠습니다." }
+          { mode: "member", body: "캠핑 단톡방처럼 읽혀서 연재 콘셉트가 명확합니다." }
         ]
       },
       {
@@ -385,11 +386,9 @@ window.WCAMPER_WEBTOON = {
         title: "BD-Crew 단톡방",
         prompt: "시즌 1의 컷 흐름, 캠핑 정서, 다음 화 기대감에 대한 의견",
         score: 88,
-        anonymousCount: 24,
         memberCount: 13,
         samples: [
-          { mode: "member", body: "실제 이미지가 들어오니 사이트가 연재물처럼 보입니다." },
-          { mode: "anonymous", body: "컷 사이에 짧은 대사가 붙어서 읽기 편합니다." }
+          { mode: "member", body: "실제 이미지가 들어오니 사이트가 연재물처럼 보입니다." }
         ]
       },
       {
@@ -399,11 +398,9 @@ window.WCAMPER_WEBTOON = {
         title: "부라보캠프 단톡방",
         prompt: "시즌 2의 짧은 회차감, 리액션, 캐릭터 톤에 대한 의견",
         score: 81,
-        anonymousCount: 9,
         memberCount: 5,
         samples: [
-          { mode: "member", body: "시즌 1과 구분되는 빠른 톤이 좋습니다." },
-          { mode: "anonymous", body: "다음 회차에는 컷 수가 조금 더 늘면 좋겠습니다." }
+          { mode: "member", body: "시즌 1과 구분되는 빠른 톤이 좋습니다." }
         ]
       }
     ]
@@ -417,7 +414,7 @@ window.WCAMPER_WEBTOON = {
     rules: [
       "목표는 작가, 작품, 회차 단위로 설정한다.",
       "방문/조회/완독/피드백 이벤트가 백그라운드에서 목표 진행률을 갱신한다.",
-      "인증 회원의 달성 기여도는 익명 사용자보다 높은 신뢰도로 반영한다.",
+      "피드백 작성은 auth.wcamper.com 통합로그인을 완료한 회원에게만 허용한다.",
       "달성 여부는 공개 숫자보다 단계, 뱃지, 운영자 리포트로 먼저 노출한다."
     ],
     items: [

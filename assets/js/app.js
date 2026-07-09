@@ -4,6 +4,13 @@
   const siteOrigin = "https://webtoon.wcamper.com";
   const defaultOgImage = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
   const homeMainImage = "assets/img/home/wcamper-home-main-20260709.png";
+  const authConfig = data.feedback.authProvider;
+  const authState = {
+    checked: false,
+    authenticated: false,
+    profileComplete: false,
+    user: null
+  };
 
   const pathForAuthor = (author) => `/@${author.id}`;
   const pathForSeries = (series) => {
@@ -222,6 +229,25 @@
     return `<a class="${className}" href="${href}" data-link>${label}</a>`;
   }
 
+  function currentReturnTo() {
+    return `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
+  }
+
+  function buildAuthUrl(pathname = "/login", returnTo = currentReturnTo()) {
+    const url = new URL(pathname, authConfig.loginUrl);
+    url.searchParams.set("service", authConfig.service);
+    url.searchParams.set("returnTo", returnTo);
+    return url.toString();
+  }
+
+  function buildLoginUrl(returnTo) {
+    return buildAuthUrl("/login", returnTo);
+  }
+
+  function buildSignupUrl(returnTo) {
+    return buildAuthUrl("/signup", returnTo);
+  }
+
   function renderEpisodeNav(series, episodes, episode, label) {
     const currentIndex = episodes.findIndex((item) => item.id === episode.id);
     const previousEpisode = currentIndex > 0 ? episodes[currentIndex - 1] : null;
@@ -248,10 +274,12 @@
       title,
       prompt: `${title}에 대한 의견을 남겨주세요.`,
       score: "집계중",
-      anonymousCount: 0,
       memberCount: 0,
       samples: []
     };
+    const returnTo = currentReturnTo();
+    const loginUrl = buildLoginUrl(returnTo);
+    const signupUrl = buildSignupUrl(returnTo);
 
     return `
       <section class="feedback-panel" aria-label="${escapeHtml(target.title)} 피드백">
@@ -265,30 +293,33 @@
             <strong>${escapeHtml(target.score)}</strong>
             <p>${escapeHtml(target.prompt)}</p>
             <div class="feedback-counts">
-              <span>인증 회원 ${target.memberCount}</span>
-              <span>익명 ${target.anonymousCount}</span>
+              <span>회원 피드백 ${target.memberCount}</span>
+              <span>익명 작성 불가</span>
             </div>
           </article>
-          <form class="feedback-form">
+          <form class="feedback-form" data-feedback-form data-target-type="${escapeHtml(targetType)}" data-target-id="${escapeHtml(target.id || title)}">
             <label>
-              <span>작성 방식</span>
-              <select aria-label="작성 방식">
-                <option>익명 피드백</option>
-                <option>${escapeHtml(base.authProvider.name)} 인증 회원</option>
-              </select>
+              <span>작성 권한</span>
+              <input type="text" value="${escapeHtml(base.authProvider.name)} 로그인 회원" readonly>
             </label>
             <label class="feedback-text">
               <span>의견</span>
-              <textarea rows="4" placeholder="${escapeHtml(target.label)}에 대한 의견을 남겨주세요"></textarea>
+              <textarea rows="4" placeholder="${escapeHtml(target.label)}에 대한 의견을 남겨주세요" ${authState.authenticated && authState.profileComplete ? "" : "disabled"}></textarea>
             </label>
-            <button class="button primary" type="button">피드백 남기기</button>
+            ${authState.authenticated && authState.profileComplete
+              ? `<button class="button primary" type="button" data-feedback-submit>피드백 남기기</button>`
+              : `<div class="feedback-auth-cta">
+                  <p>${escapeHtml(base.authProvider.description)}</p>
+                  <a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인</a>
+                  <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
+                </div>`}
           </form>
         </div>
         ${target.samples.length ? `
           <div class="feedback-samples">
             ${target.samples.map((sample) => `
               <blockquote>
-                <span>${sample.mode === "member" ? "인증 회원" : "익명"}</span>
+                <span>로그인 회원</span>
                 <p>${escapeHtml(sample.body)}</p>
               </blockquote>
             `).join("")}
@@ -696,7 +727,7 @@
         <div>
           <p class="eyebrow">Member</p>
           <h1>마이페이지</h1>
-          <p>일반회원이 웹툰 감상, 관심작 관리, 피드백 작성, 활동 내역을 확인하는 독자용 공간입니다. 실제 로그인 연동 후 상단의 일반회원 로그인 버튼은 마이페이지로 전환됩니다.</p>
+          <p>통합회원이 웹툰 감상, 관심작 관리, 피드백 작성, 활동 내역을 확인하는 독자용 공간입니다. 피드백 작성은 auth.wcamper.com 로그인과 프로필 완료 후 허용됩니다.</p>
           <div class="hero-actions">
             ${link("/webtoons", "웹툰 보러가기", "button primary")}
             ${link("/creators", "작가로 참여하기", "button ghost")}
@@ -704,7 +735,7 @@
         </div>
         <div class="info-panel">
           <strong>회원 상태</strong>
-          <p>통합인증 연결 전 설계 화면입니다. 로그인 완료 시 최근 본 웹툰과 피드백 현황을 개인 데이터로 표시합니다.</p>
+          <p>${authState.authenticated ? "통합로그인 세션이 확인되었습니다." : "통합로그인이 필요합니다. 로그인 완료 시 최근 본 웹툰과 피드백 현황을 개인 데이터로 표시합니다."}</p>
         </div>
       </section>
 
@@ -745,7 +776,7 @@
           </article>
           <article class="account-panel">
             <h3>내 활동 기준</h3>
-            <p>익명 피드백과 구분되는 회원 활동으로 완독률, 재방문, 관심작 데이터를 개인화에 활용합니다.</p>
+            <p>로그인 회원 활동으로 완독률, 재방문, 관심작 데이터를 개인화에 활용합니다.</p>
             <div class="tag-row">
               <span>인증 회원</span>
               <span>관심작</span>
@@ -763,15 +794,16 @@
         <div>
           <p class="eyebrow">Creator Studio</p>
           <h1>작가페이지</h1>
-          <p>작가가 작품과 회차를 관리하고 독자 피드백, 제작 진행률, 광고/협업 문의를 확인하는 운영 공간입니다. 실제 작가 인증 후 상단의 작가 로그인 버튼은 작가페이지로 전환됩니다.</p>
+          <p>일반회원 가입 후 작가신청을 제출하고 운영 승인된 작가가 작품과 회차, 독자 피드백, 제작 진행률, 광고/협업 문의를 확인하는 운영 공간입니다.</p>
           <div class="hero-actions">
-            ${link("/creators", "작가모집 보기", "button primary")}
+            ${link("/creators", "작가신청 안내", "button primary")}
             ${link("/partnership", "협업문의 보기", "button ghost")}
           </div>
         </div>
         <div class="info-panel">
           <strong>작가 운영 범위</strong>
           <div class="tag-row">
+            <span>작가신청</span>
             <span>피드백</span>
             <span>웹툰 관리</span>
             <span>회차 제작</span>
@@ -828,6 +860,51 @@
         </article>
       </section>
     `;
+  }
+
+  function updateAuthLinks() {
+    const memberLink = document.querySelector('[data-auth-label="member"]');
+    const creatorLink = document.querySelector('[data-auth-label="creator"]');
+    const returnTo = currentReturnTo();
+
+    if (memberLink) {
+      memberLink.setAttribute("href", authState.authenticated ? "/mypage" : buildLoginUrl(returnTo));
+      memberLink.toggleAttribute("data-link", authState.authenticated);
+      memberLink.setAttribute("title", authState.authenticated ? "마이페이지" : "통합로그인");
+      memberLink.setAttribute("aria-label", authState.authenticated ? "마이페이지" : "통합로그인");
+    }
+
+    if (creatorLink) {
+      creatorLink.setAttribute("href", authState.authenticated ? "/creator-studio" : buildLoginUrl(returnTo));
+      creatorLink.toggleAttribute("data-link", authState.authenticated);
+      creatorLink.setAttribute("title", authState.authenticated ? "작가페이지" : "통합로그인 후 작가신청");
+      creatorLink.setAttribute("aria-label", authState.authenticated ? "작가페이지" : "통합로그인 후 작가신청");
+    }
+  }
+
+  async function refreshAuthState() {
+    try {
+      const response = await fetch(authConfig.sessionUrl, {
+        credentials: "include",
+        headers: {
+          Accept: "application/json"
+        }
+      });
+
+      if (response.ok) {
+        const session = await response.json();
+        authState.authenticated = Boolean(session.authenticated);
+        authState.profileComplete = Boolean(session.profileComplete);
+        authState.user = session.user || null;
+      }
+    } catch {
+      authState.authenticated = false;
+      authState.profileComplete = false;
+      authState.user = null;
+    } finally {
+      authState.checked = true;
+      updateAuthLinks();
+    }
   }
 
   function renderAuthorPage(authorId) {
@@ -1000,6 +1077,8 @@
     } else {
       window.scrollTo({ top: 0 });
     }
+
+    updateAuthLinks();
   }
 
   document.addEventListener("click", (event) => {
@@ -1022,6 +1101,23 @@
     render();
   });
 
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-feedback-submit]");
+    if (!button) return;
+    const form = button.closest("[data-feedback-form]");
+    const textarea = form?.querySelector("textarea");
+    const value = textarea?.value.trim();
+
+    if (!value) {
+      textarea?.focus();
+      return;
+    }
+
+    button.textContent = "저장 API 준비중";
+    button.setAttribute("disabled", "disabled");
+  });
+
   window.addEventListener("popstate", render);
   render();
+  refreshAuthState().then(render);
 })();
