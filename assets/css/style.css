@@ -135,7 +135,8 @@ textarea {
 .feedback-panel,
 .contact-band,
 .reader-head,
-.reader-panels {
+.reader-panels,
+.episode-nav {
   width: min(var(--container), calc(100% - 28px));
   margin: 0 auto;
 }
@@ -244,6 +245,15 @@ h1 {
 .button.ghost:hover {
   border-color: var(--accent);
   color: var(--accent-dark);
+}
+
+.button.is-disabled,
+.button.is-disabled:hover {
+  cursor: default;
+  opacity: 0.45;
+  border-color: var(--line);
+  background: transparent;
+  color: var(--muted);
 }
 
 .section,
@@ -528,15 +538,12 @@ h1 {
 }
 
 .reader-head,
-.reader-panels {
+.reader-panels,
+.episode-nav {
   width: min(760px, calc(100% - 24px));
 }
 
 .reader-head {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 14px;
-  align-items: start;
   margin-bottom: 18px;
 }
 
@@ -553,6 +560,33 @@ h1 {
   border-color: #4e5a50;
   background: #18201a;
   color: #fff;
+}
+
+.reader .button.is-disabled,
+.reader .button.is-disabled:hover {
+  border-color: #303a32;
+  background: #141b16;
+  color: #7f8b82;
+  opacity: 1;
+}
+
+.episode-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.episode-nav:last-child {
+  margin-top: 14px;
+  margin-bottom: 0;
+}
+
+.episode-nav .button {
+  justify-content: center;
+  min-width: 0;
+  padding-inline: 10px;
+  text-align: center;
 }
 
 .reader-panels {
@@ -684,7 +718,8 @@ h1 {
   .feedback-layout,
   .feedback-samples,
   .contact-band,
-  .reader-head {
+  .reader-head,
+  .episode-nav {
     grid-template-columns: 1fr;
   }
 

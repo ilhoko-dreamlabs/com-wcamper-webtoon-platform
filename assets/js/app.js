@@ -48,6 +48,25 @@
     return `<a class="${className}" href="${href}" data-link>${label}</a>`;
   }
 
+  function renderEpisodeNav(series, episodes, episode, label) {
+    const currentIndex = episodes.findIndex((item) => item.id === episode.id);
+    const previousEpisode = currentIndex > 0 ? episodes[currentIndex - 1] : null;
+    const nextEpisode = currentIndex < episodes.length - 1 ? episodes[currentIndex + 1] : null;
+    const seriesEpisodesPath = `${pathForSeries(series)}#episodes`;
+
+    return `
+      <nav class="episode-nav" aria-label="${escapeHtml(label)}">
+        ${previousEpisode
+          ? link(pathForEpisode(previousEpisode), `이전회차 ${previousEpisode.number}화`, "button ghost")
+          : `<span class="button ghost is-disabled" aria-disabled="true">이전회차</span>`}
+        ${link(seriesEpisodesPath, "목록보기", "button primary")}
+        ${nextEpisode
+          ? link(pathForEpisode(nextEpisode), `다음회차 ${nextEpisode.number}화`, "button ghost")
+          : `<span class="button ghost is-disabled" aria-disabled="true">다음회차</span>`}
+      </nav>
+    `;
+  }
+
   function renderFeedbackBox(targetType, title) {
     const base = data.feedback;
     const target = base.targets.find((item) => item.type === targetType && item.title === title) || {
@@ -321,7 +340,7 @@
           </div>
         </div>
       </section>
-      <section class="section muted-band">
+      <section id="episodes" class="section muted-band">
         <div class="section-heading">
           <p class="eyebrow">Episodes</p>
           <h2>회차</h2>
@@ -337,19 +356,20 @@
   function renderEpisodePage(authorId, seriesId, number) {
     const author = getAuthor(authorId);
     const series = getSeries(seriesId);
-    const episode = getEpisodesForSeries(seriesId).find((item) => String(item.number) === String(number));
+    const episodes = getEpisodesForSeries(seriesId);
+    const episode = episodes.find((item) => String(item.number) === String(number));
     if (!author || !series || series.authorId !== author.id || !episode) return renderNotFound();
 
     main.innerHTML = `
       <section class="reader">
         <div class="reader-head">
-          ${link(pathForSeries(series), "작품으로", "button ghost")}
           <div>
             <p class="eyebrow">${escapeHtml(series.title)}</p>
             <h1>${episode.number}화. ${escapeHtml(episode.title)}</h1>
             <p>${escapeHtml(episode.summary)}</p>
           </div>
         </div>
+        ${renderEpisodeNav(series, episodes, episode, "회차 상단 이동")}
         <div class="reader-panels">
           <aside class="reader-production" aria-label="회차 제작 정보">
             <span>${escapeHtml(episode.status)}</span>
@@ -373,6 +393,7 @@
             </article>
           `}
         </div>
+        ${renderEpisodeNav(series, episodes, episode, "회차 하단 이동")}
       </section>
       ${renderFeedbackBox("episode", `${series.title} ${episode.number}화`)}
     `;
