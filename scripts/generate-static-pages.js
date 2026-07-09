@@ -6,7 +6,7 @@ const ROOT = path.resolve(__dirname, "..");
 const SITE_ORIGIN = "https://webtoon.wcamper.com";
 const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
 const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
-const ASSET_VERSION = "20260709-auth-feedback";
+const ASSET_VERSION = "20260709-backend-api";
 
 function loadCatalog() {
   const catalogPath = path.join(ROOT, "data", "catalog.js");

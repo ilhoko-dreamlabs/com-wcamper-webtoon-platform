@@ -248,6 +248,25 @@
     return buildAuthUrl("/signup", returnTo);
   }
 
+  async function apiJson(path, options = {}) {
+    const response = await fetch(path, {
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.headers || {})
+      },
+      ...options
+    });
+    const payload = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(payload.message || "요청을 처리하지 못했습니다.");
+    }
+
+    return payload;
+  }
+
   function renderEpisodeNav(series, episodes, episode, label) {
     const currentIndex = episodes.findIndex((item) => item.id === episode.id);
     const previousEpisode = currentIndex > 0 ? episodes[currentIndex - 1] : null;
@@ -313,6 +332,7 @@
                   <a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인</a>
                   <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
                 </div>`}
+            <p class="form-status" data-feedback-status role="status" aria-live="polite"></p>
           </form>
         </div>
         ${target.samples.length ? `
@@ -579,6 +599,10 @@
   }
 
   function renderCreatorsPage() {
+    const returnTo = currentReturnTo();
+    const loginUrl = buildLoginUrl(returnTo);
+    const signupUrl = buildSignupUrl(returnTo);
+
     main.innerHTML = `
       <section class="page-hero split">
         <div>
@@ -586,7 +610,8 @@
           <h1>웹툰기획력으로 작가되기</h1>
           <p>그림 실력만이 아니라 캐릭터, 에피소드, 세계관, 대사 감각을 가진 창작자를 모집합니다. AI 제작 도구와 함께 캠핑, 여행, 일상 이야기를 연재물로 만듭니다.</p>
           <div class="hero-actions">
-            <a class="button primary" href="mailto:creator@wcamper.com">작가 지원 문의</a>
+            ${authState.authenticated ? `<a class="button primary" href="#author-application">작가신청 작성</a>` : `<a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인 후 신청</a>`}
+            <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
             ${link("/webtoons", "연재작 보기", "button ghost")}
           </div>
         </div>
@@ -645,6 +670,50 @@
               <strong>${escapeHtml(step)}</strong>
             </article>
           `).join("")}
+        </div>
+      </section>
+
+      <section class="section muted-band" id="author-application">
+        <div class="section-heading">
+          <p class="eyebrow">Application</p>
+          <h2>작가신청</h2>
+        </div>
+        <div class="account-layout">
+          <form class="feedback-form" data-author-application-form>
+            <label>
+              <span>작가명</span>
+              <input name="displayName" type="text" maxlength="80" placeholder="연재에 사용할 작가명" ${authState.authenticated ? "" : "disabled"}>
+            </label>
+            <label>
+              <span>포트폴리오 URL</span>
+              <input name="portfolioUrl" type="url" maxlength="500" placeholder="https://..." ${authState.authenticated ? "" : "disabled"}>
+            </label>
+            <label class="feedback-text">
+              <span>자기소개</span>
+              <textarea name="introduction" rows="5" maxlength="2000" placeholder="경험, 관심 주제, 연재하고 싶은 이유를 적어주세요." ${authState.authenticated ? "" : "disabled"}></textarea>
+            </label>
+            <label class="feedback-text">
+              <span>샘플 기획</span>
+              <textarea name="samplePlan" rows="5" maxlength="3000" placeholder="첫 작품 또는 첫 회차 아이디어를 적어주세요." ${authState.authenticated ? "" : "disabled"}></textarea>
+            </label>
+            ${authState.authenticated
+              ? `<button class="button primary" type="submit">작가신청 제출</button>`
+              : `<div class="feedback-auth-cta">
+                  <p>작가신청은 auth.wcamper.com 통합회원 로그인 후 제출할 수 있습니다.</p>
+                  <a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인</a>
+                  <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
+                </div>`}
+            <p class="form-status" data-author-application-status role="status" aria-live="polite"></p>
+          </form>
+          <article class="account-panel">
+            <h3>승인 기준</h3>
+            <p>운영자는 제출된 소개, 샘플 기획, 플랫폼 주제 적합성, 저작권/AI 사용 고지 가능 여부를 검토한 뒤 작가 권한을 부여합니다.</p>
+            <div class="tag-row">
+              <span>통합회원</span>
+              <span>운영 검수</span>
+              <span>승인 후 작가페이지</span>
+            </div>
+          </article>
         </div>
       </section>
     `;
@@ -1101,11 +1170,44 @@
     render();
   });
 
-  document.addEventListener("click", (event) => {
+  document.addEventListener("submit", async (event) => {
+    const form = event.target.closest("form[data-author-application-form]");
+    if (!form) return;
+    event.preventDefault();
+
+    const status = form.querySelector("[data-author-application-status]");
+    const button = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    const payload = {
+      displayName: formData.get("displayName")?.toString() || "",
+      portfolioUrl: formData.get("portfolioUrl")?.toString() || "",
+      introduction: formData.get("introduction")?.toString() || "",
+      samplePlan: formData.get("samplePlan")?.toString() || ""
+    };
+
+    status.textContent = "작가신청을 저장하는 중입니다.";
+    button?.setAttribute("disabled", "disabled");
+
+    try {
+      await apiJson("/api/author-applications", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      form.reset();
+      status.textContent = "작가신청이 접수되었습니다. 운영 검수 후 상태가 갱신됩니다.";
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      button?.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-feedback-submit]");
     if (!button) return;
     const form = button.closest("[data-feedback-form]");
     const textarea = form?.querySelector("textarea");
+    const status = form?.querySelector("[data-feedback-status]");
     const value = textarea?.value.trim();
 
     if (!value) {
@@ -1113,8 +1215,27 @@
       return;
     }
 
-    button.textContent = "저장 API 준비중";
+    const originalText = button.textContent;
+    status.textContent = "피드백을 저장하는 중입니다.";
     button.setAttribute("disabled", "disabled");
+
+    try {
+      await apiJson("/api/feedback", {
+        method: "POST",
+        body: JSON.stringify({
+          targetType: form.dataset.targetType,
+          targetId: form.dataset.targetId,
+          body: value
+        })
+      });
+      textarea.value = "";
+      status.textContent = "피드백이 저장되었습니다.";
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      button.textContent = originalText;
+      button.removeAttribute("disabled");
+    }
   });
 
   window.addEventListener("popstate", render);

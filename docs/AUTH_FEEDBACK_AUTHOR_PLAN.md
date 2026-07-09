@@ -17,10 +17,10 @@ Scope: `webtoon.wcamper.com`, `auth.wcamper.com`
 | 4 | 승인됨 | 작가가입 폐지 | 일반회원 가입 후 웹툰에서 작가신청 | 반영 |
 | 5 | 승인됨 | 작가 데이터 분리 | `Author.userId = auth User.id` 외부 참조 | 설계 반영 |
 | 6 | 승인됨 | 물리 FK 여부 | 서비스 DB 분리를 고려해 강한 DB FK 없이 문자열 `userId` 저장 | 설계 반영 |
-| 7 | 승인됨 | 피드백 저장 API | API에서 auth session 검증 후 저장 | 계약 반영 |
-| 8 | 승인됨 | 작가 승인 | `AuthorApplication` 승인 후 `Author.status=ACTIVE` | 설계 반영 |
+| 7 | 승인됨 | 피드백 저장 API | API에서 auth session 검증 후 저장 | API 구현 |
+| 8 | 승인됨 | 작가 승인 | `AuthorApplication` 승인 후 `Author.status=ACTIVE` | 관리자 API 구현 |
 | 9 | 승인됨 | 정적 MVP 한계 | 현 정적 사이트는 작성 UI를 로그인 필수로 잠그고 API 계약을 고정 | 반영 |
-| 10 | 승인됨 | 배포 권한 | 커밋/푸시/배포까지 작업자가 수행 가능 | 대기 |
+| 10 | 승인됨 | 배포 권한 | 커밋/푸시/배포까지 작업자가 수행 가능 | 로컬 구현 진행 |
 
 ## 단계별 설계
 
@@ -111,7 +111,18 @@ FeedbackReport
 | `GET` | `/api/author-applications/me` | 필수 | 내 작가신청 상태 조회 |
 | `POST` | `/api/admin/author-applications/:id/approve` | 운영자 | 작가 승인 및 `Author` 활성화 |
 
-### 6. 검증 기준
+### 6. 운영 환경변수
+
+| 환경변수 | 용도 |
+|---|---|
+| `WEBTOON_DATABASE_URL` 또는 `POSTGRES_URL` 또는 `DATABASE_URL` | 웹툰 전용 Postgres 연결 |
+| `AUTH_SESSION_URL` | auth 세션 확인 URL. 기본값은 `https://auth.wcamper.com/api/auth/session` |
+| `WEBTOON_PUBLIC_ORIGIN` | auth 세션 확인 시 전달할 웹툰 origin |
+| `WEBTOON_ADMIN_API_TOKEN` | 작가신청 승인 API Bearer 토큰 |
+
+auth 운영 설정은 세션 쿠키가 `webtoon.wcamper.com` API 요청에도 전달되도록 `.wcamper.com` 범위로 발급되어야 한다. 쿠키가 `auth.wcamper.com` 전용이면 브라우저의 auth 세션 확인은 가능하지만, webtoon 서버 API가 쿠키를 전달받지 못해 저장 요청을 인증할 수 없다.
+
+### 7. 검증 기준
 
 - 비로그인 상태에서 피드백 textarea가 비활성화된다.
 - 비로그인 상태에서 피드백 영역에 통합로그인/통합회원가입 CTA가 표시된다.
@@ -122,4 +133,4 @@ FeedbackReport
 
 ## 보완 설계 메모
 
-현재 웹툰 저장소는 정적 사이트다. 따라서 이번 단계에서는 운영 DB에 피드백을 저장하는 서버 API를 직접 실행할 수 없다. 저장 API는 다음 백엔드 전환 단계에서 `Vercel Functions + Postgres` 또는 Next 기반 웹툰 서비스로 구현한다. 그 전까지 운영 UI에서는 피드백 작성을 통합로그인 회원 전용으로 잠그고, 실제 저장 버튼은 API 준비 상태를 표시한다.
+2차 초기 백엔드는 정적 프론트 유지, Vercel Functions API 추가, 웹툰 전용 Postgres 분리 구조로 구현한다. API는 `auth.wcamper.com/api/auth/session`에 쿠키를 전달해 통합회원 세션을 검증하고, auth DB와 웹툰 DB 사이에는 물리 FK를 두지 않는다. 운영 DB에는 `db/schema.sql`을 명시 적용하며, API 함수가 운영 DB를 자동 마이그레이션하지 않는다.

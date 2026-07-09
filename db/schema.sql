@@ -1,0 +1,64 @@
+create table if not exists authors (
+  id text primary key,
+  user_id text not null unique,
+  display_name text not null,
+  bio text not null default '',
+  status text not null default 'PENDING' check (status in ('PENDING', 'ACTIVE', 'SUSPENDED', 'REJECTED')),
+  approved_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists author_applications (
+  id text primary key,
+  user_id text not null,
+  author_id text,
+  display_name text not null,
+  status text not null default 'SUBMITTED' check (status in ('DRAFT', 'SUBMITTED', 'REVIEWING', 'APPROVED', 'REJECTED')),
+  portfolio_url text,
+  introduction text not null,
+  sample_plan text not null,
+  reviewed_by text,
+  reviewed_at timestamptz,
+  rejection_reason text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists author_applications_user_created_idx
+  on author_applications (user_id, created_at desc);
+
+create table if not exists feedback (
+  id text primary key,
+  user_id text not null,
+  target_type text not null check (target_type in ('AUTHOR', 'SERIES', 'EPISODE')),
+  target_id text not null,
+  body text not null,
+  status text not null default 'VISIBLE' check (status in ('VISIBLE', 'HIDDEN', 'DELETED', 'REPORTED')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists feedback_target_created_idx
+  on feedback (target_type, target_id, created_at desc);
+
+create table if not exists favorites (
+  id text primary key,
+  user_id text not null,
+  target_type text not null check (target_type in ('AUTHOR', 'SERIES')),
+  target_id text not null,
+  created_at timestamptz not null default now(),
+  unique (user_id, target_type, target_id)
+);
+
+create table if not exists feedback_reports (
+  id text primary key,
+  feedback_id text not null,
+  reporter_user_id text not null,
+  reason text not null,
+  status text not null default 'OPEN' check (status in ('OPEN', 'REVIEWED', 'DISMISSED', 'ACTIONED')),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists feedback_reports_feedback_idx
+  on feedback_reports (feedback_id, created_at desc);

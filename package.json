@@ -5,5 +5,8 @@
   "scripts": {
     "start": "python3 -m http.server 5174",
     "build": "node scripts/generate-static-pages.js"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
   }
 }
