@@ -184,6 +184,7 @@ window.WCAMPER_WEBTOON = {
       status: "공개 연재",
       summary: "BD-Crew의 캠핑, 차량, 웹툰 제작, 일상 대화가 단톡방처럼 이어지는 봉달캠퍼 유니버스 시즌 1.",
       cover: panelImage(1, 1),
+      thumbnail: bdCrewEpisodeThumbnail(1),
       tags: ["캠핑", "BD-Crew", "단톡방", "일상 코미디"],
       schedule: "시즌 1 공개중",
       ageRating: "전체 이용가",

@@ -1,6 +1,8 @@
 (function () {
   const data = window.WCAMPER_WEBTOON;
   const main = document.querySelector("#main");
+  const siteOrigin = "https://webtoon.wcamper.com";
+  const defaultOgImage = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
 
   const pathForAuthor = (author) => `/@${author.id}`;
   const pathForSeries = (series) => {
@@ -33,6 +35,127 @@
       .filter((episode) => episode.status === "공개")
       .slice()
       .sort((a, b) => `${b.publishedAt}-${b.number}`.localeCompare(`${a.publishedAt}-${a.number}`));
+  }
+
+  function firstPanelImage(episode) {
+    return episode.panels && episode.panels[0] && episode.panels[0].image;
+  }
+
+  function absoluteUrl(path) {
+    return `${siteOrigin}${path}`;
+  }
+
+  function absoluteAssetUrl(assetPath) {
+    if (!assetPath) return absoluteAssetUrl(defaultOgImage);
+    if (/^https?:\/\//.test(assetPath)) return assetPath;
+    const cleanPath = assetPath.startsWith("/") ? assetPath : `/${assetPath}`;
+    return encodeURI(`${siteOrigin}${cleanPath}`);
+  }
+
+  function setMetaAttribute(selector, attribute, value) {
+    let meta = document.head.querySelector(selector);
+    if (!meta) {
+      meta = document.createElement("meta");
+      const propertyMatch = selector.match(/meta\[property="([^"]+)"\]/);
+      const nameMatch = selector.match(/meta\[name="([^"]+)"\]/);
+      if (propertyMatch) meta.setAttribute("property", propertyMatch[1]);
+      if (nameMatch) meta.setAttribute("name", nameMatch[1]);
+      document.head.append(meta);
+    }
+    meta.setAttribute(attribute, value);
+  }
+
+  function setCanonical(url) {
+    let linkElement = document.head.querySelector('link[rel="canonical"]');
+    if (!linkElement) {
+      linkElement = document.createElement("link");
+      linkElement.setAttribute("rel", "canonical");
+      document.head.append(linkElement);
+    }
+    linkElement.setAttribute("href", url);
+  }
+
+  function getRouteMeta(route) {
+    if (route.name === "author") {
+      const author = getAuthor(route.authorId);
+      if (author) {
+        return {
+          title: `${author.name} | WCAMPER Webtoon`,
+          description: author.bio,
+          image: author.image || defaultOgImage,
+          path: pathForAuthor(author),
+          type: "profile"
+        };
+      }
+    }
+
+    if (route.name === "series") {
+      const series = getSeries(route.seriesId);
+      const author = getAuthor(route.authorId);
+      if (author && series && series.authorId === author.id) {
+        return {
+          title: `${series.title} | WCAMPER Webtoon`,
+          description: series.summary,
+          image: series.thumbnail || series.cover || defaultOgImage,
+          path: pathForSeries(series),
+          type: "website"
+        };
+      }
+    }
+
+    if (route.name === "episode") {
+      const series = getSeries(route.seriesId);
+      const author = getAuthor(route.authorId);
+      const episodes = getEpisodesForSeries(route.seriesId);
+      const episode = episodes.find((item) => String(item.number) === String(route.number));
+      if (author && series && series.authorId === author.id && episode) {
+        return {
+          title: `${series.title} ${episode.number}화. ${episode.title} | WCAMPER Webtoon`,
+          description: episode.summary,
+          image: episode.thumbnail || firstPanelImage(episode) || series.thumbnail || series.cover || defaultOgImage,
+          path: pathForEpisode(episode),
+          type: "article"
+        };
+      }
+    }
+
+    if (route.name === "notFound") {
+      return {
+        title: "페이지를 찾을 수 없습니다 | WCAMPER Webtoon",
+        description: "WCAMPER Webtoon에서 작가, 작품, 회차 순서로 다시 이동해주세요.",
+        image: defaultOgImage,
+        path: "/404.html",
+        type: "website"
+      };
+    }
+
+    return {
+      title: "WCAMPER Webtoon",
+      description: "캠핑 크루의 실제 컷과 단톡방 코미디를 연재하는 WCAMPER 웹툰 플랫폼",
+      image: defaultOgImage,
+      path: "/",
+      type: "website"
+    };
+  }
+
+  function updateDocumentMeta(route) {
+    const meta = getRouteMeta(route);
+    const url = absoluteUrl(meta.path);
+    const image = absoluteAssetUrl(meta.image);
+
+    document.title = meta.title;
+    setCanonical(url);
+    setMetaAttribute('meta[name="description"]', "content", meta.description);
+    setMetaAttribute('meta[property="og:title"]', "content", meta.title);
+    setMetaAttribute('meta[property="og:description"]', "content", meta.description);
+    setMetaAttribute('meta[property="og:type"]', "content", meta.type);
+    setMetaAttribute('meta[property="og:url"]', "content", url);
+    setMetaAttribute('meta[property="og:image"]', "content", image);
+    setMetaAttribute('meta[property="og:site_name"]', "content", "WCAMPER Webtoon");
+    setMetaAttribute('meta[name="twitter:card"]', "content", "summary_large_image");
+    setMetaAttribute('meta[name="twitter:title"]', "content", meta.title);
+    setMetaAttribute('meta[name="twitter:description"]', "content", meta.description);
+    setMetaAttribute('meta[name="twitter:image"]', "content", image);
   }
 
   function escapeHtml(value) {
@@ -428,6 +551,8 @@
 
   function render() {
     const route = parseRoute();
+    updateDocumentMeta(route);
+
     if (route.name === "home") renderHome();
     if (route.name === "author") renderAuthorPage(route.authorId);
     if (route.name === "series") renderSeriesPage(route.authorId, route.seriesId);

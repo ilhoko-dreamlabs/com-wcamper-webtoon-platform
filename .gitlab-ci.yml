@@ -3,10 +3,11 @@ stages:
 
 pages:
   stage: deploy
-  image: alpine:3.20
+  image: node:20-alpine
   script:
+    - npm run build
     - mkdir -p public
-    - cp -R index.html assets data docs webtoon README.md package.json vercel.json .nojekyll public/
+    - cp -R 404.html index.html @bongdal-universe-comics assets data docs webtoon README.md package.json vercel.json .nojekyll public/
   artifacts:
     paths:
       - public
