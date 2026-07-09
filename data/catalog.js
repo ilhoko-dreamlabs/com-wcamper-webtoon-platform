@@ -80,7 +80,7 @@ const bravoCampEpisodeThumbnail = (number) =>
 
 const bravoCampPanels = [
   {
-    title: "공개연재 시즌 2 - EP001 - 부라보캠프 첫 소개",
+    title: "부라보캠프 첫 소개",
     beat: "부라보캠프 첫 소개",
     caption: "부라보캠프 시즌 2의 전체 캐릭터 로스터와 자기소개를 이어서 보여주는 첫 회차.",
     dialogue: "부라보캠프: 전체 멤버부터 정리하고 자기소개까지 갑니다.",
@@ -105,7 +105,7 @@ const bravoCampPanels = [
     ]
   },
   {
-    title: "공개연재 시즌 2 - EP002 - 워킹데드",
+    title: "워킹데드",
     beat: "워킹데드",
     caption: "캠핑장의 농담이 좀비극 상상으로 번지며 부라보캠프식 코미디 장면을 만든다.",
     dialogue: "부라보캠프: 부라보캠프 단편 좀비극 - 워킹데드",
@@ -114,7 +114,7 @@ const bravoCampPanels = [
     thumbnail: bravoCampEpisodeThumbnail(2)
   },
   {
-    title: "공개연재 시즌 2 - EP003 - 데쓰노트",
+    title: "데쓰노트",
     beat: "데쓰노트",
     caption: "수다방 평화 유지를 위해 데쓰노트를 꺼내는 장난스러운 캠핑 단톡방 회차.",
     dialogue: "부라보캠프: 수다방의 평화는 계속됩니다!",
@@ -128,7 +128,6 @@ const createSingleImageEpisode = ({
   seriesId,
   season,
   number,
-  titlePrefix,
   sourceFolder,
   likes,
   publishedAt = "2026-07-09"
@@ -141,7 +140,7 @@ const createSingleImageEpisode = ({
     id: `2026-07-09-season-${season}-${String(number).padStart(2, "0")}`,
     seriesId,
     number,
-    title: panel.title || `${titlePrefix} - ${panel.beat}`,
+    title: panel.title || panel.beat,
     publishedAt,
     status: "공개",
     thumbnail: panel.thumbnail || (season === 1 ? bdCrewEpisodeThumbnail(number) : image),
@@ -310,7 +309,6 @@ window.WCAMPER_WEBTOON = {
       seriesId: "bd-crew-chat-season-1",
       season: 1,
       number: index + 1,
-      titlePrefix: "공개연재 시즌 1 - BD-Crew 단톡방",
       sourceFolder: "https://drive.google.com/drive/u/1/folders/1GOzAIjrGRVsMAeaF5eam25zVKZ-Ba2ar",
       likes: 86 - index
     })),
@@ -318,7 +316,6 @@ window.WCAMPER_WEBTOON = {
       seriesId: "bravo-camp-chat-season-2",
       season: 2,
       number: index + 1,
-      titlePrefix: "공개연재 시즌 2 - 부라보캠프 단톡방",
       sourceFolder: "https://drive.google.com/drive/u/1/folders/1ZJJXx_JAFD-CQPNzvKEbtakCzScTnopo",
       likes: 39 - index
     })),
