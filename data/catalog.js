@@ -253,6 +253,7 @@ window.WCAMPER_WEBTOON = {
       name: "봉달캠퍼 유니버스 코믹스",
       title: "캠핑 단톡방 유니버스 작가",
       avatar: "BU",
+      image: "assets/img/authors/bongdal-universe-comics-logo.png",
       bio: "캠핑 크루와 가족, 모임의 대화를 웹툰 컷으로 엮어 공개 연재하는 봉달캠퍼 기반 코믹스 레이블입니다.",
       debut: "2026년 WCAMPER Webtoon 공개연재",
       keywords: ["캠핑 유니버스", "단톡방 코미디", "크루 일상", "공개 연재"],

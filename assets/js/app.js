@@ -295,6 +295,14 @@
     `;
   }
 
+  function renderAuthorAvatar(author, className = "author-avatar") {
+    const label = `${author.name} 로고`;
+    const content = author.image
+      ? `<img src="/${author.image}" alt="${escapeHtml(label)}">`
+      : escapeHtml(author.avatar);
+    return `<a class="${className}" href="${pathForAuthor(author)}" data-link>${content}</a>`;
+  }
+
   function renderAuthorCard(author) {
     const works = data.series.filter((series) => series.authorId === author.id);
     const published = works.reduce((sum, series) => (
@@ -302,7 +310,7 @@
     ), 0);
     return `
       <article class="author-tile">
-        <a class="author-avatar" href="${pathForAuthor(author)}" data-link>${escapeHtml(author.avatar)}</a>
+        ${renderAuthorAvatar(author)}
         <div>
           <div class="meta-row">
             <span>${escapeHtml(author.title)}</span>
@@ -413,7 +421,7 @@
 
     main.innerHTML = `
       <section class="profile-hero">
-        <div class="author-avatar large">${escapeHtml(author.avatar)}</div>
+        ${renderAuthorAvatar(author, "author-avatar large")}
         <div>
           <p class="eyebrow">Author</p>
           <h1>${escapeHtml(author.name)}</h1>
