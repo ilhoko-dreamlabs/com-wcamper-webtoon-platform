@@ -72,6 +72,7 @@ const bdCrewPanels = [
 ];
 
 const bravoCampCover = season2DriveImage("BRAVOCAMP-WEBTOON-작품페이지.png");
+const bdCrewMainImage = "assets/img/covers/bd-crew-chat-season-1-main.png";
 const bdCrewEpisodeThumbnail = (number) =>
   `assets/img/thumbnails/bd-crew-episode-${String(number).padStart(2, "0")}-thumbnail.webp`;
 const bravoCampThumbnail = "assets/img/thumbnails/bravo-camp-thumbnail.webp";
@@ -182,8 +183,8 @@ window.WCAMPER_WEBTOON = {
       title: "BD-Crew 단톡방",
       status: "공개 연재",
       summary: "BD-Crew의 캠핑, 차량, 웹툰 제작, 일상 대화가 단톡방처럼 이어지는 봉달캠퍼 유니버스 시즌 1.",
-      cover: panelImage(1, 1),
-      thumbnail: bdCrewEpisodeThumbnail(1),
+      cover: bdCrewMainImage,
+      thumbnail: bdCrewMainImage,
       tags: ["캠핑", "BD-Crew", "단톡방", "일상 코미디"],
       schedule: "시즌 1 공개중",
       ageRating: "전체 이용가",
