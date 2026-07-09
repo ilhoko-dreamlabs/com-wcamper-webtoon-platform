@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-hidden="true">
+  <circle cx="12" cy="8" r="4" fill="#12301d"/>
+  <path fill="#12301d" d="M4.2 20.2c.8-4 3.9-6.4 7.8-6.4s7 2.4 7.8 6.4c.1.5-.3 1-.8 1H5c-.5 0-.9-.5-.8-1Z"/>
+  <path fill="#f2b84b" d="M18 5.6h2.3V3.3h1.9v2.3h2.3v1.9h-2.3v2.3h-1.9V7.5H18z" transform="translate(-2 1)"/>
+</svg>

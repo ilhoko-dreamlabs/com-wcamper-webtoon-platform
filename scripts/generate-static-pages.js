@@ -205,14 +205,24 @@ function bodyHtml() {
           <small>WEBTOON</small>
         </span>
       </a>
-      <form class="site-search" role="search" data-search-form>
-        <label class="sr-only" for="site-search-input">웹툰 검색</label>
-        <input id="site-search-input" name="q" type="search" placeholder="웹툰 검색">
-        <button type="submit" aria-label="검색">⌕</button>
-      </form>
-      <div class="auth-actions" aria-label="로그인 메뉴">
-        <a class="button utility" href="/mypage" data-link data-auth-label="member">일반회원 로그인</a>
-        <a class="button utility primary-utility" href="/creator-studio" data-link data-auth-label="creator">작가 로그인</a>
+      <div class="header-tools">
+        <form class="site-search" role="search" data-search-form>
+          <label class="sr-only" for="site-search-input">웹툰 검색</label>
+          <input id="site-search-input" name="q" type="search" placeholder="웹툰 검색">
+          <button type="submit" aria-label="검색">
+            <img src="/assets/img/icons/search.svg" alt="">
+          </button>
+        </form>
+        <div class="auth-actions" aria-label="로그인 메뉴">
+          <a class="button utility icon-utility" href="/mypage" aria-label="일반회원 로그인 또는 마이페이지" title="일반회원 로그인" data-link data-auth-label="member">
+            <img src="/assets/img/icons/member-login.svg" alt="">
+            <span class="sr-only">일반회원 로그인</span>
+          </a>
+          <a class="button utility primary-utility icon-utility" href="/creator-studio" aria-label="작가 로그인 또는 작가페이지" title="작가 로그인" data-link data-auth-label="creator">
+            <img src="/assets/img/icons/creator-login.svg" alt="">
+            <span class="sr-only">작가 로그인</span>
+          </a>
+        </div>
       </div>
     </div>
     <div class="header-inner">

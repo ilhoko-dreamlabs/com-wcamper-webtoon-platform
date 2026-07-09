@@ -93,6 +93,15 @@ textarea {
   gap: 12px;
 }
 
+.header-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .header-inner {
   min-height: 50px;
   justify-content: flex-start;
@@ -136,11 +145,11 @@ textarea {
 }
 
 .site-search {
-  flex: 0 1 360px;
-  max-width: 360px;
+  flex: 0 1 320px;
+  max-width: 320px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 42px;
-  min-width: 180px;
+  min-width: 160px;
   border: 1px solid #d7ded5;
   border-radius: 8px;
   background: #fff;
@@ -157,16 +166,22 @@ textarea {
 }
 
 .site-search button {
+  display: grid;
+  place-items: center;
   border: 0;
   border-left: 1px solid #e3e8e1;
   background: #fff;
   color: var(--ink);
-  font-size: 22px;
   cursor: pointer;
 }
 
 .site-search button:hover {
   color: var(--accent);
+}
+
+.site-search button img {
+  width: 19px;
+  height: 19px;
 }
 
 .auth-actions {
@@ -365,6 +380,18 @@ h1 {
   border-color: var(--accent);
   background: var(--accent);
   color: #fff;
+}
+
+.button.icon-utility {
+  width: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0;
+}
+
+.button.icon-utility img {
+  width: 21px;
+  height: 21px;
 }
 
 .button.ghost:hover {
@@ -935,15 +962,17 @@ h1 {
     width: 100%;
   }
 
-  .site-search,
-  .auth-actions {
+  .header-tools {
     width: 100%;
-    max-width: none;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .site-search {
+    flex: 1 1 auto;
     flex-basis: auto;
     min-width: 0;
+    max-width: none;
     grid-template-columns: minmax(0, 1fr) 40px;
   }
 
@@ -951,9 +980,12 @@ h1 {
     min-height: 38px;
   }
 
+  .auth-actions {
+    flex: 0 0 auto;
+  }
+
   .auth-actions .button {
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 0 0 auto;
   }
 
   .nav {
@@ -1028,29 +1060,33 @@ h1 {
   }
 
   .site-search {
-    grid-template-columns: minmax(0, 1fr) 38px;
+    grid-template-columns: minmax(0, 1fr) 36px;
   }
 
   .site-search input {
-    min-height: 36px;
-    padding: 0 10px;
+    min-height: 34px;
+    padding: 0 8px;
     font-size: 14px;
   }
 
-  .site-search button {
-    font-size: 19px;
+  .site-search button img {
+    width: 17px;
+    height: 17px;
   }
 
   .auth-actions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
+    gap: 5px;
   }
 
-  .button.utility {
+  .button.icon-utility {
+    width: 34px;
+    min-width: 34px;
     min-height: 34px;
-    padding: 0 8px;
-    font-size: 12px;
+  }
+
+  .button.icon-utility img {
+    width: 19px;
+    height: 19px;
   }
 
   .episode-tile,
