@@ -1,6 +1,8 @@
 const panelImage = (season, number) =>
   `assets/img/drive/season-${season}/s${season}-${String(number).padStart(2, "0")}.png`;
 
+const season2DriveImage = (filename) => `assets/img/drive/season-2/${filename}`;
+
 const bdCrewPanels = [
   {
     beat: "오프닝",
@@ -69,31 +71,40 @@ const bdCrewPanels = [
   }
 ];
 
+const bravoCampCover = season2DriveImage("BRAVOCAMP-WEBTOON-작품페이지.png");
+
 const bravoCampPanels = [
   {
-    beat: "시즌 시작",
-    caption: "부라보캠프 단톡방이 새 시즌의 톤을 연다.",
-    dialogue: "부라보캠프: 시즌 2는 더 가볍게 갑니다."
+    title: "공개연재 시즌 2 - EP001-2 - 부라보캠프 전체 캐릭터 그리드",
+    beat: "전체 캐릭터 그리드",
+    caption: "부라보캠프 시즌 2의 전체 캐릭터 로스터를 한눈에 보여주는 소개 회차.",
+    dialogue: "부라보캠프: 전체 멤버부터 정리하고 갑니다.",
+    sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png",
+    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png")
   },
   {
-    beat: "리액션",
-    caption: "짧은 리액션과 캠핑장 농담이 빠르게 오간다.",
-    dialogue: "부라보캠프: 일단 웃고, 그다음 정리하죠."
+    title: "공개연재 시즌 2 - EP001-3 - 부라보캠프 자기소개 타임",
+    beat: "자기소개 타임",
+    caption: "부라보tv가 캠핑장 멤버들을 한 명씩 소개하며 시즌 2의 단톡방 톤을 연다.",
+    dialogue: "부라보tv: 멤버로 부라보캠프 웹툰, 이제 시작합니다!",
+    sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
+    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png")
   },
   {
-    beat: "현장감",
-    caption: "캠핑장 분위기가 단톡방 캡처처럼 이어진다.",
-    dialogue: "부라보캠프: 이 컷은 저장해야 합니다."
+    title: "공개연재 시즌 2 - EP002 - 워킹데드",
+    beat: "워킹데드",
+    caption: "캠핑장의 농담이 좀비극 상상으로 번지며 부라보캠프식 코미디 장면을 만든다.",
+    dialogue: "부라보캠프: 부라보캠프 단편 좀비극 - 워킹데드",
+    sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png",
+    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png")
   },
   {
-    beat: "전환",
-    caption: "작은 소동이 다음 컷의 기대감을 만든다.",
-    dialogue: "부라보캠프: 누가 마지막으로 확인했죠?"
-  },
-  {
-    beat: "엔딩",
-    caption: "부라보캠프 시즌 2 첫 공개 흐름이 다음 대화를 예고한다.",
-    dialogue: "부라보캠프: 다음 알림에서 계속됩니다."
+    title: "공개연재 시즌 2 - EP003 - 데쓰노트",
+    beat: "데쓰노트",
+    caption: "수다방 평화 유지를 위해 데쓰노트를 꺼내는 장난스러운 캠핑 단톡방 회차.",
+    dialogue: "부라보캠프: 수다방의 평화는 계속됩니다!",
+    sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png",
+    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png")
   }
 ];
 
@@ -107,12 +118,12 @@ const createSingleImageEpisode = ({
   publishedAt = "2026-07-09"
 }) => {
   const panel = season === 1 ? bdCrewPanels[number - 1] : bravoCampPanels[number - 1];
-  const image = panelImage(season, number);
+  const image = panel.image || panelImage(season, number);
   return {
     id: `2026-07-09-season-${season}-${String(number).padStart(2, "0")}`,
     seriesId,
     number,
-    title: `${titlePrefix} - ${panel.beat}`,
+    title: panel.title || `${titlePrefix} - ${panel.beat}`,
     publishedAt,
     status: "공개",
     thumbnail: image,
@@ -122,7 +133,8 @@ const createSingleImageEpisode = ({
     completionRate: "집계중",
     production: {
       disclosure: "Google Drive 원본 이미지 1장을 1회차로 공개 게시",
-      review: "공개 가능 이미지 확인 및 정적 사이트 연결 완료",
+      review: panel.sourceFilename ? `Drive 파일명 기준 배치: ${panel.sourceFilename}` : "공개 가능 이미지 확인 및 정적 사이트 연결 완료",
+      sourceFilename: panel.sourceFilename,
       panelCount: 1
     },
     sourceFolder,
@@ -132,7 +144,8 @@ const createSingleImageEpisode = ({
         beat: panel.beat,
         shot: "세로 컷",
         caption: panel.caption,
-        dialogue: panel.dialogue
+        dialogue: panel.dialogue,
+        sourceFilename: panel.sourceFilename
       }
     ]
   };
@@ -176,7 +189,7 @@ window.WCAMPER_WEBTOON = {
       title: "부라보캠프 단톡방",
       status: "공개 연재",
       summary: "부라보캠프 멤버들이 캠핑장에서 주고받는 밝은 리액션과 소동을 짧은 컷으로 묶은 시즌 2.",
-      cover: panelImage(2, 5),
+      cover: bravoCampCover,
       tags: ["부라보캠프", "캠핑", "단톡방", "시즌 2"],
       schedule: "시즌 2 공개중",
       ageRating: "전체 이용가",
@@ -186,7 +199,7 @@ window.WCAMPER_WEBTOON = {
         favorites: "52"
       },
       highlights: [
-        "Google Drive 원본 이미지 5장을 각 1회차로 분리 공개",
+        "Google Drive 원본 파일명 기준으로 작품페이지 1장과 공개 회차 4장을 분리 배치",
         "시즌 1과 같은 유니버스 안에서 별도 단톡방 톤으로 전개",
         "짧은 모바일 스크롤에 맞춘 단일 이미지 회차 편성"
       ],
@@ -238,8 +251,8 @@ window.WCAMPER_WEBTOON = {
         {
           title: "부라보캠프 단톡방",
           status: "공개 연재 시즌 2",
-          description: "부라보캠프의 밝은 리액션과 캠핑장 소동을 단일 이미지 회차로 구성한 두 번째 시즌.",
-          meta: "5화 공개"
+          description: "부라보캠프의 캐릭터 소개, 워킹데드, 데쓰노트 에피소드를 Drive 파일명 기준 단일 이미지 회차로 구성한 두 번째 시즌.",
+          meta: "4화 공개"
         },
         {
           title: "봉봉패미리 캠핑",
@@ -306,7 +319,7 @@ window.WCAMPER_WEBTOON = {
   notes: [
     {
       title: "Drive 원본 공개 반영",
-      body: "시즌 1 BD-Crew 단톡방 13장과 시즌 2 부라보캠프 단톡방 5장을 Google Drive에서 내려받은 정적 이미지 기반 18개 회차로 연결했습니다.",
+      body: "시즌 1 BD-Crew 단톡방 13장과 시즌 2 부라보캠프 단톡방 4장을 Google Drive 파일명 기준 정적 이미지 회차로 연결했습니다. 시즌 2 작품페이지 이미지는 작품 표지로 분리 배치했습니다.",
       meta: "2026.07.09 업데이트"
     },
     {
