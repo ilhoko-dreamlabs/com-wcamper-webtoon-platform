@@ -1,6 +1,151 @@
 const panelImage = (season, number) =>
   `assets/img/drive/season-${season}/s${season}-${String(number).padStart(2, "0")}.png`;
 
+const bdCrewPanels = [
+  {
+    beat: "오프닝",
+    caption: "새로운 차량 검사와 즐거운 만남으로 BD-Crew 단톡방 시즌이 열린다.",
+    dialogue: "BD-Crew: 오늘도 출발 전 점검부터."
+  },
+  {
+    beat: "아침 회의",
+    caption: "웹툰 팀의 행복한 아침 회의가 캠핑 일정과 맞물린다.",
+    dialogue: "봉달캠퍼: 회의도 캠핑처럼 역할 분담이 먼저죠."
+  },
+  {
+    beat: "제작 모임",
+    caption: "웹툰 제작 모임과 함께한 하루가 크루의 기록으로 남는다.",
+    dialogue: "BD-Crew: 오늘 장면은 바로 업로드 갑시다."
+  },
+  {
+    beat: "합동 캠핑",
+    caption: "첫 합동 캠핑 대모험에서 각자의 장비와 농담이 한 자리에 모인다.",
+    dialogue: "부라보: 이 정도면 대모험 맞습니다."
+  },
+  {
+    beat: "먹거리",
+    caption: "캠핑 이야기, 모임, 음식들이 단톡방의 속도를 올린다.",
+    dialogue: "BD-Crew: 사진보다 먼저 젓가락이 나갔는데요?"
+  },
+  {
+    beat: "아침 인사",
+    caption: "따뜻한 아침 인사가 밤새 이어진 대화를 정리한다.",
+    dialogue: "봉달캠퍼: 좋은 아침입니다. 커피부터 갑시다."
+  },
+  {
+    beat: "꿈꾸는 크루",
+    caption: "함께 꿈꾸는 캠핑 프로그래머들이 다음 장면을 상상한다.",
+    dialogue: "BD-Crew: 캠핑도 개발도 결국 배포가 중요하죠."
+  },
+  {
+    beat: "우정",
+    caption: "축구와 우정, 일상 웹툰의 가벼운 리듬이 들어온다.",
+    dialogue: "BD-Crew: 오늘의 MVP는 공보다 텐트팩입니다."
+  },
+  {
+    beat: "금요일",
+    caption: "금요일의 웹툰 이야기가 다음 업로드 기대감을 만든다.",
+    dialogue: "봉달캠퍼: 금요일엔 한 컷이라도 올려야죠."
+  },
+  {
+    beat: "따뜻한 하루",
+    caption: "캠핑에서의 따뜻한 하루가 시즌의 정서를 잡는다.",
+    dialogue: "BD-Crew: 장비보다 오래 남는 건 이 분위기네요."
+  },
+  {
+    beat: "인터뷰",
+    caption: "BD-Crew Weekly 독도인별 인터뷰가 캐릭터의 목소리를 더한다.",
+    dialogue: "독도인별: 기록은 결국 사람 표정을 남기는 일이에요."
+  },
+  {
+    beat: "일상",
+    caption: "캠핑과 함께한 BD-Crew 일상이 시즌의 중심으로 이어진다.",
+    dialogue: "BD-Crew: 별일 없는 날이 제일 웹툰 같을 때가 있죠."
+  },
+  {
+    beat: "주의 환기",
+    caption: "공무원 사칭 사기 경고가 단톡방의 현실감을 남기며 회차를 닫는다.",
+    dialogue: "봉달캠퍼: 좋은 정보도 같이 공유해야 크루죠."
+  }
+];
+
+const bravoCampPanels = [
+  {
+    beat: "시즌 시작",
+    caption: "부라보캠프 단톡방이 새 시즌의 톤을 연다.",
+    dialogue: "부라보캠프: 시즌 2는 더 가볍게 갑니다."
+  },
+  {
+    beat: "리액션",
+    caption: "짧은 리액션과 캠핑장 농담이 빠르게 오간다.",
+    dialogue: "부라보캠프: 일단 웃고, 그다음 정리하죠."
+  },
+  {
+    beat: "현장감",
+    caption: "캠핑장 분위기가 단톡방 캡처처럼 이어진다.",
+    dialogue: "부라보캠프: 이 컷은 저장해야 합니다."
+  },
+  {
+    beat: "전환",
+    caption: "작은 소동이 다음 컷의 기대감을 만든다.",
+    dialogue: "부라보캠프: 누가 마지막으로 확인했죠?"
+  },
+  {
+    beat: "엔딩",
+    caption: "부라보캠프 시즌 2 첫 공개 흐름이 다음 대화를 예고한다.",
+    dialogue: "부라보캠프: 다음 알림에서 계속됩니다."
+  }
+];
+
+const createSingleImageEpisode = ({
+  seriesId,
+  season,
+  number,
+  titlePrefix,
+  sourceFolder,
+  likes,
+  publishedAt = "2026-07-09"
+}) => {
+  const panel = season === 1 ? bdCrewPanels[number - 1] : bravoCampPanels[number - 1];
+  const image = panelImage(season, number);
+  return {
+    id: `2026-07-09-season-${season}-${String(number).padStart(2, "0")}`,
+    seriesId,
+    number,
+    title: `${titlePrefix} - ${panel.beat}`,
+    publishedAt,
+    status: "공개",
+    thumbnail: image,
+    summary: panel.caption,
+    readTime: "1분",
+    likes: String(likes),
+    completionRate: "집계중",
+    production: {
+      disclosure: "Google Drive 원본 이미지 1장을 1회차로 공개 게시",
+      review: "공개 가능 이미지 확인 및 정적 사이트 연결 완료",
+      panelCount: 1
+    },
+    sourceFolder,
+    panels: [
+      {
+        image,
+        beat: panel.beat,
+        shot: "세로 컷",
+        caption: panel.caption,
+        dialogue: panel.dialogue
+      }
+    ]
+  };
+};
+
+const bdCrewEpisodeIds = bdCrewPanels.map((_, index) =>
+  `2026-07-09-season-1-${String(index + 1).padStart(2, "0")}`
+);
+
+const bravoCampEpisodeIds = bravoCampPanels.map((_, index) =>
+  `2026-07-09-season-2-${String(index + 1).padStart(2, "0")}`
+);
+
 window.WCAMPER_WEBTOON = {
   series: [
     {
@@ -19,11 +164,11 @@ window.WCAMPER_WEBTOON = {
         favorites: "146"
       },
       highlights: [
-        "Google Drive 원본 이미지 13컷으로 구성한 실제 공개 회차",
-        "캠핑, 차량 점검, 아침 회의, 웹툰 제작 모임을 단톡방 에피소드로 연결",
+        "Google Drive 원본 이미지 13장을 각 1회차로 분리 공개",
+        "캠핑, 차량 점검, 아침 회의, 웹툰 제작 모임을 짧은 단독 회차로 연결",
         "봉달캠퍼 유니버스 코믹스 작가 프로필 기준으로 공개 연재 편성"
       ],
-      episodes: ["2026-07-09-bd-crew-chat-open"]
+      episodes: bdCrewEpisodeIds
     },
     {
       id: "bravo-camp-chat-season-2",
@@ -41,11 +186,11 @@ window.WCAMPER_WEBTOON = {
         favorites: "52"
       },
       highlights: [
-        "Google Drive 원본 이미지 5컷 공개",
+        "Google Drive 원본 이미지 5장을 각 1회차로 분리 공개",
         "시즌 1과 같은 유니버스 안에서 별도 단톡방 톤으로 전개",
-        "짧은 모바일 스크롤에 맞춘 공개 파일럿"
+        "짧은 모바일 스크롤에 맞춘 단일 이미지 회차 편성"
       ],
-      episodes: ["2026-07-09-bravo-camp-chat-open"]
+      episodes: bravoCampEpisodeIds
     },
     {
       id: "bongbong-family-camping",
@@ -87,14 +232,14 @@ window.WCAMPER_WEBTOON = {
         {
           title: "BD-Crew 단톡방",
           status: "공개 연재 시즌 1",
-          description: "BD-Crew의 캠핑과 제작 모임, 차량 점검, 아침 인사를 단톡방식 컷 흐름으로 묶은 메인 시즌.",
-          meta: "13컷 공개"
+          description: "BD-Crew의 캠핑과 제작 모임, 차량 점검, 아침 인사를 이미지별 단독 회차로 공개한 메인 시즌.",
+          meta: "13화 공개"
         },
         {
           title: "부라보캠프 단톡방",
           status: "공개 연재 시즌 2",
-          description: "부라보캠프의 밝은 리액션과 캠핑장 소동을 짧은 모바일 회차로 구성한 두 번째 시즌.",
-          meta: "5컷 공개"
+          description: "부라보캠프의 밝은 리액션과 캠핑장 소동을 단일 이미지 회차로 구성한 두 번째 시즌.",
+          meta: "5화 공개"
         },
         {
           title: "봉봉패미리 캠핑",
@@ -128,174 +273,22 @@ window.WCAMPER_WEBTOON = {
     }
   ],
   episodes: [
-    {
-      id: "2026-07-09-bd-crew-chat-open",
+    ...bdCrewPanels.map((_, index) => createSingleImageEpisode({
       seriesId: "bd-crew-chat-season-1",
-      number: 1,
-      title: "공개연재 시즌 1 - BD-Crew 단톡방",
-      publishedAt: "2026-07-09",
-      status: "공개",
-      thumbnail: panelImage(1, 1),
-      summary: "차량 점검으로 시작해 웹툰 제작 모임, 첫 합동 캠핑, 아침 인사, 축구와 우정, 사기 경고까지 이어지는 BD-Crew 공개 회차.",
-      readTime: "8분",
-      likes: "86",
-      completionRate: "집계중",
-      production: {
-        disclosure: "Google Drive 원본 컷 기반 공개 게시",
-        review: "공개 가능 이미지 확인 및 정적 사이트 연결 완료",
-        panelCount: 13
-      },
+      season: 1,
+      number: index + 1,
+      titlePrefix: "공개연재 시즌 1 - BD-Crew 단톡방",
       sourceFolder: "https://drive.google.com/drive/u/1/folders/1GOzAIjrGRVsMAeaF5eam25zVKZ-Ba2ar",
-      panels: [
-        {
-          image: panelImage(1, 1),
-          beat: "오프닝",
-          shot: "세로 컷",
-          caption: "새로운 차량 검사와 즐거운 만남으로 BD-Crew 단톡방 시즌이 열린다.",
-          dialogue: "BD-Crew: 오늘도 출발 전 점검부터."
-        },
-        {
-          image: panelImage(1, 2),
-          beat: "아침 회의",
-          shot: "세로 컷",
-          caption: "웹툰 팀의 행복한 아침 회의가 캠핑 일정과 맞물린다.",
-          dialogue: "봉달캠퍼: 회의도 캠핑처럼 역할 분담이 먼저죠."
-        },
-        {
-          image: panelImage(1, 3),
-          beat: "제작 모임",
-          shot: "세로 컷",
-          caption: "웹툰 제작 모임과 함께한 하루가 크루의 기록으로 남는다.",
-          dialogue: "BD-Crew: 오늘 장면은 바로 업로드 갑시다."
-        },
-        {
-          image: panelImage(1, 4),
-          beat: "합동 캠핑",
-          shot: "세로 컷",
-          caption: "첫 합동 캠핑 대모험에서 각자의 장비와 농담이 한 자리에 모인다.",
-          dialogue: "부라보: 이 정도면 대모험 맞습니다."
-        },
-        {
-          image: panelImage(1, 5),
-          beat: "먹거리",
-          shot: "세로 컷",
-          caption: "캠핑 이야기, 모임, 음식들이 단톡방의 속도를 올린다.",
-          dialogue: "BD-Crew: 사진보다 먼저 젓가락이 나갔는데요?"
-        },
-        {
-          image: panelImage(1, 6),
-          beat: "아침 인사",
-          shot: "세로 컷",
-          caption: "따뜻한 아침 인사가 밤새 이어진 대화를 정리한다.",
-          dialogue: "봉달캠퍼: 좋은 아침입니다. 커피부터 갑시다."
-        },
-        {
-          image: panelImage(1, 7),
-          beat: "꿈꾸는 크루",
-          shot: "세로 컷",
-          caption: "함께 꿈꾸는 캠핑 프로그래머들이 다음 장면을 상상한다.",
-          dialogue: "BD-Crew: 캠핑도 개발도 결국 배포가 중요하죠."
-        },
-        {
-          image: panelImage(1, 8),
-          beat: "우정",
-          shot: "세로 컷",
-          caption: "축구와 우정, 일상 웹툰의 가벼운 리듬이 들어온다.",
-          dialogue: "BD-Crew: 오늘의 MVP는 공보다 텐트팩입니다."
-        },
-        {
-          image: panelImage(1, 9),
-          beat: "금요일",
-          shot: "세로 컷",
-          caption: "금요일의 웹툰 이야기가 다음 업로드 기대감을 만든다.",
-          dialogue: "봉달캠퍼: 금요일엔 한 컷이라도 올려야죠."
-        },
-        {
-          image: panelImage(1, 10),
-          beat: "따뜻한 하루",
-          shot: "세로 컷",
-          caption: "캠핑에서의 따뜻한 하루가 시즌의 정서를 잡는다.",
-          dialogue: "BD-Crew: 장비보다 오래 남는 건 이 분위기네요."
-        },
-        {
-          image: panelImage(1, 11),
-          beat: "인터뷰",
-          shot: "세로 컷",
-          caption: "BD-Crew Weekly 독도인별 인터뷰가 캐릭터의 목소리를 더한다.",
-          dialogue: "독도인별: 기록은 결국 사람 표정을 남기는 일이에요."
-        },
-        {
-          image: panelImage(1, 12),
-          beat: "일상",
-          shot: "세로 컷",
-          caption: "캠핑과 함께한 BD-Crew 일상이 시즌의 중심으로 이어진다.",
-          dialogue: "BD-Crew: 별일 없는 날이 제일 웹툰 같을 때가 있죠."
-        },
-        {
-          image: panelImage(1, 13),
-          beat: "주의 환기",
-          shot: "세로 컷",
-          caption: "공무원 사칭 사기 경고가 단톡방의 현실감을 남기며 회차를 닫는다.",
-          dialogue: "봉달캠퍼: 좋은 정보도 같이 공유해야 크루죠."
-        }
-      ]
-    },
-    {
-      id: "2026-07-09-bravo-camp-chat-open",
+      likes: 86 - index
+    })),
+    ...bravoCampPanels.map((_, index) => createSingleImageEpisode({
       seriesId: "bravo-camp-chat-season-2",
-      number: 1,
-      title: "공개연재 시즌 2 - 부라보캠프 단톡방",
-      publishedAt: "2026-07-09",
-      status: "공개",
-      thumbnail: panelImage(2, 5),
-      summary: "부라보캠프 단톡방의 짧고 빠른 리액션을 5컷 공개 회차로 구성했다.",
-      readTime: "3분",
-      likes: "39",
-      completionRate: "집계중",
-      production: {
-        disclosure: "Google Drive 원본 컷 기반 공개 게시",
-        review: "공개 가능 이미지 확인 및 정적 사이트 연결 완료",
-        panelCount: 5
-      },
+      season: 2,
+      number: index + 1,
+      titlePrefix: "공개연재 시즌 2 - 부라보캠프 단톡방",
       sourceFolder: "https://drive.google.com/drive/u/1/folders/1LkHLlwrBcpuf1qL-RSMz70fS0WlK7Fss",
-      panels: [
-        {
-          image: panelImage(2, 1),
-          beat: "시즌 시작",
-          shot: "세로 컷",
-          caption: "부라보캠프 단톡방이 새 시즌의 톤을 연다.",
-          dialogue: "부라보캠프: 시즌 2는 더 가볍게 갑니다."
-        },
-        {
-          image: panelImage(2, 2),
-          beat: "리액션",
-          shot: "세로 컷",
-          caption: "짧은 리액션과 캠핑장 농담이 빠르게 오간다.",
-          dialogue: "부라보캠프: 일단 웃고, 그다음 정리하죠."
-        },
-        {
-          image: panelImage(2, 3),
-          beat: "현장감",
-          shot: "세로 컷",
-          caption: "캠핑장 분위기가 단톡방 캡처처럼 이어진다.",
-          dialogue: "부라보캠프: 이 컷은 저장해야 합니다."
-        },
-        {
-          image: panelImage(2, 4),
-          beat: "전환",
-          shot: "세로 컷",
-          caption: "작은 소동이 다음 컷의 기대감을 만든다.",
-          dialogue: "부라보캠프: 누가 마지막으로 확인했죠?"
-        },
-        {
-          image: panelImage(2, 5),
-          beat: "엔딩",
-          shot: "세로 컷",
-          caption: "부라보캠프 시즌 2 첫 공개 회차가 다음 대화를 예고한다.",
-          dialogue: "부라보캠프: 다음 알림에서 계속됩니다."
-        }
-      ]
-    },
+      likes: 39 - index
+    })),
     {
       id: "2026-07-23-bongbong-family-planning",
       seriesId: "bongbong-family-camping",
@@ -313,7 +306,7 @@ window.WCAMPER_WEBTOON = {
   notes: [
     {
       title: "Drive 원본 공개 반영",
-      body: "시즌 1 BD-Crew 단톡방 13컷과 시즌 2 부라보캠프 단톡방 5컷을 Google Drive에서 내려받은 정적 이미지 기반으로 연결했습니다.",
+      body: "시즌 1 BD-Crew 단톡방 13장과 시즌 2 부라보캠프 단톡방 5장을 Google Drive에서 내려받은 정적 이미지 기반 18개 회차로 연결했습니다.",
       meta: "2026.07.09 업데이트"
     },
     {
