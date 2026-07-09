@@ -84,8 +84,29 @@ function pagesForCatalog(data) {
   const pages = [
     normalizePage({
       routePath: "/",
-      title: "WCAMPER Webtoon",
-      description: "캠핑 크루의 실제 컷과 단톡방 코미디를 연재하는 WCAMPER 웹툰 플랫폼",
+      title: "AI로 만드는 캠핑 웹툰 플랫폼 | WCAMPER Webtoon",
+      description: "캠핑, 크루, 가족 여행, 브랜드 이야기를 AI 웹툰으로 제작하고 공개 연재하는 WCAMPER 웹툰 플랫폼입니다.",
+      image: DEFAULT_OG_IMAGE,
+      type: "website"
+    }),
+    normalizePage({
+      routePath: "/webtoons",
+      title: "웹툰 | WCAMPER Webtoon",
+      description: "WCAMPER에서 공개 중인 AI 웹툰과 기획작을 최신 회차, 작가, 인기 작품 기준으로 탐색합니다.",
+      image: DEFAULT_OG_IMAGE,
+      type: "website"
+    }),
+    normalizePage({
+      routePath: "/creators",
+      title: "작가모집 | WCAMPER Webtoon",
+      description: "웹툰기획력과 AI 제작 도구를 활용해 캠핑, 여행, 일상 이야기를 웹툰으로 연재할 작가를 모집합니다.",
+      image: "assets/img/authors/bongdal-universe-comics-logo.png",
+      type: "website"
+    }),
+    normalizePage({
+      routePath: "/partnership",
+      title: "협업문의 | WCAMPER Webtoon",
+      description: "브랜드 웹툰, PPL, 캠핑장 협업, 작가 협의형 광고 캠페인 제안을 받습니다.",
       image: DEFAULT_OG_IMAGE,
       type: "website"
     }),
@@ -171,12 +192,10 @@ function bodyHtml() {
         </span>
       </a>
       <nav class="nav" aria-label="주요 메뉴">
-        <a href="/#latest" data-link>최신웹툰</a>
-        <a href="/#rookies" data-link>신인작가</a>
-        <a href="/#popular-webtoons" data-link>인기웹툰</a>
-        <a href="/#popular-authors" data-link>인기작가</a>
-        <a href="/#creator-call" data-link>작가모집</a>
-        <a href="/#ad-contact" data-link>협업문의</a>
+        <a href="/" data-link>홈</a>
+        <a href="/webtoons" data-link>웹툰</a>
+        <a href="/creators" data-link>작가모집</a>
+        <a href="/partnership" data-link>협업문의</a>
       </nav>
     </div>
   </header>
@@ -189,8 +208,9 @@ function bodyHtml() {
       <p>캠핑 크루와 가족의 이야기를 웹툰으로 연재합니다.</p>
     </div>
     <div class="footer-links">
-      <a href="/#creator-call" data-link>작가모집</a>
-      <a href="/#ad-contact" data-link>협업(광고)문의</a>
+      <a href="/webtoons" data-link>웹툰</a>
+      <a href="/creators" data-link>작가모집</a>
+      <a href="/partnership" data-link>협업문의</a>
     </div>
   </footer>
 

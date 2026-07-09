@@ -129,6 +129,7 @@ textarea {
 }
 
 .hero,
+.page-hero,
 .profile-hero,
 .work-hero,
 .section,
@@ -148,6 +149,40 @@ textarea {
   grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1fr);
   gap: 34px;
   align-items: center;
+}
+
+.page-hero {
+  padding: 54px 0 28px;
+}
+
+.page-hero.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.page-hero p:not(.eyebrow),
+.info-panel {
+  max-width: 720px;
+  color: #344039;
+  font-size: 18px;
+}
+
+.info-panel {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+  min-height: 220px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.info-panel strong {
+  font-size: 24px;
+  line-height: 1.2;
 }
 
 .hero-cover img,
@@ -285,7 +320,10 @@ h1 {
 
 .episode-grid,
 .webtoon-grid,
-.author-grid {
+.author-grid,
+.feature-grid,
+.process-grid,
+.offer-list {
   display: grid;
   gap: 14px;
 }
@@ -302,6 +340,18 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.feature-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.process-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.offer-list {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .episode-list {
   display: grid;
   gap: 12px;
@@ -310,6 +360,9 @@ h1 {
 .episode-tile,
 .webtoon-card,
 .author-tile,
+.feature-card,
+.process-step,
+.offer-list article,
 .score-card,
 .feedback-form,
 .contact-card,
@@ -317,6 +370,44 @@ h1 {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
+}
+
+.feature-card,
+.process-step,
+.offer-list article {
+  padding: 18px;
+}
+
+.feature-card span,
+.process-step span,
+.offer-list span {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.feature-card h3,
+.process-step strong,
+.offer-list strong {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.feature-card p {
+  margin: 0;
+  color: #46524a;
+}
+
+.process-step {
+  min-height: 116px;
+}
+
+.offer-list article {
+  min-height: 108px;
 }
 
 .episode-tile {
@@ -718,11 +809,15 @@ h1 {
   }
 
   .hero,
+  .page-hero.split,
   .profile-hero,
   .work-hero,
   .episode-grid,
   .webtoon-grid,
   .author-grid,
+  .feature-grid,
+  .process-grid,
+  .offer-list,
   .feedback-layout,
   .feedback-samples,
   .contact-band,
