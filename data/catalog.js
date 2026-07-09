@@ -72,7 +72,11 @@ const bdCrewPanels = [
 ];
 
 const bravoCampCover = season2DriveImage("BRAVOCAMP-WEBTOON-작품페이지.png");
+const bdCrewEpisodeThumbnail = (number) =>
+  `assets/img/thumbnails/bd-crew-episode-${String(number).padStart(2, "0")}-thumbnail.webp`;
 const bravoCampThumbnail = "assets/img/thumbnails/bravo-camp-thumbnail.webp";
+const bravoCampEpisodeThumbnail = (number) =>
+  `assets/img/thumbnails/bravo-camp-episode-${String(number).padStart(2, "0")}-thumbnail.webp`;
 
 const bravoCampPanels = [
   {
@@ -82,6 +86,7 @@ const bravoCampPanels = [
     dialogue: "부라보캠프: 전체 멤버부터 정리하고 자기소개까지 갑니다.",
     sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png / BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
     image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png"),
+    thumbnail: bravoCampEpisodeThumbnail(1),
     panels: [
       {
         beat: "전체 캐릭터 그리드",
@@ -105,7 +110,8 @@ const bravoCampPanels = [
     caption: "캠핑장의 농담이 좀비극 상상으로 번지며 부라보캠프식 코미디 장면을 만든다.",
     dialogue: "부라보캠프: 부라보캠프 단편 좀비극 - 워킹데드",
     sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png",
-    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png")
+    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png"),
+    thumbnail: bravoCampEpisodeThumbnail(2)
   },
   {
     title: "공개연재 시즌 2 - EP003 - 데쓰노트",
@@ -113,7 +119,8 @@ const bravoCampPanels = [
     caption: "수다방 평화 유지를 위해 데쓰노트를 꺼내는 장난스러운 캠핑 단톡방 회차.",
     dialogue: "부라보캠프: 수다방의 평화는 계속됩니다!",
     sourceFilename: "BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png",
-    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png")
+    image: season2DriveImage("BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png"),
+    thumbnail: bravoCampEpisodeThumbnail(3)
   }
 ];
 
@@ -137,7 +144,7 @@ const createSingleImageEpisode = ({
     title: panel.title || `${titlePrefix} - ${panel.beat}`,
     publishedAt,
     status: "공개",
-    thumbnail: image,
+    thumbnail: panel.thumbnail || (season === 1 ? bdCrewEpisodeThumbnail(number) : image),
     summary: panel.caption,
     readTime: "1분",
     likes: String(likes),
@@ -310,7 +317,7 @@ window.WCAMPER_WEBTOON = {
       season: 2,
       number: index + 1,
       titlePrefix: "공개연재 시즌 2 - 부라보캠프 단톡방",
-      sourceFolder: "https://drive.google.com/drive/u/1/folders/1LkHLlwrBcpuf1qL-RSMz70fS0WlK7Fss",
+      sourceFolder: "https://drive.google.com/drive/u/1/folders/1ZJJXx_JAFD-CQPNzvKEbtakCzScTnopo",
       likes: 39 - index
     })),
     {
