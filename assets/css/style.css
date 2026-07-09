@@ -90,7 +90,7 @@ textarea {
 .header-top {
   min-height: 58px;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .header-inner {
@@ -136,11 +136,11 @@ textarea {
 }
 
 .site-search {
-  flex: 1 1 420px;
-  max-width: 520px;
+  flex: 0 1 360px;
+  max-width: 360px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 42px;
-  min-width: 220px;
+  min-width: 180px;
   border: 1px solid #d7ded5;
   border-radius: 8px;
   background: #fff;
@@ -174,6 +174,7 @@ textarea {
   align-items: center;
   gap: 8px;
   flex: 0 0 auto;
+  min-width: 0;
 }
 
 .nav {
@@ -357,6 +358,7 @@ h1 {
   border-color: #d7ded5;
   background: #fff;
   font-size: 13px;
+  white-space: nowrap;
 }
 
 .button.primary-utility {
@@ -912,15 +914,25 @@ h1 {
 }
 
 @media (max-width: 840px) {
-  .header-top,
-  .header-inner {
+  .header-top {
     align-items: flex-start;
     flex-direction: column;
     padding: 10px 0;
+    gap: 10px;
+  }
+
+  .header-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0 0 10px;
   }
 
   .header-inner {
     min-height: 0;
+  }
+
+  .brand {
+    width: 100%;
   }
 
   .site-search,
@@ -929,8 +941,19 @@ h1 {
     max-width: none;
   }
 
+  .site-search {
+    flex-basis: auto;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) 40px;
+  }
+
+  .site-search input {
+    min-height: 38px;
+  }
+
   .auth-actions .button {
     flex: 1 1 0;
+    min-width: 0;
   }
 
   .nav {
@@ -995,6 +1018,41 @@ h1 {
 }
 
 @media (max-width: 520px) {
+  .header-top {
+    width: min(var(--container), calc(100% - 20px));
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .site-search {
+    grid-template-columns: minmax(0, 1fr) 38px;
+  }
+
+  .site-search input {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 14px;
+  }
+
+  .site-search button {
+    font-size: 19px;
+  }
+
+  .auth-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .button.utility {
+    min-height: 34px;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
   .episode-tile,
   .author-tile {
     grid-template-columns: 1fr;
