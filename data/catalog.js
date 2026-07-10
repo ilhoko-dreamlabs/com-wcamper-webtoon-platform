@@ -357,6 +357,7 @@ window.WCAMPER_WEBTOON = {
       service: "wcamper-webtoon",
       loginUrl: "https://auth.wcamper.com/login",
       signupUrl: "https://auth.wcamper.com/signup",
+      meUrl: "/api/me",
       sessionUrl: "https://auth.wcamper.com/api/auth/session",
       description: "피드백은 auth.wcamper.com 통합 계정으로 로그인한 회원만 작성할 수 있으며, 작성자 신뢰도, 반복 참여, 신고 이력을 스코어링에 반영합니다."
     },
