@@ -3,6 +3,7 @@ const path = require("path");
 const vm = require("vm");
 
 const ROOT = path.resolve(__dirname, "..");
+const VERCEL_OUTPUT_ROOT = path.join(ROOT, "public");
 const SITE_ORIGIN = "https://webtoon.wcamper.com";
 const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
 const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
@@ -267,24 +268,36 @@ ${bodyHtml()}
 `;
 }
 
-function outputPathForRoute(routePath) {
-  if (routePath === "/") return path.join(ROOT, "index.html");
-  if (routePath === "/404") return path.join(ROOT, "404.html");
-  return path.join(ROOT, routePath, "index.html");
+function outputPathForRoute(root, routePath) {
+  if (routePath === "/") return path.join(root, "index.html");
+  if (routePath === "/404") return path.join(root, "404.html");
+  return path.join(root, routePath, "index.html");
 }
 
-function writePage(page) {
-  const outputPath = outputPathForRoute(page.routePath);
+function writePage(root, page) {
+  const outputPath = outputPathForRoute(root, page.routePath);
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, htmlForPage(page));
   return path.relative(ROOT, outputPath);
 }
 
+function prepareVercelOutput() {
+  fs.rmSync(VERCEL_OUTPUT_ROOT, { recursive: true, force: true });
+  fs.mkdirSync(VERCEL_OUTPUT_ROOT, { recursive: true });
+  fs.cpSync(path.join(ROOT, "assets"), path.join(VERCEL_OUTPUT_ROOT, "assets"), { recursive: true });
+  fs.cpSync(path.join(ROOT, "data"), path.join(VERCEL_OUTPUT_ROOT, "data"), { recursive: true });
+}
+
 function main() {
   const data = loadCatalog();
   const pages = pagesForCatalog(data);
-  const written = pages.map(writePage);
-  console.log(`Generated ${written.length} static pages`);
+  const rootPages = pages.map((page) => writePage(ROOT, page));
+
+  prepareVercelOutput();
+  const vercelPages = pages.map((page) => writePage(VERCEL_OUTPUT_ROOT, page));
+
+  console.log(`Generated ${rootPages.length} static pages`);
+  console.log(`Generated ${vercelPages.length} Vercel static pages in public/`);
 }
 
 main();
