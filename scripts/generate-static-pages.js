@@ -7,7 +7,7 @@ const VERCEL_OUTPUT_ROOT = path.join(ROOT, "public");
 const SITE_ORIGIN = "https://webtoon.wcamper.com";
 const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
 const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
-const ASSET_VERSION = "20260710-creator-training";
+const ASSET_VERSION = "20260710-admin-settings";
 
 function loadCatalog() {
   const catalogPath = path.join(ROOT, "data", "catalog.js");
@@ -132,6 +132,13 @@ function pagesForCatalog(data) {
       title: "작가페이지 | WCAMPER Webtoon",
       description: "작가의 작품 관리, 회차 제작, 독자 피드백, 광고 협의 현황을 확인하는 작가페이지 설계 화면입니다.",
       image: "assets/img/authors/bongdal-universe-comics-logo.png",
+      type: "website"
+    }),
+    normalizePage({
+      routePath: "/admin",
+      title: "사이트관리자 | WCAMPER Webtoon",
+      description: "작가신청, 피드백 검수, 사이트 설정을 관리하는 운영자 전용 콘솔입니다.",
+      image: DEFAULT_OG_IMAGE,
       type: "website"
     }),
     normalizePage({

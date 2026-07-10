@@ -110,6 +110,12 @@ FeedbackReport
 | `POST` | `/api/author-applications` | 필수 | 작가신청 제출 |
 | `GET` | `/api/author-applications/me` | 필수 | 내 작가신청 상태 조회 |
 | `POST` | `/api/admin/author-applications/:id/approve` | 운영자 | 작가 승인 및 `Author` 활성화 |
+| `GET` | `/api/admin/author-applications` | 운영자 | 작가신청 목록 조회 |
+| `GET` | `/api/admin/author-applications/:id` | 운영자 | 작가신청 상세 조회 |
+| `POST` | `/api/admin/author-applications/:id/reject` | 운영자 | 작가신청 반려 |
+| `GET` | `/api/admin/site-settings` | 운영자 | 사이트관리자 설정 조회 |
+| `PATCH` | `/api/admin/site-settings/:key` | 운영자 | 사이트관리자 설정 수정 |
+| `GET` | `/api/site-settings/public` | 선택 | 공개 페이지용 허용 설정 조회 |
 
 ### 6. 운영 환경변수
 
@@ -121,6 +127,8 @@ FeedbackReport
 | `WEBTOON_ADMIN_API_TOKEN` | 작가신청 승인 API Bearer 토큰 |
 
 auth 운영 설정은 세션 쿠키가 `webtoon.wcamper.com` API 요청에도 전달되도록 `.wcamper.com` 범위로 발급되어야 한다. 쿠키가 `auth.wcamper.com` 전용이면 브라우저의 auth 세션 확인은 가능하지만, webtoon 서버 API가 쿠키를 전달받지 못해 저장 요청을 인증할 수 없다.
+
+관리자 설정과 운영 콘솔은 `docs/SITE_ADMIN_SETTINGS_DESIGN.md`를 기준으로 확장한다. `WEBTOON_ADMIN_API_TOKEN`은 과도기 승인 API 보호용이며, 운영자 UI에는 노출하지 않는다. 최종 관리자 판정은 auth 세션 기반 관리자 role 확인과 웹툰 API의 서버 측 재검증으로 전환한다.
 
 ### 7. 검증 기준
 

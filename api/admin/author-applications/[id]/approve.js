@@ -1,4 +1,6 @@
 const crypto = require("node:crypto");
+const { assertAdmin } = require("../../../_lib/admin-auth");
+const { writeAdminAuditLog } = require("../../../_lib/admin-audit");
 const { query, transaction } = require("../../../_lib/db");
 const { handleError, methodNotAllowed, sendJson } = require("../../../_lib/http");
 
@@ -9,7 +11,7 @@ module.exports = async function handler(request, response) {
   }
 
   try {
-    assertAdminToken(request);
+    const admin = await assertAdmin(request);
 
     const applicationId = request.query?.id;
     const applicationResult = await query(
@@ -47,22 +49,18 @@ module.exports = async function handler(request, response) {
       return authorResult.rows[0];
     });
 
+    await writeAdminAuditLog({
+      admin,
+      action: "author_application.approve",
+      resourceType: "author_application",
+      resourceId: application.id,
+      beforeValue: { status: "SUBMITTED" },
+      afterValue: { status: "APPROVED", authorId: author.id },
+      requestId: request.headers["x-request-id"] || null
+    });
+
     sendJson(response, 200, { author });
   } catch (error) {
     handleError(response, error);
   }
 };
-
-function assertAdminToken(request) {
-  const expected = process.env.WEBTOON_ADMIN_API_TOKEN;
-  const authorization = request.headers.authorization || "";
-  const token = authorization.startsWith("Bearer ") ? authorization.slice("Bearer ".length) : "";
-
-  if (!expected || token !== expected) {
-    throw Object.assign(new Error("Admin token required"), {
-      statusCode: 401,
-      code: "ADMIN_AUTH_REQUIRED",
-      publicMessage: "운영자 인증이 필요합니다."
-    });
-  }
-}

@@ -41,6 +41,7 @@
 - `docs/DESIGN.md`: 제품 구성, 통합인증, 피드백, 방문/조회 데이터, 스코어링 설계
 - `docs/AUTH_FEEDBACK_AUTHOR_PLAN.md`: 통합로그인 기반 피드백/작가신청 설계 및 실행 계획
 - `docs/NAVIGATION_PAGE_DESIGN.md`: 내비게이션, 마이페이지, 작가페이지 설계
+- `docs/SITE_ADMIN_SETTINGS_DESIGN.md`: 사이트관리자 설정, 관리자 권한, 운영 콘솔 설계
 - `data/catalog.js`: 작품/회차 카탈로그 데이터
 - `assets/`: CSS, JS, 이미지 자산
 - `webtoon/characters/`: 캐릭터 기준 자산과 프롬프트

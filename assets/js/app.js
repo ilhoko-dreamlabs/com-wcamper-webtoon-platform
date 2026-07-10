@@ -12,6 +12,18 @@
     profileComplete: false,
     user: null
   };
+  const publicSettings = {
+    checked: false,
+    values: {
+      "creatorApplications.enabled": true,
+      "feedback.enabled": true,
+      "feedback.moderationMode": "post",
+      "creatorTraining.visible": true,
+      siteNotice: null,
+      maintenanceBanner: null,
+      "partnership.enabled": true
+    }
+  };
 
   const pathForAuthor = (author) => `/@${author.id}`;
   const pathForSeries = (series) => {
@@ -198,6 +210,16 @@
       };
     }
 
+    if (route.name === "admin") {
+      return {
+        title: "사이트관리자 | WCAMPER Webtoon",
+        description: "작가신청, 피드백 검수, 사이트 설정을 관리하는 운영자 전용 콘솔입니다.",
+        image: defaultOgImage,
+        path: "/admin",
+        type: "website"
+      };
+    }
+
     return {
       title: "AI로 만드는 캠핑 웹툰 플랫폼 | WCAMPER Webtoon",
       description: "캠핑, 크루, 가족 여행, 브랜드 이야기를 AI 웹툰으로 제작하고 공개 연재하는 WCAMPER 웹툰 플랫폼입니다.",
@@ -238,6 +260,10 @@
 
   function link(href, label, className = "button ghost") {
     return `<a class="${className}" href="${href}" data-link>${label}</a>`;
+  }
+
+  function settingValue(key) {
+    return publicSettings.values[key];
   }
 
   const trainingPrinciples = [
@@ -310,6 +336,19 @@
     return payload;
   }
 
+  async function refreshPublicSettings() {
+    try {
+      const payload = await apiJson("/api/site-settings/public");
+      Object.values(payload.settings || {}).forEach((setting) => {
+        publicSettings.values[setting.key] = setting.value;
+      });
+    } catch {
+      publicSettings.values = { ...publicSettings.values };
+    } finally {
+      publicSettings.checked = true;
+    }
+  }
+
   function renderEpisodeNav(series, episodes, episode, label) {
     const currentIndex = episodes.findIndex((item) => item.id === episode.id);
     const previousEpisode = currentIndex > 0 ? episodes[currentIndex - 1] : null;
@@ -342,6 +381,11 @@
     const returnTo = currentReturnTo();
     const loginUrl = buildLoginUrl(returnTo);
     const signupUrl = buildSignupUrl(returnTo);
+    const feedbackOpen = settingValue("feedback.enabled") && settingValue("feedback.moderationMode") !== "closed";
+    const canWriteFeedback = authState.authenticated && authState.profileComplete && feedbackOpen;
+    const feedbackAuthMessage = feedbackOpen
+      ? base.authProvider.description
+      : "현재 운영자 설정으로 피드백 작성이 일시 중지되었습니다.";
 
     return `
       <section class="feedback-panel" aria-label="${escapeHtml(target.title)} 피드백">
@@ -366,14 +410,14 @@
             </label>
             <label class="feedback-text">
               <span>의견</span>
-              <textarea rows="4" placeholder="${escapeHtml(target.label)}에 대한 의견을 남겨주세요" ${authState.authenticated && authState.profileComplete ? "" : "disabled"}></textarea>
+              <textarea rows="4" placeholder="${escapeHtml(target.label)}에 대한 의견을 남겨주세요" ${canWriteFeedback ? "" : "disabled"}></textarea>
             </label>
-            ${authState.authenticated && authState.profileComplete
+            ${canWriteFeedback
               ? `<button class="button primary" type="button" data-feedback-submit>피드백 남기기</button>`
               : `<div class="feedback-auth-cta">
-                  <p>${escapeHtml(base.authProvider.description)}</p>
-                  <a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인</a>
-                  <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
+                  <p>${escapeHtml(feedbackAuthMessage)}</p>
+                  ${feedbackOpen ? `<a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인</a>
+                  <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>` : ""}
                 </div>`}
             <p class="form-status" data-feedback-status role="status" aria-live="polite"></p>
           </form>
@@ -647,6 +691,8 @@
     const returnTo = currentReturnTo();
     const loginUrl = buildLoginUrl(returnTo);
     const signupUrl = buildSignupUrl(returnTo);
+    const applicationsOpen = settingValue("creatorApplications.enabled");
+    const trainingVisible = settingValue("creatorTraining.visible");
 
     main.innerHTML = `
       <section class="page-hero split">
@@ -655,8 +701,12 @@
           <h1>웹툰기획력으로 작가되기</h1>
           <p>그림 실력만이 아니라 캐릭터, 에피소드, 세계관, 대사 감각을 가진 창작자를 모집합니다. AI 제작 도구와 함께 캠핑, 여행, 일상 이야기를 연재물로 만듭니다.</p>
           <div class="hero-actions">
-            ${authState.authenticated ? `<a class="button primary" href="#author-application">작가신청 작성</a>` : `<a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인 후 신청</a>`}
-            ${link("/creators/training", "교육자료 보기", "button ghost")}
+            ${applicationsOpen
+              ? authState.authenticated
+                ? `<a class="button primary" href="#author-application">작가신청 작성</a>`
+                : `<a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인 후 신청</a>`
+              : `<span class="button is-disabled" aria-disabled="true">작가모집 일시중지</span>`}
+            ${trainingVisible ? link("/creators/training", "교육자료 보기", "button ghost") : ""}
             <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
             ${link("/webtoons", "연재작 보기", "button ghost")}
           </div>
@@ -714,7 +764,7 @@
             <h3>AI 웹툰 제작 교육자료</h3>
             <p>기획서, 캐릭터 기준선, 컷 분해, instruction sheet, QA 체크리스트까지 작가신청 전에 준비할 항목을 정리했습니다.</p>
             <div class="hero-actions">
-              ${link("/creators/training", "교육자료 보기", "button primary")}
+              ${trainingVisible ? link("/creators/training", "교육자료 보기", "button primary") : `<span class="button is-disabled" aria-disabled="true">교육자료 비공개</span>`}
             </div>
           </article>
           <article class="account-panel">
@@ -753,26 +803,26 @@
           <form class="feedback-form" data-author-application-form>
             <label>
               <span>작가명</span>
-              <input name="displayName" type="text" maxlength="80" placeholder="연재에 사용할 작가명" ${authState.authenticated ? "" : "disabled"}>
+              <input name="displayName" type="text" maxlength="80" placeholder="연재에 사용할 작가명" ${authState.authenticated && applicationsOpen ? "" : "disabled"}>
             </label>
             <label>
               <span>포트폴리오 URL</span>
-              <input name="portfolioUrl" type="url" maxlength="500" placeholder="https://..." ${authState.authenticated ? "" : "disabled"}>
+              <input name="portfolioUrl" type="url" maxlength="500" placeholder="https://..." ${authState.authenticated && applicationsOpen ? "" : "disabled"}>
             </label>
             <label class="feedback-text">
               <span>자기소개</span>
-              <textarea name="introduction" rows="5" maxlength="2000" placeholder="경험, 관심 주제, 연재하고 싶은 이유를 적어주세요." ${authState.authenticated ? "" : "disabled"}></textarea>
+              <textarea name="introduction" rows="5" maxlength="2000" placeholder="경험, 관심 주제, 연재하고 싶은 이유를 적어주세요." ${authState.authenticated && applicationsOpen ? "" : "disabled"}></textarea>
             </label>
             <label class="feedback-text">
               <span>샘플 기획</span>
-              <textarea name="samplePlan" rows="5" maxlength="3000" placeholder="첫 작품 또는 첫 회차 아이디어를 적어주세요." ${authState.authenticated ? "" : "disabled"}></textarea>
+              <textarea name="samplePlan" rows="5" maxlength="3000" placeholder="첫 작품 또는 첫 회차 아이디어를 적어주세요." ${authState.authenticated && applicationsOpen ? "" : "disabled"}></textarea>
             </label>
-            ${authState.authenticated
+            ${authState.authenticated && applicationsOpen
               ? `<button class="button primary" type="submit">작가신청 제출</button>`
               : `<div class="feedback-auth-cta">
-                  <p>작가신청은 auth.wcamper.com 통합회원 로그인 후 제출할 수 있습니다.</p>
-                  <a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인</a>
-                  <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
+                  <p>${applicationsOpen ? "작가신청은 auth.wcamper.com 통합회원 로그인 후 제출할 수 있습니다." : "현재 운영자 설정으로 작가신청 접수가 일시 중지되었습니다."}</p>
+                  ${applicationsOpen ? `<a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인</a>
+                  <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>` : ""}
                 </div>`}
             <p class="form-status" data-author-application-status role="status" aria-live="polite"></p>
           </form>
@@ -791,6 +841,18 @@
   }
 
   function renderCreatorTrainingPage() {
+    if (!settingValue("creatorTraining.visible")) {
+      main.innerHTML = `
+        <section class="empty-state page">
+          <p class="eyebrow">Training</p>
+          <h1>교육자료가 현재 비공개입니다.</h1>
+          <p>운영자 설정에 따라 작가모집 교육자료 노출이 일시 중지되었습니다.</p>
+          ${link("/creators", "작가모집으로", "button primary")}
+        </section>
+      `;
+      return;
+    }
+
     main.innerHTML = `
       <section class="page-hero split training-hero">
         <div>
@@ -1147,6 +1209,160 @@
     `;
   }
 
+  function renderSettingControl(setting) {
+    const key = setting.key;
+    const value = setting.value;
+
+    if (key === "feedback.moderationMode") {
+      return `
+        <select name="value" data-setting-type="string">
+          ${["post", "pre", "closed"].map((option) => `
+            <option value="${option}" ${value === option ? "selected" : ""}>${option}</option>
+          `).join("")}
+        </select>
+      `;
+    }
+
+    if (typeof value === "boolean") {
+      return `
+        <select name="value" data-setting-type="boolean">
+          <option value="true" ${value ? "selected" : ""}>활성</option>
+          <option value="false" ${!value ? "selected" : ""}>비활성</option>
+        </select>
+      `;
+    }
+
+    if (key === "siteNotice" || key === "maintenanceBanner") {
+      return `
+        <textarea name="value" rows="5" data-setting-type="json" placeholder='{"enabled":true,"title":"공지","body":"내용"}'>${escapeHtml(value === null ? "" : JSON.stringify(value, null, 2))}</textarea>
+      `;
+    }
+
+    return `<input name="value" type="email" data-setting-type="nullable-string" value="${escapeHtml(value || "")}" placeholder="ops@example.com">`;
+  }
+
+  function renderSettingsList(settings) {
+    return Object.values(settings).map((setting) => `
+      <form class="admin-setting-row" data-admin-setting-form data-setting-key="${escapeHtml(setting.key)}">
+        <div>
+          <strong>${escapeHtml(setting.label)}</strong>
+          <span>${escapeHtml(setting.key)}</span>
+          <small>${setting.public ? "공개 설정" : "관리자 전용"} · ${escapeHtml(setting.source || "default")}</small>
+        </div>
+        <label>
+          <span class="sr-only">${escapeHtml(setting.label)} 값</span>
+          ${renderSettingControl(setting)}
+        </label>
+        <button class="button ghost" type="submit">저장</button>
+        <p class="form-status" data-admin-setting-status role="status" aria-live="polite"></p>
+      </form>
+    `).join("");
+  }
+
+  function parseSettingFormValue(form) {
+    const field = form.elements.value;
+    const type = field.dataset.settingType;
+    const rawValue = field.value.trim();
+
+    if (type === "boolean") return rawValue === "true";
+    if (type === "json") return rawValue ? JSON.parse(rawValue) : null;
+    if (type === "nullable-string") return rawValue || null;
+    return rawValue;
+  }
+
+  async function loadAdminDashboard() {
+    const status = document.querySelector("[data-admin-status]");
+    const content = document.querySelector("[data-admin-content]");
+    if (!status || !content) return;
+
+    status.textContent = "관리자 권한을 확인하는 중입니다.";
+
+    try {
+      const adminResult = await apiJson("/api/admin/me");
+      const settingsResult = await apiJson("/api/admin/site-settings");
+      status.textContent = `${adminResult.admin.authType === "session" ? "통합로그인 role" : "운영 토큰"} 기준으로 관리자 권한이 확인되었습니다.`;
+      content.innerHTML = `
+        <section class="section admin-section">
+          <div class="section-heading">
+            <p class="eyebrow">Site Settings</p>
+            <h2>사이트 설정</h2>
+            <p>공개 페이지가 사용하는 운영 플래그와 관리자 전용 알림 설정입니다.</p>
+          </div>
+          ${settingsResult.warning ? `<p class="admin-warning">DB 설정 저장소가 준비되지 않아 기본값으로 표시합니다. 저장하려면 site_settings 테이블이 필요합니다.</p>` : ""}
+          <div class="admin-settings-list">
+            ${renderSettingsList(settingsResult.settings)}
+          </div>
+        </section>
+      `;
+    } catch (error) {
+      const returnTo = currentReturnTo();
+      status.textContent = error.message;
+      content.innerHTML = `
+        <section class="section">
+          <div class="account-layout">
+            <article class="account-panel">
+              <h3>관리자 접근 필요</h3>
+              <p>이 화면은 사이트관리자 권한이 확인된 계정만 사용할 수 있습니다. 서버 API가 최종 권한을 다시 검증합니다.</p>
+              <div class="hero-actions">
+                <a class="button primary" href="${escapeHtml(buildLoginUrl(returnTo))}">통합로그인</a>
+                ${link("/", "홈으로", "button ghost")}
+              </div>
+            </article>
+            <article class="account-panel">
+              <h3>운영 준비 상태</h3>
+              <p>초기 운영은 WEBTOON_ADMIN_API_TOKEN 또는 auth role 기반으로 보호되며, 토큰과 secret 값은 화면에 저장하지 않습니다.</p>
+              <div class="tag-row">
+                <span>서버 검증</span>
+                <span>감사 로그</span>
+                <span>Allowlist 설정</span>
+              </div>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+  }
+
+  function renderAdminPage() {
+    main.innerHTML = `
+      <section class="page-hero split admin-hero">
+        <div>
+          <p class="eyebrow">Site Admin</p>
+          <h1>사이트관리자</h1>
+          <p>작가신청, 피드백 검수, 공개 페이지 운영 플래그를 조정하는 운영자 전용 콘솔입니다. 권한은 서버 API에서 재검증합니다.</p>
+          <div class="hero-actions">
+            ${link("/mypage", "마이페이지", "button ghost")}
+            ${link("/creator-studio", "작가페이지", "button ghost")}
+          </div>
+        </div>
+        <div class="info-panel">
+          <strong>관리자 상태</strong>
+          <p data-admin-status>관리자 권한 확인을 준비하고 있습니다.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="dashboard-grid admin-dashboard-grid">
+          ${[
+            ["작가신청", "신청 목록, 승인, 반려 API를 단계적으로 연결합니다."],
+            ["피드백 검수", "신고/숨김 상태와 사전검수 모드를 관리합니다."],
+            ["사이트 설정", "작가모집, 피드백, 교육자료, 공지 노출을 제어합니다."],
+            ["운영 로그", "관리자 변경 액션을 감사 로그로 남깁니다."]
+          ].map(([title, body]) => `
+            <article class="dashboard-card">
+              <h3>${escapeHtml(title)}</h3>
+              <p>${escapeHtml(body)}</p>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <div data-admin-content></div>
+    `;
+
+    loadAdminDashboard();
+  }
+
   function updateAuthLinks() {
     const memberLink = document.querySelector('[data-auth-label="member"]');
     const creatorLink = document.querySelector('[data-auth-label="creator"]');
@@ -1328,6 +1544,7 @@
     if (cleanPath === "/partnership") return { name: "partnership" };
     if (cleanPath === "/mypage") return { name: "mypage" };
     if (cleanPath === "/creator-studio") return { name: "creatorStudio" };
+    if (cleanPath === "/admin") return { name: "admin" };
     const parts = cleanPath.split("/").filter(Boolean);
     if (parts[0] && parts[0].startsWith("@") && parts.length === 1) {
       return { name: "author", authorId: parts[0].slice(1) };
@@ -1352,6 +1569,7 @@
     if (route.name === "partnership") renderPartnershipPage();
     if (route.name === "mypage") renderMypage();
     if (route.name === "creatorStudio") renderCreatorStudio();
+    if (route.name === "admin") renderAdminPage();
     if (route.name === "author") renderAuthorPage(route.authorId);
     if (route.name === "series") renderSeriesPage(route.authorId, route.seriesId);
     if (route.name === "episode") renderEpisodePage(route.authorId, route.seriesId, route.number);
@@ -1420,6 +1638,32 @@
     }
   });
 
+  document.addEventListener("submit", async (event) => {
+    const form = event.target.closest("form[data-admin-setting-form]");
+    if (!form) return;
+    event.preventDefault();
+
+    const key = form.dataset.settingKey;
+    const status = form.querySelector("[data-admin-setting-status]");
+    const button = form.querySelector('button[type="submit"]');
+
+    status.textContent = "설정을 저장하는 중입니다.";
+    button?.setAttribute("disabled", "disabled");
+
+    try {
+      const value = parseSettingFormValue(form);
+      await apiJson(`/api/admin/site-settings/${encodeURIComponent(key)}`, {
+        method: "PATCH",
+        body: JSON.stringify({ value })
+      });
+      status.textContent = "저장되었습니다.";
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      button?.removeAttribute("disabled");
+    }
+  });
+
   document.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-feedback-submit]");
     if (!button) return;
@@ -1458,5 +1702,5 @@
 
   window.addEventListener("popstate", render);
   render();
-  refreshAuthState().then(render);
+  Promise.all([refreshPublicSettings(), refreshAuthState()]).then(render);
 })();

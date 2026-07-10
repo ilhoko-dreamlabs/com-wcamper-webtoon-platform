@@ -62,3 +62,25 @@ create table if not exists feedback_reports (
 
 create index if not exists feedback_reports_feedback_idx
   on feedback_reports (feedback_id, created_at desc);
+
+create table if not exists site_settings (
+  key text primary key,
+  value jsonb not null,
+  updated_by text not null,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists admin_audit_logs (
+  id text primary key,
+  admin_user_id text,
+  action text not null,
+  resource_type text not null,
+  resource_id text,
+  before_value jsonb,
+  after_value jsonb,
+  request_id text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists admin_audit_logs_created_idx
+  on admin_audit_logs (created_at desc);
