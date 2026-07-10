@@ -197,7 +197,7 @@ async function ensureCreatorSchemaStatements() {
 
     `create table if not exists webtoon_series (
       id text primary key,
-      author_id text not null references authors(id) on delete cascade,
+      author_id text not null,
       title text not null,
       summary text not null,
       genre text not null default '',
@@ -223,7 +223,7 @@ async function ensureCreatorSchemaStatements() {
 
     `create table if not exists webtoon_episodes (
       id text primary key,
-      series_id text not null references webtoon_series(id) on delete cascade,
+      series_id text not null,
       number integer not null check (number > 0),
       title text not null,
       summary text not null default '',
@@ -235,8 +235,7 @@ async function ensureCreatorSchemaStatements() {
       scheduled_at timestamptz,
       published_at timestamptz,
       created_at timestamptz not null default now(),
-      updated_at timestamptz not null default now(),
-      unique (series_id, number)
+      updated_at timestamptz not null default now()
     )`,
     `alter table webtoon_episodes add column if not exists id text`,
     `alter table webtoon_episodes add column if not exists series_id text`,
@@ -561,6 +560,21 @@ async function createCreatorEpisode(authorId, seriesId, body) {
   const id = crypto.randomUUID();
 
   try {
+    const duplicate = await query(
+      `select id
+       from webtoon_episodes
+       where series_id = $1 and number = $2
+       limit 1`,
+      [seriesId, number]
+    );
+    if (duplicate.rows[0]) {
+      throw Object.assign(new Error("Episode number already exists"), {
+        statusCode: 409,
+        code: "EPISODE_NUMBER_EXISTS",
+        publicMessage: "이미 등록된 회차 번호입니다."
+      });
+    }
+
     const result = await query(
       `with inserted as (
          insert into webtoon_episodes (id, series_id, number, title, summary, draft_body, content_url, status)

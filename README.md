@@ -84,7 +84,7 @@ Vercel Functions는 다음 환경변수를 사용합니다.
 | `WEBTOON_AUTHOR_EMAILS` | 아니오 | 추가 승인 작가 이메일 allowlist. 쉼표 또는 공백 구분 |
 | `WEBTOON_INITIAL_CATALOG_OWNER_EMAILS` | 아니오 | 초기 공개 카탈로그 작품을 작가페이지에 연결할 작가 이메일 allowlist. 기본값 `ilho.ko@dreamlabs.co.kr` |
 
-전체 DB 스키마는 자동 마이그레이션하지 않습니다. 운영 DB에는 `db/schema.sql`을 적용하는 것을 기준으로 합니다. 단, 승인 작가 콘솔이 쓰는 `authors`, `feedback`, `webtoon_series`, `webtoon_episodes` 기본 테이블은 작가 API가 `CREATE TABLE IF NOT EXISTS`와 `ALTER TABLE ADD COLUMN IF NOT EXISTS` 방식으로 보강해 초기 운영 저장 흐름이 바로 동작하도록 구성했습니다.
+전체 DB 스키마는 자동 마이그레이션하지 않습니다. 운영 DB에는 `db/schema.sql`을 적용하는 것을 기준으로 합니다. 단, 승인 작가 콘솔이 쓰는 `authors`, `feedback`, `webtoon_series`, `webtoon_episodes` 기본 테이블은 작가 API가 `CREATE TABLE IF NOT EXISTS`와 `ALTER TABLE ADD COLUMN IF NOT EXISTS` 방식으로 보강해 초기 운영 저장 흐름이 바로 동작하도록 구성했습니다. 이 런타임 부트스트랩은 기존 운영 DB의 제약 조건 편차로 작가페이지가 막히지 않도록 컬럼 보강을 우선하며, 외래키/unique 같은 정식 제약은 `db/schema.sql` 기준의 관리형 migration에서 적용합니다.
 
 서버 API가 auth 세션을 검증하려면 브라우저가 `webtoon.wcamper.com`의 `/api/*` 요청에도 `wcamper_session` 쿠키를 전달해야 합니다. 따라서 auth 운영 설정은 세션 쿠키 domain을 `.wcamper.com` 범위로 발급하는 구성이 필요합니다. 이 조건이 충족되지 않으면 프론트의 auth 세션 확인은 성공해도 webtoon API 저장 요청은 `AUTH_REQUIRED`로 실패합니다.
 
