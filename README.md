@@ -41,6 +41,7 @@
 - `docs/DESIGN.md`: 제품 구성, 통합인증, 피드백, 방문/조회 데이터, 스코어링 설계
 - `docs/AUTH_FEEDBACK_AUTHOR_PLAN.md`: 통합로그인 기반 피드백/작가신청 설계 및 실행 계획
 - `docs/NAVIGATION_PAGE_DESIGN.md`: 내비게이션, 마이페이지, 작가페이지 설계
+- `docs/CREATOR_STUDIO_DETAIL_DESIGN.md`: 작가페이지 상세 화면, 작가 권한, 작품/회차/피드백 운영 설계
 - `docs/SITE_ADMIN_SETTINGS_DESIGN.md`: 사이트관리자 설정, 관리자 권한, 운영 콘솔 설계
 - `data/catalog.js`: 작품/회차 카탈로그 데이터
 - `assets/`: CSS, JS, 이미지 자산
@@ -48,7 +49,7 @@
 - `webtoon/world/`: BD크루 세계관, 관계, 말투 기준
 - `webtoon/skills/`: worker 제작 규칙
 - `webtoon/episodes/`: 회차별 worker 작업공간
-- `api/`: Vercel Functions 기반 회원 피드백/작가신청 API
+- `api/`: Vercel Functions 기반 회원 피드백, 작가신청, 작가 콘솔 API
 - `db/schema.sql`: 웹툰 서비스 전용 Postgres 스키마
 
 ## 로컬 실행

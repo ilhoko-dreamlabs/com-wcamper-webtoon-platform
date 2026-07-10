@@ -63,6 +63,44 @@ create table if not exists feedback_reports (
 create index if not exists feedback_reports_feedback_idx
   on feedback_reports (feedback_id, created_at desc);
 
+create table if not exists webtoon_series (
+  id text primary key,
+  author_id text not null references authors(id) on delete cascade,
+  title text not null,
+  summary text not null,
+  genre text not null default '',
+  tags jsonb not null default '[]'::jsonb,
+  cover_url text,
+  status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
+  review_note text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists webtoon_series_author_updated_idx
+  on webtoon_series (author_id, updated_at desc);
+
+create table if not exists webtoon_episodes (
+  id text primary key,
+  series_id text not null references webtoon_series(id) on delete cascade,
+  number integer not null check (number > 0),
+  title text not null,
+  summary text not null default '',
+  draft_body text not null default '',
+  content_url text,
+  status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
+  review_note text,
+  review_requested_at timestamptz,
+  scheduled_at timestamptz,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (series_id, number)
+);
+
+create index if not exists webtoon_episodes_series_number_idx
+  on webtoon_episodes (series_id, number asc);
+
 create table if not exists site_settings (
   key text primary key,
   value jsonb not null,

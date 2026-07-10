@@ -576,6 +576,141 @@ h1 {
   resize: vertical;
 }
 
+.creator-console-section {
+  padding-top: 34px;
+}
+
+.creator-dashboard-grid .dashboard-card {
+  min-height: 108px;
+}
+
+.creator-metric {
+  display: block;
+  margin-top: 8px;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.creator-console-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.creator-console-form {
+  align-content: start;
+}
+
+.creator-work-list {
+  display: grid;
+  gap: 14px;
+}
+
+.creator-work-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.creator-work-head,
+.creator-episode-row,
+.creator-form-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.creator-work-head h3 {
+  margin: 8px 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.creator-work-head p,
+.creator-episode-row p,
+.creator-empty-line {
+  margin: 0;
+  color: #46524a;
+}
+
+.creator-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #eaf1e8;
+  color: #2e5f3f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.creator-inline-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8faf6;
+}
+
+.creator-inline-form label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: #344039;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.creator-inline-form input,
+.creator-inline-form textarea {
+  width: 100%;
+  border: 1px solid #cbd7cb;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.creator-inline-form input {
+  min-height: 40px;
+  padding: 0 10px;
+}
+
+.creator-inline-form textarea {
+  min-height: 96px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.creator-form-wide,
+.creator-form-actions {
+  grid-column: 1 / -1;
+}
+
+.creator-episode-list {
+  display: grid;
+  gap: 10px;
+}
+
+.creator-episode-row {
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.creator-episode-row strong {
+  display: block;
+  margin: 7px 0 5px;
+  font-size: 17px;
+}
+
 .feature-card span,
 .process-step span,
 .offer-list span {
@@ -1204,6 +1339,8 @@ button:disabled {
   .dashboard-grid,
   .account-layout,
   .admin-setting-row,
+  .creator-console-layout,
+  .creator-inline-form,
   .feedback-layout,
   .feedback-samples,
   .training-module-grid,
@@ -1228,6 +1365,13 @@ button:disabled {
   .episode-tile,
   .author-tile {
     grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  .creator-work-head,
+  .creator-episode-row,
+  .creator-form-actions {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .author-avatar.large {
