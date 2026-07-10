@@ -118,7 +118,7 @@ function shouldAttachInitialCatalog(authorContext) {
 }
 
 function tableMissing(error) {
-  return ["42P01", "42703", "DB_NOT_CONFIGURED", "3D000", "ECONNREFUSED", "ENOTFOUND"].includes(error.code);
+  return ["42P01", "42703", "42P10", "DB_NOT_CONFIGURED", "3D000", "ECONNREFUSED", "ENOTFOUND"].includes(error.code);
 }
 
 function creatorStoreNotReady(error) {
@@ -133,71 +133,15 @@ function creatorStoreNotReady(error) {
 
 async function ensureCreatorSchema() {
   if (!schemaReady) {
-    schemaReady = query(`
-      create table if not exists authors (
-        id text primary key,
-        user_id text not null unique,
-        display_name text not null,
-        bio text not null default '',
-        status text not null default 'PENDING' check (status in ('PENDING', 'ACTIVE', 'SUSPENDED', 'REJECTED')),
-        approved_at timestamptz,
-        created_at timestamptz not null default now(),
-        updated_at timestamptz not null default now()
-      );
-
-      create table if not exists feedback (
-        id text primary key,
-        user_id text not null,
-        target_type text not null check (target_type in ('AUTHOR', 'SERIES', 'EPISODE')),
-        target_id text not null,
-        body text not null,
-        status text not null default 'VISIBLE' check (status in ('VISIBLE', 'HIDDEN', 'DELETED', 'REPORTED')),
-        created_at timestamptz not null default now(),
-        updated_at timestamptz not null default now()
-      );
-
-      create index if not exists feedback_target_created_idx
-        on feedback (target_type, target_id, created_at desc);
-
-      create table if not exists webtoon_series (
-        id text primary key,
-        author_id text not null references authors(id) on delete cascade,
-        title text not null,
-        summary text not null,
-        genre text not null default '',
-        tags jsonb not null default '[]'::jsonb,
-        cover_url text,
-        status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
-        review_note text,
-        created_at timestamptz not null default now(),
-        updated_at timestamptz not null default now()
-      );
-
-      create index if not exists webtoon_series_author_updated_idx
-        on webtoon_series (author_id, updated_at desc);
-
-      create table if not exists webtoon_episodes (
-        id text primary key,
-        series_id text not null references webtoon_series(id) on delete cascade,
-        number integer not null check (number > 0),
-        title text not null,
-        summary text not null default '',
-        draft_body text not null default '',
-        content_url text,
-        status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
-        review_note text,
-        review_requested_at timestamptz,
-        scheduled_at timestamptz,
-        published_at timestamptz,
-        created_at timestamptz not null default now(),
-        updated_at timestamptz not null default now(),
-        unique (series_id, number)
-      );
-
-      create index if not exists webtoon_episodes_series_number_idx
-        on webtoon_episodes (series_id, number asc);
-    `).catch((error) => {
+    schemaReady = ensureCreatorSchemaStatements().catch((error) => {
       schemaReady = null;
+      console.error("creator schema bootstrap failed", {
+        code: error.code,
+        routine: error.routine,
+        constraint: error.constraint,
+        table: error.table,
+        column: error.column
+      });
       throw error;
     });
   }
@@ -207,6 +151,112 @@ async function ensureCreatorSchema() {
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
+  }
+}
+
+async function ensureCreatorSchemaStatements() {
+  const statements = [
+    `create table if not exists authors (
+      id text primary key,
+      user_id text not null unique,
+      display_name text not null,
+      bio text not null default '',
+      status text not null default 'PENDING' check (status in ('PENDING', 'ACTIVE', 'SUSPENDED', 'REJECTED')),
+      approved_at timestamptz,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `alter table authors add column if not exists id text`,
+    `alter table authors add column if not exists user_id text`,
+    `alter table authors add column if not exists display_name text not null default 'WCAMPER 작가'`,
+    `alter table authors add column if not exists bio text not null default ''`,
+    `alter table authors add column if not exists status text not null default 'PENDING'`,
+    `alter table authors add column if not exists approved_at timestamptz`,
+    `alter table authors add column if not exists created_at timestamptz not null default now()`,
+    `alter table authors add column if not exists updated_at timestamptz not null default now()`,
+
+    `create table if not exists feedback (
+      id text primary key,
+      user_id text not null,
+      target_type text not null check (target_type in ('AUTHOR', 'SERIES', 'EPISODE')),
+      target_id text not null,
+      body text not null,
+      status text not null default 'VISIBLE' check (status in ('VISIBLE', 'HIDDEN', 'DELETED', 'REPORTED')),
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `alter table feedback add column if not exists id text`,
+    `alter table feedback add column if not exists user_id text`,
+    `alter table feedback add column if not exists target_type text`,
+    `alter table feedback add column if not exists target_id text`,
+    `alter table feedback add column if not exists body text`,
+    `alter table feedback add column if not exists status text not null default 'VISIBLE'`,
+    `alter table feedback add column if not exists created_at timestamptz not null default now()`,
+    `alter table feedback add column if not exists updated_at timestamptz not null default now()`,
+    `create index if not exists feedback_target_created_idx on feedback (target_type, target_id, created_at desc)`,
+
+    `create table if not exists webtoon_series (
+      id text primary key,
+      author_id text not null references authors(id) on delete cascade,
+      title text not null,
+      summary text not null,
+      genre text not null default '',
+      tags jsonb not null default '[]'::jsonb,
+      cover_url text,
+      status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
+      review_note text,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `alter table webtoon_series add column if not exists id text`,
+    `alter table webtoon_series add column if not exists author_id text`,
+    `alter table webtoon_series add column if not exists title text not null default ''`,
+    `alter table webtoon_series add column if not exists summary text not null default ''`,
+    `alter table webtoon_series add column if not exists genre text not null default ''`,
+    `alter table webtoon_series add column if not exists tags jsonb not null default '[]'::jsonb`,
+    `alter table webtoon_series add column if not exists cover_url text`,
+    `alter table webtoon_series add column if not exists status text not null default 'DRAFT'`,
+    `alter table webtoon_series add column if not exists review_note text`,
+    `alter table webtoon_series add column if not exists created_at timestamptz not null default now()`,
+    `alter table webtoon_series add column if not exists updated_at timestamptz not null default now()`,
+    `create index if not exists webtoon_series_author_updated_idx on webtoon_series (author_id, updated_at desc)`,
+
+    `create table if not exists webtoon_episodes (
+      id text primary key,
+      series_id text not null references webtoon_series(id) on delete cascade,
+      number integer not null check (number > 0),
+      title text not null,
+      summary text not null default '',
+      draft_body text not null default '',
+      content_url text,
+      status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
+      review_note text,
+      review_requested_at timestamptz,
+      scheduled_at timestamptz,
+      published_at timestamptz,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now(),
+      unique (series_id, number)
+    )`,
+    `alter table webtoon_episodes add column if not exists id text`,
+    `alter table webtoon_episodes add column if not exists series_id text`,
+    `alter table webtoon_episodes add column if not exists number integer not null default 1`,
+    `alter table webtoon_episodes add column if not exists title text not null default ''`,
+    `alter table webtoon_episodes add column if not exists summary text not null default ''`,
+    `alter table webtoon_episodes add column if not exists draft_body text not null default ''`,
+    `alter table webtoon_episodes add column if not exists content_url text`,
+    `alter table webtoon_episodes add column if not exists status text not null default 'DRAFT'`,
+    `alter table webtoon_episodes add column if not exists review_note text`,
+    `alter table webtoon_episodes add column if not exists review_requested_at timestamptz`,
+    `alter table webtoon_episodes add column if not exists scheduled_at timestamptz`,
+    `alter table webtoon_episodes add column if not exists published_at timestamptz`,
+    `alter table webtoon_episodes add column if not exists created_at timestamptz not null default now()`,
+    `alter table webtoon_episodes add column if not exists updated_at timestamptz not null default now()`,
+    `create index if not exists webtoon_episodes_series_number_idx on webtoon_episodes (series_id, number asc)`
+  ];
+
+  for (const statement of statements) {
+    await query(statement);
   }
 }
 
@@ -220,16 +270,32 @@ async function ensureAuthorRecord(authorContext, tx = query) {
   const displayName = author.displayName || authorContext.user?.displayName || authorContext.user?.name || "WCAMPER 작가";
 
   try {
-    const result = await tx(
-      `insert into authors (id, user_id, display_name, bio, status, approved_at, updated_at)
-       values ($1, $2, $3, '', 'ACTIVE', now(), now())
-       on conflict (user_id)
-       do update set display_name = coalesce(nullif(excluded.display_name, ''), authors.display_name),
-                     status = case when authors.status = 'SUSPENDED' then authors.status else 'ACTIVE' end,
-                     updated_at = now()
-       returning id, user_id as "userId", display_name as "displayName", status, approved_at as "approvedAt", created_at as "createdAt", updated_at as "updatedAt"`,
-      [id, authorContext.user.id, displayName]
+    const existing = await tx(
+      `select id
+       from authors
+       where user_id = $1
+       order by created_at desc nulls last
+       limit 1`,
+      [authorContext.user.id]
     );
+
+    const result = existing.rows[0]
+      ? await tx(
+        `update authors
+         set id = coalesce(id, $2),
+             display_name = coalesce(nullif($3, ''), display_name),
+             status = case when status = 'SUSPENDED' then status else 'ACTIVE' end,
+             updated_at = now()
+         where user_id = $1
+         returning id, user_id as "userId", display_name as "displayName", status, approved_at as "approvedAt", created_at as "createdAt", updated_at as "updatedAt"`,
+        [authorContext.user.id, id, displayName]
+      )
+      : await tx(
+        `insert into authors (id, user_id, display_name, bio, status, approved_at, updated_at)
+         values ($1, $2, $3, '', 'ACTIVE', now(), now())
+         returning id, user_id as "userId", display_name as "displayName", status, approved_at as "approvedAt", created_at as "createdAt", updated_at as "updatedAt"`,
+        [id, authorContext.user.id, displayName]
+      );
 
     const row = result.rows[0];
     if (row.status !== "ACTIVE") {
@@ -253,46 +319,66 @@ async function attachInitialPublishedCatalog(authorId) {
   try {
     await transaction(async (tx) => {
       for (const series of initialPublishedCatalog.series) {
-        await tx(
-          `insert into webtoon_series (id, author_id, title, summary, genre, tags, cover_url, status, updated_at)
-           values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, now())
-           on conflict (id)
-           do update set author_id = excluded.author_id,
-                         title = excluded.title,
-                         summary = excluded.summary,
-                         genre = excluded.genre,
-                         tags = excluded.tags,
-                         cover_url = excluded.cover_url,
-                         status = excluded.status,
-                         updated_at = now()`,
-          [
-            series.id,
-            authorId,
-            series.title,
-            series.summary,
-            series.genre,
-            JSON.stringify(series.tags),
-            series.coverUrl,
-            series.status || "PUBLISHED"
-          ]
-        );
+        const existing = await tx("select id from webtoon_series where id = $1 limit 1", [series.id]);
+        const params = [
+          series.id,
+          authorId,
+          series.title,
+          series.summary,
+          series.genre,
+          JSON.stringify(series.tags),
+          series.coverUrl,
+          series.status || "PUBLISHED"
+        ];
+
+        if (existing.rows[0]) {
+          await tx(
+            `update webtoon_series
+             set author_id = $2,
+                 title = $3,
+                 summary = $4,
+                 genre = $5,
+                 tags = $6::jsonb,
+                 cover_url = $7,
+                 status = $8,
+                 updated_at = now()
+             where id = $1`,
+            params
+          );
+        } else {
+          await tx(
+            `insert into webtoon_series (id, author_id, title, summary, genre, tags, cover_url, status, updated_at)
+             values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, now())`,
+            params
+          );
+        }
       }
 
       for (const [id, seriesId, number, title, summary, contentUrl, status = "PUBLISHED"] of initialPublishedCatalog.episodes) {
-        await tx(
-          `insert into webtoon_episodes (id, series_id, number, title, summary, content_url, status, published_at, updated_at)
-           values ($1, $2, $3, $4, $5, $6, $7, case when $7 = 'PUBLISHED' then '2026-07-09'::timestamptz else null end, now())
-           on conflict (id)
-           do update set series_id = excluded.series_id,
-                         number = excluded.number,
-                         title = excluded.title,
-                         summary = excluded.summary,
-                         content_url = excluded.content_url,
-                         status = excluded.status,
-                         published_at = excluded.published_at,
-                         updated_at = now()`,
-          [id, seriesId, number, title, summary, contentUrl, status]
-        );
+        const existing = await tx("select id from webtoon_episodes where id = $1 limit 1", [id]);
+        const params = [id, seriesId, number, title, summary, contentUrl, status];
+
+        if (existing.rows[0]) {
+          await tx(
+            `update webtoon_episodes
+             set series_id = $2,
+                 number = $3,
+                 title = $4,
+                 summary = $5,
+                 content_url = $6,
+                 status = $7,
+                 published_at = case when $7 = 'PUBLISHED' then '2026-07-09'::timestamptz else null end,
+                 updated_at = now()
+             where id = $1`,
+            params
+          );
+        } else {
+          await tx(
+            `insert into webtoon_episodes (id, series_id, number, title, summary, content_url, status, published_at, updated_at)
+             values ($1, $2, $3, $4, $5, $6, $7, case when $7 = 'PUBLISHED' then '2026-07-09'::timestamptz else null end, now())`,
+            params
+          );
+        }
       }
     });
   } catch (error) {
