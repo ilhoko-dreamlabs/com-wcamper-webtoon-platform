@@ -6,9 +6,11 @@
 
 ## 기준 API
 
-마이페이지의 상태 기준은 웹툰 서비스 API인 `GET /api/me`로 통일한다.
+마이페이지의 1차 상태 기준은 웹툰 서비스 API인 `GET /api/me`로 통일한다.
 
-외부 통합인증 세션 URL은 로그인 검증의 내부 의존성으로 유지하고, 화면은 `/api/me`가 정리해서 내려주는 웹툰 서비스 기준 상태만 사용한다.
+외부 통합인증 세션 URL은 기본적으로 로그인 검증의 내부 의존성으로 유지한다. 다만 auth 쿠키가 `auth.wcamper.com` 전용으로 발급되어 웹툰 API가 쿠키를 받지 못하는 운영 상태에서는 `/api/me`가 비로그인으로 내려올 수 있다. 이때 화면은 `authProvider.sessionUrl`을 브라우저에서 한 번 더 확인해 통합로그인 여부를 fallback 판정한다.
+
+fallback으로 로그인만 확인된 경우에는 회원 표시명과 마스킹 이메일만 표시하고, 작가 권한/작가신청 같은 웹툰 서비스 상세 상태는 "확인 대기"로 둔다. 피드백 저장, 작가신청 제출 등 서버 API 권한은 여전히 웹툰 API가 auth 세션을 검증해야 하므로 쿠키 domain `.wcamper.com` 운영 설정이 최종 해결 기준이다.
 
 사용 필드:
 
@@ -46,6 +48,7 @@
 | 로그인 + 프로필 완료 | 프로필 완료 | 웹툰 보러가기 |
 | 작가신청 있음 | 신청 상태 표시 | 작가모집 보기 |
 | 승인 작가 있음 | 작가 승인됨 | 작가페이지 |
+| auth fallback 로그인 | 로그인됨 + 서비스 상태 확인 대기 | 웹툰 보러가기 또는 프로필 완료하기 |
 
 ## 개인정보 원칙
 
@@ -56,7 +59,8 @@
 ## 구현 범위
 
 - `authState`에 `/api/me` 응답의 `author`, `authorApplication`, `error`를 보관한다.
-- `refreshAuthState()`는 `authConfig.meUrl || "/api/me"`를 호출한다.
+- `refreshAuthState()`는 `authConfig.meUrl || "/api/me"`를 먼저 호출한다.
+- `/api/me`가 비로그인이거나 실패하면 `authConfig.sessionUrl`을 fallback으로 호출해 통합로그인 UI를 회복한다.
 - 마이페이지 렌더링은 `checked`, `authenticated`, `profileComplete`, `author`, `authorApplication` 기준으로 분기한다.
 - 기존 정적 페이지 생성 구조는 유지하고, 빌드 후 `mypage/index.html`과 `public/mypage/index.html`을 재생성한다.
 

@@ -49,15 +49,48 @@
     return labels[String(status || "").toUpperCase()] || fallback;
   }
 
-  async function loadState() {
-    if (loading) return loading;
-    loading = fetch(authConfig.meUrl || "/api/me", {
+  async function fetchJson(url) {
+    const response = await fetch(url, {
       credentials: "include",
       headers: { Accept: "application/json" }
-    })
-      .then(async (response) => {
-        if (!response.ok) throw new Error("회원 상태를 확인하지 못했습니다.");
-        const payload = await response.json();
+    });
+
+    if (!response.ok) return null;
+    return response.json();
+  }
+
+  async function loadAuthSessionFallback() {
+    if (!authConfig.sessionUrl) return null;
+
+    const session = await fetchJson(authConfig.sessionUrl).catch(() => null);
+    if (!session?.authenticated) return null;
+
+    return {
+      checked: true,
+      authenticated: true,
+      profileComplete: Boolean(session.profileComplete),
+      user: session.user || null,
+      author: null,
+      authorApplication: null,
+      serviceStatusLimited: true,
+      error: null
+    };
+  }
+
+  async function loadState() {
+    if (loading) return loading;
+    loading = fetchJson(authConfig.meUrl || "/api/me")
+      .then(async (payload) => {
+        if (!payload) throw new Error("회원 상태를 확인하지 못했습니다.");
+
+        if (!payload.authenticated) {
+          const fallbackState = await loadAuthSessionFallback();
+          if (fallbackState) {
+            state = fallbackState;
+            return;
+          }
+        }
+
         state = {
           checked: true,
           authenticated: Boolean(payload.authenticated),
@@ -65,11 +98,13 @@
           user: payload.user || null,
           author: payload.author || null,
           authorApplication: payload.authorApplication || null,
+          serviceStatusLimited: false,
           error: null
         };
       })
-      .catch(() => {
-        state = { checked: true, authenticated: false, error: true };
+      .catch(async () => {
+        const fallbackState = await loadAuthSessionFallback();
+        state = fallbackState || { checked: true, authenticated: false, error: true };
       });
     return loading;
   }
@@ -79,6 +114,9 @@
     if (state.error) return "회원 상태 확인에 실패했습니다. 잠시 후 다시 시도해주세요.";
     if (!state.authenticated) {
       return "통합로그인이 필요합니다. 로그인 완료 시 최근 본 웹툰과 피드백 현황을 개인 데이터로 표시합니다.";
+    }
+    if (state.serviceStatusLimited) {
+      return "통합로그인은 확인되었습니다. 웹툰 서비스 상세 상태는 쿠키 공유 설정 확인 후 표시됩니다.";
     }
     const profileText = state.profileComplete ? "프로필 완료" : "프로필 미완료";
     const authorText = state.author
@@ -131,7 +169,9 @@
       ? `작가 ${statusLabel(author.status, "등록됨")}`
       : application
         ? `작가신청 ${statusLabel(application.status, "접수됨")}`
-        : "일반회원";
+        : state.serviceStatusLimited
+          ? "서비스 상태 확인 대기"
+          : "일반회원";
     const email = maskEmail(state.user?.email);
 
     return `
@@ -139,6 +179,7 @@
         <span class="status-pill success">로그인됨</span>
         <h3>${escapeHtml(userDisplayName(state.user))}</h3>
         <p class="account-email">${email ? escapeHtml(email) : "통합계정 정보 확인됨"}</p>
+        ${state.serviceStatusLimited ? `<p class="account-email">통합로그인 세션은 확인되었고, 웹툰 서비스 상세 상태는 확인 대기 중입니다.</p>` : ""}
         <dl class="account-status-list">
           <div>
             <dt>프로필</dt>
