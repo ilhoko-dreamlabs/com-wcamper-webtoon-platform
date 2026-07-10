@@ -1,0 +1,83 @@
+.account-status-section {
+  padding-top: 20px;
+}
+
+.account-status-card {
+  display: grid;
+  gap: 16px;
+  max-width: 760px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.account-status-card h3,
+.account-status-card p {
+  margin: 0;
+}
+
+.account-status-card h3 {
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.account-email {
+  color: #566258;
+  font-size: 15px;
+}
+
+.account-status-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.account-status-list div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.account-status-list dt,
+.account-status-list dd {
+  margin: 0;
+}
+
+.account-status-list dt {
+  color: #566258;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.status-pill {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.status-pill.success {
+  background: #dcefe2;
+  color: #14532d;
+}
+
+.status-pill.warning {
+  background: #fff1cc;
+  color: #7a4a00;
+}
+
+.status-pill.neutral {
+  background: var(--surface-2);
+  color: #334136;
+}
