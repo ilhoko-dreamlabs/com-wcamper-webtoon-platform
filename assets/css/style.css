@@ -952,6 +952,97 @@ button:disabled {
   margin: 0 0 10px;
 }
 
+.training-hero .info-panel p {
+  margin: 0;
+  color: #46524a;
+  font-size: 16px;
+}
+
+.training-module-grid,
+.workbook-grid,
+.qa-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.training-module-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.workbook-grid,
+.qa-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.training-module,
+.workbook-card,
+.qa-card,
+.training-note {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.training-module,
+.workbook-card,
+.qa-card {
+  padding: 18px;
+}
+
+.training-module h3,
+.workbook-card h3,
+.qa-card h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.training-module dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.training-module dt {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.training-module dd {
+  margin: 4px 0 0;
+  color: #46524a;
+}
+
+.workbook-card ul,
+.qa-card ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: #46524a;
+}
+
+.training-note {
+  margin-top: 14px;
+  padding: 16px 18px;
+}
+
+.training-note strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--accent-dark);
+}
+
+.training-note p {
+  margin: 0;
+  color: #46524a;
+}
+
+.training-source-flow {
+  margin-top: 14px;
+}
+
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -1051,6 +1142,9 @@ button:disabled {
   .account-layout,
   .feedback-layout,
   .feedback-samples,
+  .training-module-grid,
+  .workbook-grid,
+  .qa-grid,
   .contact-band,
   .reader-head,
   .episode-nav {

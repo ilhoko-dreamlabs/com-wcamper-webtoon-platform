@@ -158,6 +158,16 @@
       };
     }
 
+    if (route.name === "creatorTraining") {
+      return {
+        title: "AI 웹툰 제작 교육자료 | WCAMPER Webtoon",
+        description: "작가 지원자를 위한 AI 웹툰 제작 커리큘럼, 워크북, source package, QA 체크리스트 안내입니다.",
+        image: "assets/img/authors/bongdal-universe-comics-logo.png",
+        path: "/creators/training",
+        type: "website"
+      };
+    }
+
     if (route.name === "partnership") {
       return {
         title: "협업문의 | WCAMPER Webtoon",
@@ -229,6 +239,38 @@
   function link(href, label, className = "button ghost") {
     return `<a class="${className}" href="${href}" data-link>${label}</a>`;
   }
+
+  const trainingPrinciples = [
+    ["기준선 우선", "캐릭터 이름이나 프롬프트보다 character sheet, registry, style guide, 금지 변형을 먼저 고정합니다."],
+    ["이야기 분해", "소재를 바로 이미지로 보내지 않고 synopsis, scene, beat, panel, 컷별 instruction으로 나눕니다."],
+    ["생성과 편집 분리", "이미지는 source로 생성하고 말풍선, 대사, 여백, scroll rhythm은 편집 단계에서 완성합니다."],
+    ["실패를 자산화", "얼굴 변화, 복장 누락, 인원수 오류, 방향 오류를 QA와 수정 이력으로 남깁니다."]
+  ];
+
+  const trainingModules = [
+    ["1. 실제 구조", "AI 이미지 생성과 웹툰 production을 구분", "작품 유형 정의서, pipeline map"],
+    ["2. 작품 기획", "작품 기준선과 세계관 범위 작성", "1페이지 기획서, 세계관 기준표"],
+    ["3. 캐릭터 고정", "character sheet와 identity checklist 작성", "주인공/보조 character sheet"],
+    ["4. 컷 분해", "소재를 scene, beat, panel로 분해", "10컷 storyboard"],
+    ["5. 이미지 instruction", "공통 block과 컷별 variable block 분리", "컷별 instruction 10개"],
+    ["6. QA와 수정", "오류 분류와 재생성 범위 판단", "QA checklist, 수정 이력"],
+    ["7. 모바일 편집", "이미지를 세로 scroll 웹툰으로 편집", "완성 episode 1편"],
+    ["8. Source package", "다음 episode 제작용 asset 정리", "재사용 package, teaser"]
+  ];
+
+  const workbookTemplates = [
+    ["작품 기획서", ["작품명", "한 줄 설명", "대상 독자", "장르/tone", "episode당 컷 수", "공개 채널"]],
+    ["Character Brief", ["얼굴", "헤어", "연령", "체형", "복장", "소품", "고정값/허용 변형/금지 변형"]],
+    ["Storyboard", ["컷 번호", "목적", "등장인물", "행동/표정", "shot", "대사", "다음 컷 연결"]],
+    ["Instruction Sheet", ["Common character block", "Panel variable block", "Negative constraints"]]
+  ];
+
+  const qaGroups = [
+    ["캐릭터 동일성", ["얼굴 윤곽, 눈매, 인상 유지", "episode 연도와 연령대 일치", "체형/키 비율 유지", "헤어/복장/소품 누락 여부"]],
+    ["Continuity", ["전 컷과 다음 컷의 위치 관계", "시선 방향", "오른손/왼손, 차량 방향, 텐트 위치 반전 여부", "대사와 행동 충돌 여부"]],
+    ["모바일 가독성", ["컷당 9:16 기준", "1컷 1메시지", "말풍선은 짧고 명확", "한 화면 정보 과밀 방지"]],
+    ["게시 준비", ["모바일 preview 확인", "권리/개인정보 검토", "AI 사용 disclosure 확인"]]
+  ];
 
   function currentReturnTo() {
     return `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
@@ -614,6 +656,7 @@
           <p>그림 실력만이 아니라 캐릭터, 에피소드, 세계관, 대사 감각을 가진 창작자를 모집합니다. AI 제작 도구와 함께 캠핑, 여행, 일상 이야기를 연재물로 만듭니다.</p>
           <div class="hero-actions">
             ${authState.authenticated ? `<a class="button primary" href="#author-application">작가신청 작성</a>` : `<a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인 후 신청</a>`}
+            ${link("/creators/training", "교육자료 보기", "button ghost")}
             <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
             ${link("/webtoons", "연재작 보기", "button ghost")}
           </div>
@@ -658,6 +701,31 @@
           ${["AI로 웹툰 만들기 교재", "작품 기획 템플릿", "캐릭터/세계관 정리 가이드", "회차 구성/콘티 가이드", "공개 연재 페이지 제공"].map((item) => `
             <article><span>지원</span><strong>${escapeHtml(item)}</strong></article>
           `).join("")}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Training</p>
+          <h2>교육자료로 먼저 준비하기</h2>
+        </div>
+        <div class="account-layout">
+          <article class="account-panel">
+            <h3>AI 웹툰 제작 교육자료</h3>
+            <p>기획서, 캐릭터 기준선, 컷 분해, instruction sheet, QA 체크리스트까지 작가신청 전에 준비할 항목을 정리했습니다.</p>
+            <div class="hero-actions">
+              ${link("/creators/training", "교육자료 보기", "button primary")}
+            </div>
+          </article>
+          <article class="account-panel">
+            <h3>자료 추가 방식</h3>
+            <p>새 PDF, 워크북, 예시자료는 커리큘럼, 워크북, Source Package, QA 영역에 승인 상태별로 단계적으로 반영합니다.</p>
+            <div class="tag-row">
+              <span>커리큘럼</span>
+              <span>워크북</span>
+              <span>QA</span>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -718,6 +786,151 @@
             </div>
           </article>
         </div>
+      </section>
+    `;
+  }
+
+  function renderCreatorTrainingPage() {
+    main.innerHTML = `
+      <section class="page-hero split training-hero">
+        <div>
+          <p class="eyebrow">작가모집 교육자료</p>
+          <h1>AI 웹툰 제작 교육자료</h1>
+          <p>AI 이미지 생성이 아니라 연재 가능한 웹툰 제작 흐름을 배웁니다. 기준선, 캐릭터 고정, 컷 분해, QA, source package까지 작가 지원자가 알아야 할 제작 단계를 정리합니다.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#curriculum">커리큘럼 보기</a>
+            <a class="button ghost" href="#workbook">워크북 보기</a>
+            ${link("/creators#author-application", "작가신청하기", "button ghost")}
+          </div>
+        </div>
+        <div class="info-panel">
+          <strong>그림 한 장에서 연재 가능한 한 편으로</strong>
+          <p>작품 기준선, 컷별 instruction, 모바일 검수 기준을 고정해 다음 화까지 이어지는 제작 패키지를 만듭니다.</p>
+          <div class="tag-row">
+            <span>기준선</span>
+            <span>컷 분해</span>
+            <span>QA</span>
+            <span>Source Package</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Principles</p>
+          <h2>교육 핵심 4원칙</h2>
+        </div>
+        <div class="feature-grid">
+          ${trainingPrinciples.map(([title, body], index) => `
+            <article class="feature-card">
+              <span>${String(index + 1).padStart(2, "0")}</span>
+              <h3>${escapeHtml(title)}</h3>
+              <p>${escapeHtml(body)}</p>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="section muted-band" id="curriculum">
+        <div class="section-heading">
+          <p class="eyebrow">Curriculum</p>
+          <h2>8개 모듈 커리큘럼</h2>
+        </div>
+        <div class="training-module-grid">
+          ${trainingModules.map(([module, goal, output]) => `
+            <article class="training-module">
+              <h3>${escapeHtml(module)}</h3>
+              <dl>
+                <div>
+                  <dt>학습 목표</dt>
+                  <dd>${escapeHtml(goal)}</dd>
+                </div>
+                <div>
+                  <dt>결과물</dt>
+                  <dd>${escapeHtml(output)}</dd>
+                </div>
+              </dl>
+            </article>
+          `).join("")}
+        </div>
+        <div class="training-note">
+          <strong>자료 확장 기준</strong>
+          <p>새 강의자료와 예시자료는 각 모듈 하단에 승인 상태를 확인한 뒤 추가합니다. Drive 원본이나 강사용 PPTX는 공개 검토 전까지 직접 배포하지 않습니다.</p>
+        </div>
+      </section>
+
+      <section class="section" id="workbook">
+        <div class="section-heading">
+          <p class="eyebrow">Workbook</p>
+          <h2>수강생 워크북 템플릿</h2>
+        </div>
+        <div class="workbook-grid">
+          ${workbookTemplates.map(([title, fields]) => `
+            <article class="workbook-card">
+              <h3>${escapeHtml(title)}</h3>
+              <ul>
+                ${fields.map((field) => `<li>${escapeHtml(field)}</li>`).join("")}
+              </ul>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="section muted-band">
+        <div class="section-heading">
+          <p class="eyebrow">Source Package</p>
+          <h2>다음 화까지 이어지는 제작 기준</h2>
+        </div>
+        <div class="account-layout">
+          <article class="account-panel">
+            <h3>Source package란?</h3>
+            <p>다음 episode를 만들기 위한 재사용 기준입니다. 캐릭터 기준선, style guide, 금지 변형, 컷별 instruction, QA 이력을 분리해 관리합니다.</p>
+          </article>
+          <article class="account-panel">
+            <h3>초기 공개 범위</h3>
+            <p>현재는 개념과 체크 항목 중심으로 공개합니다. PDF, 캐릭터 시트, source docs 원문은 권리/정책 검토 후 승인된 자료만 단계적으로 추가합니다.</p>
+          </article>
+        </div>
+        <div class="process-grid training-source-flow">
+          ${["기준 문서", "캐릭터 기준선", "컷별 instruction", "QA 이력", "재사용 package"].map((step, index) => `
+            <article class="process-step">
+              <span>${String(index + 1).padStart(2, "0")}</span>
+              <strong>${escapeHtml(step)}</strong>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">QA Checklist</p>
+          <h2>검수 체크리스트</h2>
+        </div>
+        <div class="qa-grid">
+          ${qaGroups.map(([title, items]) => `
+            <article class="qa-card">
+              <h3>${escapeHtml(title)}</h3>
+              <ul>
+                ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+              </ul>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="contact-band training-cta-band">
+        <article class="contact-card">
+          <p class="eyebrow">Creator Call</p>
+          <h2>워크북을 바탕으로 작가신청하기</h2>
+          <p>작품 기획서, 캐릭터 기준, 샘플 회차 아이디어를 정리한 뒤 작가신청으로 이어갑니다.</p>
+          ${link("/creators#author-application", "작가신청하기", "button primary")}
+        </article>
+        <article class="contact-card">
+          <p class="eyebrow">Back</p>
+          <h2>작가모집 안내로 돌아가기</h2>
+          <p>모집 대상, 제공 내용, 참여 흐름을 확인하고 지원 준비 상태를 점검합니다.</p>
+          ${link("/creators", "작가모집 보기", "button ghost")}
+        </article>
       </section>
     `;
   }
@@ -1110,6 +1323,7 @@
     const cleanPath = window.location.pathname.replace(/\/+$/, "") || "/";
     if (cleanPath === "/") return { name: "home" };
     if (cleanPath === "/webtoons") return { name: "webtoons" };
+    if (cleanPath === "/creators/training") return { name: "creatorTraining" };
     if (cleanPath === "/creators") return { name: "creators" };
     if (cleanPath === "/partnership") return { name: "partnership" };
     if (cleanPath === "/mypage") return { name: "mypage" };
@@ -1133,6 +1347,7 @@
 
     if (route.name === "home") renderHome();
     if (route.name === "webtoons") renderWebtoonsPage();
+    if (route.name === "creatorTraining") renderCreatorTrainingPage();
     if (route.name === "creators") renderCreatorsPage();
     if (route.name === "partnership") renderPartnershipPage();
     if (route.name === "mypage") renderMypage();
