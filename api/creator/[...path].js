@@ -1,0 +1,218 @@
+const { assertAuthor } = require("../_lib/author-auth");
+const {
+  ensureAuthorRecord,
+  listCreatorSeries,
+  getCreatorSeries,
+  createCreatorSeries,
+  updateCreatorSeries,
+  listCreatorEpisodes,
+  createCreatorEpisode,
+  updateCreatorEpisode,
+  requestEpisodeReview,
+  creatorSummary
+} = require("../_lib/creator-content");
+const { handleError, methodNotAllowed, readJson, sendJson } = require("../_lib/http");
+
+function pathParts(request) {
+  const path = request.query?.path;
+  if (Array.isArray(path)) return path;
+  if (typeof path === "string") return path.split("/").filter(Boolean);
+  return [];
+}
+
+async function authorRecord(request) {
+  const authorContext = await assertAuthor(request);
+  const author = await ensureAuthorRecord(authorContext);
+  return { authorContext, author };
+}
+
+async function handleMe(request, response) {
+  if (request.method !== "GET") {
+    methodNotAllowed(response, ["GET"]);
+    return;
+  }
+
+  const authorContext = await assertAuthor(request);
+  sendJson(response, 200, {
+    authenticated: true,
+    author: authorContext.author,
+    user: {
+      id: authorContext.user.id,
+      displayName: authorContext.user.displayName || authorContext.user.name || authorContext.user.nickname || null,
+      email: authorContext.user.email || null
+    },
+    roles: authorContext.roles
+  });
+}
+
+async function handleSummary(request, response) {
+  if (request.method !== "GET") {
+    methodNotAllowed(response, ["GET"]);
+    return;
+  }
+
+  const { author } = await authorRecord(request);
+  const summary = await creatorSummary(author.id);
+  sendJson(response, 200, { author, summary });
+}
+
+async function handleSeriesCollection(request, response) {
+  if (request.method === "GET") {
+    const { author } = await authorRecord(request);
+    const series = await listCreatorSeries(author.id);
+    sendJson(response, 200, { author, series });
+    return;
+  }
+
+  if (request.method === "POST") {
+    const authorContext = await assertAuthor(request);
+    const [author, body] = await Promise.all([ensureAuthorRecord(authorContext), readJson(request)]);
+    const series = await createCreatorSeries(author.id, body);
+    sendJson(response, 201, { series });
+    return;
+  }
+
+  methodNotAllowed(response, ["GET", "POST"]);
+}
+
+async function handleSeriesItem(request, response, seriesId) {
+  if (request.method === "GET") {
+    const { author } = await authorRecord(request);
+    const series = await getCreatorSeries(author.id, seriesId);
+
+    if (!series) {
+      sendJson(response, 404, { error: "NOT_FOUND", message: "작품을 찾지 못했습니다." });
+      return;
+    }
+
+    sendJson(response, 200, { series });
+    return;
+  }
+
+  if (request.method === "PATCH") {
+    const authorContext = await assertAuthor(request);
+    const [author, body] = await Promise.all([ensureAuthorRecord(authorContext), readJson(request)]);
+    const series = await updateCreatorSeries(author.id, seriesId, body);
+
+    if (!series) {
+      sendJson(response, 404, { error: "NOT_FOUND", message: "작품을 찾지 못했습니다." });
+      return;
+    }
+
+    sendJson(response, 200, { series });
+    return;
+  }
+
+  methodNotAllowed(response, ["GET", "PATCH"]);
+}
+
+async function handleSeriesEpisodes(request, response, seriesId) {
+  if (request.method === "GET") {
+    const { author } = await authorRecord(request);
+    const episodes = await listCreatorEpisodes(author.id, seriesId);
+
+    if (!episodes) {
+      sendJson(response, 404, { error: "NOT_FOUND", message: "작품을 찾지 못했습니다." });
+      return;
+    }
+
+    sendJson(response, 200, { episodes });
+    return;
+  }
+
+  if (request.method === "POST") {
+    const authorContext = await assertAuthor(request);
+    const [author, body] = await Promise.all([ensureAuthorRecord(authorContext), readJson(request)]);
+    const episode = await createCreatorEpisode(author.id, seriesId, body);
+
+    if (!episode) {
+      sendJson(response, 404, { error: "NOT_FOUND", message: "작품을 찾지 못했습니다." });
+      return;
+    }
+
+    sendJson(response, 201, { episode });
+    return;
+  }
+
+  methodNotAllowed(response, ["GET", "POST"]);
+}
+
+async function handleEpisodeItem(request, response, episodeId) {
+  if (request.method !== "PATCH") {
+    methodNotAllowed(response, ["PATCH"]);
+    return;
+  }
+
+  const authorContext = await assertAuthor(request);
+  const [author, body] = await Promise.all([ensureAuthorRecord(authorContext), readJson(request)]);
+  const episode = await updateCreatorEpisode(author.id, episodeId, body);
+
+  if (!episode) {
+    sendJson(response, 404, { error: "NOT_FOUND", message: "회차를 찾지 못했습니다." });
+    return;
+  }
+
+  sendJson(response, 200, { episode });
+}
+
+async function handleEpisodeReviewRequest(request, response, episodeId) {
+  if (request.method !== "POST") {
+    methodNotAllowed(response, ["POST"]);
+    return;
+  }
+
+  const { author } = await authorRecord(request);
+  const episode = await requestEpisodeReview(author.id, episodeId);
+
+  if (!episode) {
+    sendJson(response, 404, { error: "NOT_FOUND", message: "회차를 찾지 못했습니다." });
+    return;
+  }
+
+  sendJson(response, 200, { episode });
+}
+
+module.exports = async function handler(request, response) {
+  try {
+    const parts = pathParts(request);
+
+    if (parts.length === 1 && parts[0] === "me") {
+      await handleMe(request, response);
+      return;
+    }
+
+    if (parts.length === 1 && parts[0] === "summary") {
+      await handleSummary(request, response);
+      return;
+    }
+
+    if (parts.length === 1 && parts[0] === "series") {
+      await handleSeriesCollection(request, response);
+      return;
+    }
+
+    if (parts.length === 2 && parts[0] === "series") {
+      await handleSeriesItem(request, response, parts[1]);
+      return;
+    }
+
+    if (parts.length === 3 && parts[0] === "series" && parts[2] === "episodes") {
+      await handleSeriesEpisodes(request, response, parts[1]);
+      return;
+    }
+
+    if (parts.length === 2 && parts[0] === "episodes") {
+      await handleEpisodeItem(request, response, parts[1]);
+      return;
+    }
+
+    if (parts.length === 3 && parts[0] === "episodes" && parts[2] === "request-review") {
+      await handleEpisodeReviewRequest(request, response, parts[1]);
+      return;
+    }
+
+    sendJson(response, 404, { error: "NOT_FOUND", message: "작가 API 경로를 찾지 못했습니다." });
+  } catch (error) {
+    handleError(response, error);
+  }
+};
