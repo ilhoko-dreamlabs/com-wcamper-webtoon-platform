@@ -1,5 +1,6 @@
 const { assertAuthor } = require("../_lib/author-auth");
 const {
+  creatorStoreDiagnostics,
   ensureAuthorRecord,
   listCreatorSeries,
   getCreatorSeries,
@@ -50,6 +51,17 @@ async function handleMe(request, response) {
     },
     roles: authorContext.roles
   });
+}
+
+async function handleDiagnostics(request, response) {
+  if (request.method !== "GET") {
+    methodNotAllowed(response, ["GET"]);
+    return;
+  }
+
+  await assertAuthor(request);
+  const diagnostics = await creatorStoreDiagnostics();
+  sendJson(response, diagnostics.ready ? 200 : 503, diagnostics);
 }
 
 async function handleSummary(request, response) {
@@ -185,6 +197,11 @@ module.exports = async function handler(request, response) {
 
     if (parts.length === 1 && parts[0] === "me") {
       await handleMe(request, response);
+      return;
+    }
+
+    if (parts.length === 1 && parts[0] === "diagnostics") {
+      await handleDiagnostics(request, response);
       return;
     }
 

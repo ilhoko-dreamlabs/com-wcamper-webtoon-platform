@@ -118,7 +118,7 @@ function shouldAttachInitialCatalog(authorContext) {
 }
 
 function tableMissing(error) {
-  return ["42P01", "42703", "42P10", "DB_NOT_CONFIGURED", "3D000", "ECONNREFUSED", "ENOTFOUND"].includes(error.code);
+  return ["42P01", "42703", "42P10", "3D000", "ECONNREFUSED", "ENOTFOUND"].includes(error.code);
 }
 
 function creatorStoreNotReady(error) {
@@ -129,6 +129,16 @@ function creatorStoreNotReady(error) {
       ? "작가 콘텐츠 저장소가 아직 준비되지 않았습니다."
       : "작가 콘텐츠 저장소를 사용할 수 없습니다."
   });
+}
+
+function safeDbError(error) {
+  return {
+    code: error.code || "UNKNOWN",
+    table: error.table || null,
+    column: error.column || null,
+    constraint: error.constraint || null,
+    routine: error.routine || null
+  };
 }
 
 async function ensureCreatorSchema() {
@@ -151,6 +161,44 @@ async function ensureCreatorSchema() {
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
+  }
+}
+
+async function creatorStoreDiagnostics() {
+  try {
+    await ensureCreatorSchema();
+    const result = await query(
+      `select
+         to_regclass('public.authors') is not null as authors_ready,
+         to_regclass('public.feedback') is not null as feedback_ready,
+         to_regclass('public.webtoon_series') is not null as series_ready,
+         to_regclass('public.webtoon_episodes') is not null as episodes_ready`
+    );
+
+    return {
+      ready: true,
+      tables: {
+        authors: Boolean(result.rows[0]?.authors_ready),
+        feedback: Boolean(result.rows[0]?.feedback_ready),
+        webtoonSeries: Boolean(result.rows[0]?.series_ready),
+        webtoonEpisodes: Boolean(result.rows[0]?.episodes_ready)
+      }
+    };
+  } catch (error) {
+    if (error.code === "DB_NOT_CONFIGURED") {
+      return {
+        ready: false,
+        error: {
+          code: "DB_NOT_CONFIGURED",
+          message: "웹툰 DB 환경변수가 운영 배포에 설정되지 않았습니다."
+        }
+      };
+    }
+
+    return {
+      ready: false,
+      error: safeDbError(error)
+    };
   }
 }
 
@@ -727,6 +775,7 @@ async function creatorSummary(authorId) {
 }
 
 module.exports = {
+  creatorStoreDiagnostics,
   ensureAuthorRecord,
   listCreatorSeries,
   getCreatorSeries,
