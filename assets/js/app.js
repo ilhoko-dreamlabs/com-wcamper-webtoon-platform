@@ -4,6 +4,7 @@
   const siteOrigin = "https://webtoon.wcamper.com";
   const defaultOgImage = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
   const homeMainImage = "assets/img/home/wcamper-home-main-20260709.png";
+  const homeMainVideo = "assets/video/home/wcamper-home-main-20260710.mp4";
   const authConfig = data.feedback.authProvider;
   const authState = {
     checked: false,
@@ -435,7 +436,9 @@
     main.innerHTML = `
       <section class="hero">
         <div class="hero-cover">
-          <img src="/${homeMainImage}" alt="WCAMPER AI 웹툰 대표 이미지">
+          <video autoplay muted loop playsinline preload="metadata" poster="/${homeMainImage}" aria-label="WCAMPER AI 웹툰 대표 영상">
+            <source src="/${homeMainVideo}" type="video/mp4">
+          </video>
         </div>
         <div class="hero-content">
           <p class="eyebrow">AI Webtoon Platform</p>

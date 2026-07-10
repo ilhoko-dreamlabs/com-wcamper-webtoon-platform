@@ -277,6 +277,7 @@ textarea {
 }
 
 .hero-cover img,
+.hero-cover video,
 .work-hero > img {
   width: 100%;
   aspect-ratio: 4 / 5;
@@ -1061,7 +1062,8 @@ button:disabled {
     padding-top: 24px;
   }
 
-  .hero-cover img {
+  .hero-cover img,
+  .hero-cover video {
     max-height: 430px;
   }
 
