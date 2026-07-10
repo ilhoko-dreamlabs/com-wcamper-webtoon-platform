@@ -19,10 +19,17 @@
 초기 관리자 인증 기준:
 
 - 1차: `WEBTOON_ADMIN_API_TOKEN` Bearer 토큰 기반 서버 API 보호
-- 2차: auth 세션 기반 `siteAdmin` 또는 `webtoonAdmin` role 확인
-- 3차: role별 권한 분리와 감사 로그 저장
+- 2차: auth 세션 기반 관리자 이메일 allowlist 확인
+- 3차: auth 세션 기반 `siteAdmin` 또는 `webtoonAdmin` role 확인
+- 4차: role별 권한 분리와 감사 로그 저장
 
 `WEBTOON_ADMIN_API_TOKEN`은 과도기 운영용으로만 사용하고, 브라우저에 직접 노출하지 않는다.
+
+초기 운영 관리자 계정:
+
+- `ilho.ko@dreamlabs.co.kr`
+
+추가 관리자 계정은 코드 변경 없이 `WEBTOON_ADMIN_EMAILS` 환경변수에 쉼표 또는 공백 구분 이메일로 등록할 수 있다. 이메일 allowlist는 auth 세션에서 검증된 이메일만 사용하며, 클라이언트가 전달한 임의 이메일 값으로 권한을 부여하지 않는다.
 
 ## 관리자 메뉴 구조
 
@@ -164,6 +171,7 @@ create table if not exists admin_audit_logs (
 - 공개 상단 메뉴에는 `/admin` 미노출 유지
 - `api/_lib/admin-auth.js` 공통 관리자 인증 추가
   - `WEBTOON_ADMIN_API_TOKEN` Bearer 토큰
+  - auth 세션의 관리자 이메일 allowlist
   - auth 세션의 `siteAdmin` 또는 `webtoonAdmin` role
 - `api/_lib/site-settings.js` 설정 allowlist, 기본값, 검증 로직 추가
 - `GET /api/admin/me` 관리자 권한 확인 API 추가
@@ -180,7 +188,7 @@ create table if not exists admin_audit_logs (
 보류 항목:
 
 - 운영 DB에 `db/schema.sql` 적용
-- auth 서비스의 관리자 role 부여
+- auth 서비스의 관리자 role 부여. 단, 초기 운영 관리자 `ilho.ko@dreamlabs.co.kr`는 웹툰 API의 서버 측 이메일 allowlist로 관리자 권한을 가진다.
 - 작가신청 목록/상세/반려 화면
 - 피드백 검수 목록과 숨김/복구 API
 - 운영 로그 목록 화면

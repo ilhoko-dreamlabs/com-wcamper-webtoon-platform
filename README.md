@@ -79,10 +79,13 @@ Vercel Functions는 다음 환경변수를 사용합니다.
 | `WEBTOON_PUBLIC_ORIGIN` | 아니오 | 기본값 `https://webtoon.wcamper.com` |
 | `WEBTOON_DATABASE_SSL` | 아니오 | `disable`이면 DB SSL 비활성화 |
 | `WEBTOON_ADMIN_API_TOKEN` | 예, 관리자 승인 API 사용 시 | 작가신청 승인 API Bearer 토큰 |
+| `WEBTOON_ADMIN_EMAILS` | 아니오 | 추가 사이트관리자 이메일 allowlist. 쉼표 또는 공백 구분 |
 
 DB 스키마는 자동 마이그레이션하지 않습니다. 운영 DB에 `db/schema.sql`을 적용한 뒤 API를 배포합니다.
 
 서버 API가 auth 세션을 검증하려면 브라우저가 `webtoon.wcamper.com`의 `/api/*` 요청에도 `wcamper_session` 쿠키를 전달해야 합니다. 따라서 auth 운영 설정은 세션 쿠키 domain을 `.wcamper.com` 범위로 발급하는 구성이 필요합니다. 이 조건이 충족되지 않으면 프론트의 auth 세션 확인은 성공해도 webtoon API 저장 요청은 `AUTH_REQUIRED`로 실패합니다.
+
+초기 사이트관리자 계정은 `ilho.ko@dreamlabs.co.kr`입니다. 추가 계정은 `WEBTOON_ADMIN_EMAILS` 또는 auth role `siteAdmin`/`webtoonAdmin`으로 등록합니다.
 
 ## 1차 MVP 완료 범위
 

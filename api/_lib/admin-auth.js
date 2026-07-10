@@ -1,6 +1,18 @@
 const { verifyAuthSession } = require("./auth");
 
 const ADMIN_ROLES = new Set(["siteAdmin", "webtoonAdmin"]);
+const DEFAULT_ADMIN_EMAILS = ["ilho.ko@dreamlabs.co.kr"];
+
+function normalizeEmail(value) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
+
+function adminEmails() {
+  return new Set([
+    ...DEFAULT_ADMIN_EMAILS,
+    ...(process.env.WEBTOON_ADMIN_EMAILS || "").split(/[,\s]+/)
+  ].map(normalizeEmail).filter(Boolean));
+}
 
 function readBearerToken(request) {
   const authorization = request.headers.authorization || "";
@@ -19,6 +31,15 @@ function rolesFromSession(session) {
   return candidates
     .flatMap((value) => Array.isArray(value) ? value : typeof value === "string" ? value.split(/[,\s]+/) : [])
     .filter(Boolean);
+}
+
+function emailFromSession(session) {
+  return normalizeEmail(
+    session?.user?.email ||
+    session?.email ||
+    session?.claims?.email ||
+    session?.user?.claims?.email
+  );
 }
 
 async function assertAdmin(request) {
@@ -42,13 +63,16 @@ async function assertAdmin(request) {
   }
 
   const roles = rolesFromSession(session);
-  const isAdmin = roles.some((role) => ADMIN_ROLES.has(role));
+  const email = emailFromSession(session);
+  const isRoleAdmin = roles.some((role) => ADMIN_ROLES.has(role));
+  const isEmailAdmin = adminEmails().has(email);
+  const isAdmin = isRoleAdmin || isEmailAdmin;
 
   if (session?.authenticated && session.user?.id && isAdmin) {
     return {
       id: session.user.id,
       authType: "session",
-      roles,
+      roles: isEmailAdmin && !isRoleAdmin ? [...roles, "webtoonAdmin"] : roles,
       user: session.user
     };
   }
@@ -61,5 +85,8 @@ async function assertAdmin(request) {
 }
 
 module.exports = {
-  assertAdmin
+  assertAdmin,
+  adminEmails,
+  emailFromSession,
+  rolesFromSession
 };
