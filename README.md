@@ -82,6 +82,7 @@ Vercel Functions는 다음 환경변수를 사용합니다.
 | `WEBTOON_ADMIN_API_TOKEN` | 예, 관리자 승인 API 사용 시 | 작가신청 승인 API Bearer 토큰 |
 | `WEBTOON_ADMIN_EMAILS` | 아니오 | 추가 사이트관리자 이메일 allowlist. 쉼표 또는 공백 구분 |
 | `WEBTOON_AUTHOR_EMAILS` | 아니오 | 추가 승인 작가 이메일 allowlist. 쉼표 또는 공백 구분 |
+| `WEBTOON_INITIAL_CATALOG_OWNER_EMAILS` | 아니오 | 초기 공개 카탈로그 작품을 작가페이지에 연결할 작가 이메일 allowlist. 기본값 `ilho.ko@dreamlabs.co.kr` |
 
 전체 DB 스키마는 자동 마이그레이션하지 않습니다. 운영 DB에는 `db/schema.sql`을 적용하는 것을 기준으로 합니다. 단, 승인 작가 콘솔이 쓰는 `authors`, `feedback`, `webtoon_series`, `webtoon_episodes` 기본 테이블은 작가 API가 `CREATE TABLE IF NOT EXISTS` 방식으로 보장해 초기 운영 저장 흐름이 바로 동작하도록 구성했습니다.
 
@@ -90,6 +91,8 @@ Vercel Functions는 다음 환경변수를 사용합니다.
 초기 사이트관리자 계정은 `ilho.ko@dreamlabs.co.kr`입니다. 추가 계정은 `WEBTOON_ADMIN_EMAILS` 또는 auth role `siteAdmin`/`webtoonAdmin`으로 등록합니다.
 
 초기 승인 작가 계정은 `ilho.ko@dreamlabs.co.kr`입니다. 해당 계정은 auth 세션에서 검증된 이메일이 일치하면 웹툰 API가 `Author.status=ACTIVE`에 준하는 작가 권한으로 처리합니다. 추가 작가는 `WEBTOON_AUTHOR_EMAILS` 또는 auth role `webtoonAuthor`/`creator`/`author`로 등록합니다.
+
+`ilho.ko@dreamlabs.co.kr` 작가 계정은 현재 공개 배포된 초기 카탈로그 작품과도 연결됩니다. 작가 API는 해당 계정의 인증 세션이 확인되면 `BD-Crew 단톡방`, `부라보캠프 단톡방`, `봉봉패미리 캠핑` 및 공개/기획 회차를 `webtoon_series`, `webtoon_episodes`에 idempotent upsert하고, 작가 콘솔의 내 작품 목록에 표시합니다.
 
 ## 1차 MVP 완료 범위
 
