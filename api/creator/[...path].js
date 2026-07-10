@@ -17,6 +17,13 @@ function pathParts(request) {
   const path = request.query?.path;
   if (Array.isArray(path)) return path;
   if (typeof path === "string") return path.split("/").filter(Boolean);
+
+  const pathname = new URL(request.url || "/", "https://webtoon.wcamper.com").pathname;
+  const prefix = "/api/creator/";
+  if (pathname.startsWith(prefix)) {
+    return pathname.slice(prefix.length).split("/").filter(Boolean);
+  }
+
   return [];
 }
 
