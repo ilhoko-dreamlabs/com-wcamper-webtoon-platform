@@ -4,6 +4,56 @@ const { requiredString, optionalUrl } = require("./validation");
 
 const SERIES_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
 const EPISODE_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
+const DEFAULT_CATALOG_OWNER_EMAILS = ["ilho.ko@dreamlabs.co.kr"];
+
+const initialPublishedCatalog = {
+  series: [
+    {
+      id: "bd-crew-chat-season-1",
+      title: "BD-Crew 단톡방",
+      summary: "BD-Crew의 캠핑, 차량, 웹툰 제작, 일상 대화가 단톡방처럼 이어지는 봉달캠퍼 유니버스 시즌 1.",
+      genre: "캠핑 일상 코미디",
+      tags: ["캠핑", "BD-Crew", "단톡방", "일상 코미디"],
+      coverUrl: "/assets/img/covers/bd-crew-chat-season-1-main.png"
+    },
+    {
+      id: "bravo-camp-chat-season-2",
+      title: "부라보캠프 단톡방",
+      summary: "부라보캠프 멤버들이 캠핑장에서 주고받는 밝은 리액션과 소동을 짧은 컷으로 묶은 시즌 2.",
+      genre: "캠핑 단톡방 코미디",
+      tags: ["부라보캠프", "캠핑", "단톡방", "시즌 2"],
+      coverUrl: "/assets/img/drive/season-2/BRAVOCAMP-WEBTOON-작품페이지.png"
+    },
+    {
+      id: "bongbong-family-camping",
+      title: "봉봉패미리 캠핑",
+      summary: "가족 캠핑의 작은 준비와 현장 리듬을 봉봉패미리 중심으로 풀어낼 예정작.",
+      genre: "가족 캠핑",
+      tags: ["봉봉패미리", "가족 캠핑", "기획중"],
+      coverUrl: "/assets/img/hero-panel-3.svg",
+      status: "DRAFT"
+    }
+  ],
+  episodes: [
+    ["2026-07-09-season-1-01", "bd-crew-chat-season-1", 1, "새로운 차량 검사와 즐거운 만남", "새로운 차량 검사와 즐거운 만남으로 BD-Crew 단톡방 시즌이 열린다.", "/episodes/2026-07-09-season-1-01"],
+    ["2026-07-09-season-1-02", "bd-crew-chat-season-1", 2, "아침 회의", "웹툰 팀의 행복한 아침 회의가 캠핑 일정과 맞물린다.", "/episodes/2026-07-09-season-1-02"],
+    ["2026-07-09-season-1-03", "bd-crew-chat-season-1", 3, "제작 모임", "웹툰 제작 모임과 함께한 하루가 크루의 기록으로 남는다.", "/episodes/2026-07-09-season-1-03"],
+    ["2026-07-09-season-1-04", "bd-crew-chat-season-1", 4, "합동 캠핑", "첫 합동 캠핑 대모험에서 각자의 장비와 농담이 한 자리에 모인다.", "/episodes/2026-07-09-season-1-04"],
+    ["2026-07-09-season-1-05", "bd-crew-chat-season-1", 5, "먹거리", "캠핑 이야기, 모임, 음식들이 단톡방의 속도를 올린다.", "/episodes/2026-07-09-season-1-05"],
+    ["2026-07-09-season-1-06", "bd-crew-chat-season-1", 6, "아침 인사", "따뜻한 아침 인사가 밤새 이어진 대화를 정리한다.", "/episodes/2026-07-09-season-1-06"],
+    ["2026-07-09-season-1-07", "bd-crew-chat-season-1", 7, "꿈꾸는 크루", "함께 꿈꾸는 캠핑 프로그래머들이 다음 장면을 상상한다.", "/episodes/2026-07-09-season-1-07"],
+    ["2026-07-09-season-1-08", "bd-crew-chat-season-1", 8, "우정", "축구와 우정, 일상 웹툰의 가벼운 리듬이 들어온다.", "/episodes/2026-07-09-season-1-08"],
+    ["2026-07-09-season-1-09", "bd-crew-chat-season-1", 9, "금요일", "금요일의 웹툰 이야기가 다음 업로드 기대감을 만든다.", "/episodes/2026-07-09-season-1-09"],
+    ["2026-07-09-season-1-10", "bd-crew-chat-season-1", 10, "따뜻한 하루", "캠핑에서의 따뜻한 하루가 시즌의 정서를 잡는다.", "/episodes/2026-07-09-season-1-10"],
+    ["2026-07-09-season-1-11", "bd-crew-chat-season-1", 11, "인터뷰", "BD-Crew Weekly 독도인별 인터뷰가 캐릭터의 목소리를 더한다.", "/episodes/2026-07-09-season-1-11"],
+    ["2026-07-09-season-1-12", "bd-crew-chat-season-1", 12, "일상", "캠핑과 함께한 BD-Crew 일상이 시즌의 중심으로 이어진다.", "/episodes/2026-07-09-season-1-12"],
+    ["2026-07-09-season-1-13", "bd-crew-chat-season-1", 13, "주의 환기", "공무원 사칭 사기 경고가 단톡방의 현실감을 남기며 회차를 닫는다.", "/episodes/2026-07-09-season-1-13"],
+    ["2026-07-09-season-2-01", "bravo-camp-chat-season-2", 1, "부라보캠프 첫 소개", "부라보캠프 시즌 2의 전체 캐릭터 로스터와 자기소개를 이어서 보여주는 첫 회차.", "/episodes/2026-07-09-season-2-01"],
+    ["2026-07-09-season-2-02", "bravo-camp-chat-season-2", 2, "워킹데드", "캠핑장의 농담이 좀비극 상상으로 번지며 부라보캠프식 코미디 장면을 만든다.", "/episodes/2026-07-09-season-2-02"],
+    ["2026-07-09-season-2-03", "bravo-camp-chat-season-2", 3, "데쓰노트", "수다방 평화 유지를 위해 데쓰노트를 꺼내는 장난스러운 캠핑 단톡방 회차.", "/episodes/2026-07-09-season-2-03"],
+    ["2026-07-23-bongbong-family-planning", "bongbong-family-camping", 1, "기획중 - 봉봉패미리 캠핑", "봉봉패미리 캠핑은 캐릭터와 첫 에피소드 구조를 기획중입니다.", null, "DRAFT"]
+  ]
+};
 
 let schemaReady;
 
@@ -42,6 +92,29 @@ function normalizeTags(value) {
     .map((tag) => String(tag || "").trim())
     .filter(Boolean)
     .slice(0, 12);
+}
+
+function normalizeEmail(value) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
+
+function initialCatalogOwnerEmails() {
+  return new Set([
+    ...DEFAULT_CATALOG_OWNER_EMAILS,
+    ...(process.env.WEBTOON_INITIAL_CATALOG_OWNER_EMAILS || "").split(/[,\s]+/)
+  ].map(normalizeEmail).filter(Boolean));
+}
+
+function emailFromAuthorContext(authorContext) {
+  return normalizeEmail(
+    authorContext?.user?.email ||
+    authorContext?.user?.claims?.email ||
+    authorContext?.claims?.email
+  );
+}
+
+function shouldAttachInitialCatalog(authorContext) {
+  return initialCatalogOwnerEmails().has(emailFromAuthorContext(authorContext));
 }
 
 function tableMissing(error) {
@@ -166,7 +239,62 @@ async function ensureAuthorRecord(authorContext, tx = query) {
         publicMessage: "승인 작가 권한이 없습니다."
       });
     }
+    if (tx === query && shouldAttachInitialCatalog(authorContext)) {
+      await attachInitialPublishedCatalog(row.id);
+    }
     return row;
+  } catch (error) {
+    if (tableMissing(error)) throw creatorStoreNotReady(error);
+    throw error;
+  }
+}
+
+async function attachInitialPublishedCatalog(authorId) {
+  try {
+    await transaction(async (tx) => {
+      for (const series of initialPublishedCatalog.series) {
+        await tx(
+          `insert into webtoon_series (id, author_id, title, summary, genre, tags, cover_url, status, updated_at)
+           values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, now())
+           on conflict (id)
+           do update set author_id = excluded.author_id,
+                         title = excluded.title,
+                         summary = excluded.summary,
+                         genre = excluded.genre,
+                         tags = excluded.tags,
+                         cover_url = excluded.cover_url,
+                         status = excluded.status,
+                         updated_at = now()`,
+          [
+            series.id,
+            authorId,
+            series.title,
+            series.summary,
+            series.genre,
+            JSON.stringify(series.tags),
+            series.coverUrl,
+            series.status || "PUBLISHED"
+          ]
+        );
+      }
+
+      for (const [id, seriesId, number, title, summary, contentUrl, status = "PUBLISHED"] of initialPublishedCatalog.episodes) {
+        await tx(
+          `insert into webtoon_episodes (id, series_id, number, title, summary, content_url, status, published_at, updated_at)
+           values ($1, $2, $3, $4, $5, $6, $7, case when $7 = 'PUBLISHED' then '2026-07-09'::timestamptz else null end, now())
+           on conflict (id)
+           do update set series_id = excluded.series_id,
+                         number = excluded.number,
+                         title = excluded.title,
+                         summary = excluded.summary,
+                         content_url = excluded.content_url,
+                         status = excluded.status,
+                         published_at = excluded.published_at,
+                         updated_at = now()`,
+          [id, seriesId, number, title, summary, contentUrl, status]
+        );
+      }
+    });
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
