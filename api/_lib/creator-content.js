@@ -5,6 +5,8 @@ const { requiredString, optionalUrl } = require("./validation");
 const SERIES_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
 const EPISODE_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
 
+let schemaReady;
+
 function normalizeStatus(value, allowed, fallback = "DRAFT") {
   const status = typeof value === "string" ? value.trim().toUpperCase() : fallback;
   if (!allowed.has(status)) {
@@ -56,7 +58,90 @@ function creatorStoreNotReady(error) {
   });
 }
 
+async function ensureCreatorSchema() {
+  if (!schemaReady) {
+    schemaReady = query(`
+      create table if not exists authors (
+        id text primary key,
+        user_id text not null unique,
+        display_name text not null,
+        bio text not null default '',
+        status text not null default 'PENDING' check (status in ('PENDING', 'ACTIVE', 'SUSPENDED', 'REJECTED')),
+        approved_at timestamptz,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      create table if not exists feedback (
+        id text primary key,
+        user_id text not null,
+        target_type text not null check (target_type in ('AUTHOR', 'SERIES', 'EPISODE')),
+        target_id text not null,
+        body text not null,
+        status text not null default 'VISIBLE' check (status in ('VISIBLE', 'HIDDEN', 'DELETED', 'REPORTED')),
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      create index if not exists feedback_target_created_idx
+        on feedback (target_type, target_id, created_at desc);
+
+      create table if not exists webtoon_series (
+        id text primary key,
+        author_id text not null references authors(id) on delete cascade,
+        title text not null,
+        summary text not null,
+        genre text not null default '',
+        tags jsonb not null default '[]'::jsonb,
+        cover_url text,
+        status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
+        review_note text,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      create index if not exists webtoon_series_author_updated_idx
+        on webtoon_series (author_id, updated_at desc);
+
+      create table if not exists webtoon_episodes (
+        id text primary key,
+        series_id text not null references webtoon_series(id) on delete cascade,
+        number integer not null check (number > 0),
+        title text not null,
+        summary text not null default '',
+        draft_body text not null default '',
+        content_url text,
+        status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
+        review_note text,
+        review_requested_at timestamptz,
+        scheduled_at timestamptz,
+        published_at timestamptz,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now(),
+        unique (series_id, number)
+      );
+
+      create index if not exists webtoon_episodes_series_number_idx
+        on webtoon_episodes (series_id, number asc);
+    `).catch((error) => {
+      schemaReady = null;
+      throw error;
+    });
+  }
+
+  try {
+    await schemaReady;
+  } catch (error) {
+    if (tableMissing(error)) throw creatorStoreNotReady(error);
+    throw error;
+  }
+}
+
 async function ensureAuthorRecord(authorContext, tx = query) {
+  if (tx === query) {
+    await ensureCreatorSchema();
+  }
+
   const author = authorContext.author;
   const id = author.id || crypto.randomUUID();
   const displayName = author.displayName || authorContext.user?.displayName || authorContext.user?.name || "WCAMPER 작가";
