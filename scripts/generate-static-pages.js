@@ -199,7 +199,8 @@ function headHtml(page) {
   <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${escapeHtml(image)}">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/assets/css/style.css?v=${ASSET_VERSION}">`;
+  <link rel="stylesheet" href="/assets/css/style.css?v=${ASSET_VERSION}">
+  <link rel="stylesheet" href="/assets/css/mypage-auth-status.css?v=${ASSET_VERSION}">`;
 }
 
 function bodyHtml() {
@@ -261,6 +262,7 @@ function bodyHtml() {
 
   <script src="/data/catalog.js"></script>
   <script src="/assets/js/app.js?v=${ASSET_VERSION}"></script>
+  <script src="/assets/js/mypage-auth-status.js?v=${ASSET_VERSION}"></script>
 </body>`;
 }
 
