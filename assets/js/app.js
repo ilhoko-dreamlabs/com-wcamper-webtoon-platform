@@ -10,7 +10,9 @@
     checked: false,
     authenticated: false,
     profileComplete: false,
-    user: null
+    user: null,
+    author: null,
+    authorApplication: null
   };
   const publicSettings = {
     checked: false,
@@ -264,6 +266,10 @@
 
   function settingValue(key) {
     return publicSettings.values[key];
+  }
+
+  function isActiveAuthor(author = authState.author) {
+    return String(author?.status || "").toUpperCase() === "ACTIVE";
   }
 
   const trainingPrinciples = [
@@ -1136,14 +1142,79 @@
   }
 
   function renderCreatorStudio() {
+    const loginUrl = buildLoginUrl(currentReturnTo());
+    const author = authState.author;
+
+    if (!authState.checked) {
+      main.innerHTML = `
+        <section class="page-hero split">
+          <div>
+            <p class="eyebrow">Creator Studio</p>
+            <h1>작가페이지</h1>
+            <p>승인 작가 권한을 확인하고 있습니다.</p>
+          </div>
+          <div class="info-panel">
+            <strong>권한 확인</strong>
+            <p>통합로그인 세션과 웹툰 작가 권한을 서버 기준으로 확인합니다.</p>
+          </div>
+        </section>
+      `;
+      return;
+    }
+
+    if (!authState.authenticated) {
+      main.innerHTML = `
+        <section class="page-hero split">
+          <div>
+            <p class="eyebrow">Creator Studio</p>
+            <h1>작가페이지</h1>
+            <p>작가페이지는 통합로그인 후 승인 작가 권한이 확인된 계정만 사용할 수 있습니다.</p>
+            <div class="hero-actions">
+              <a class="button primary" href="${escapeHtml(loginUrl)}">통합로그인</a>
+              ${link("/creators", "작가신청 안내", "button ghost")}
+            </div>
+          </div>
+          <div class="info-panel">
+            <strong>로그인 필요</strong>
+            <p>로그인 후 작가 권한을 다시 확인합니다.</p>
+          </div>
+        </section>
+      `;
+      return;
+    }
+
+    if (!isActiveAuthor(author)) {
+      const applicationStatus = authState.authorApplication?.status
+        ? `현재 작가신청 상태는 ${escapeHtml(authState.authorApplication.status)}입니다.`
+        : "작가신청을 제출하면 운영 검수 후 작가 권한이 부여됩니다.";
+      main.innerHTML = `
+        <section class="page-hero split">
+          <div>
+            <p class="eyebrow">Creator Studio</p>
+            <h1>작가 권한 필요</h1>
+            <p>이 계정은 아직 승인 작가 권한이 없습니다. ${applicationStatus}</p>
+            <div class="hero-actions">
+              ${link("/creators", authState.authorApplication ? "작가신청 상태 보기" : "작가신청 안내", "button primary")}
+              ${link("/mypage", "마이페이지", "button ghost")}
+            </div>
+          </div>
+          <div class="info-panel">
+            <strong>권한 기준</strong>
+            <p>작가페이지는 서버 API에서 승인 작가 상태 또는 승인된 작가 role/email allowlist를 확인한 경우에만 표시합니다.</p>
+          </div>
+        </section>
+      `;
+      return;
+    }
+
     main.innerHTML = `
       <section class="page-hero split">
         <div>
           <p class="eyebrow">Creator Studio</p>
           <h1>작가페이지</h1>
-          <p>일반회원 가입 후 작가신청을 제출하고 운영 승인된 작가가 작품과 회차, 독자 피드백, 제작 진행률, 광고/협업 문의를 확인하는 운영 공간입니다.</p>
+          <p>${escapeHtml(author.displayName || "승인 작가")} 계정의 작가 권한이 확인되었습니다. 작품과 회차, 독자 피드백, 제작 진행률, 광고/협업 문의를 확인하는 운영 공간입니다.</p>
           <div class="hero-actions">
-            ${link("/creators", "작가신청 안내", "button primary")}
+            ${link("/mypage", "마이페이지", "button primary")}
             ${link("/partnership", "협업문의 보기", "button ghost")}
           </div>
         </div>
@@ -1376,16 +1447,25 @@
     }
 
     if (creatorLink) {
-      creatorLink.setAttribute("href", authState.authenticated ? "/creator-studio" : buildLoginUrl(returnTo));
+      const activeAuthor = isActiveAuthor();
+      const href = !authState.authenticated ? buildLoginUrl(returnTo) : activeAuthor ? "/creator-studio" : "/creators";
+      const label = !authState.authenticated
+        ? "통합로그인 후 작가신청"
+        : activeAuthor
+          ? "작가페이지"
+          : authState.authorApplication
+            ? "작가신청 상태"
+            : "작가신청";
+      creatorLink.setAttribute("href", href);
       creatorLink.toggleAttribute("data-link", authState.authenticated);
-      creatorLink.setAttribute("title", authState.authenticated ? "작가페이지" : "통합로그인 후 작가신청");
-      creatorLink.setAttribute("aria-label", authState.authenticated ? "작가페이지" : "통합로그인 후 작가신청");
+      creatorLink.setAttribute("title", label);
+      creatorLink.setAttribute("aria-label", label);
     }
   }
 
   async function refreshAuthState() {
     try {
-      const response = await fetch(authConfig.sessionUrl, {
+      const response = await fetch(authConfig.meUrl || "/api/me", {
         credentials: "include",
         headers: {
           Accept: "application/json"
@@ -1393,15 +1473,41 @@
       });
 
       if (response.ok) {
+        const payload = await response.json();
+        authState.authenticated = Boolean(payload.authenticated);
+        authState.profileComplete = Boolean(payload.profileComplete);
+        authState.user = payload.user || null;
+        authState.author = payload.author || null;
+        authState.authorApplication = payload.authorApplication || null;
+        if (!authState.authenticated) {
+          throw new Error("webtoon auth state unauthenticated");
+        }
+      } else {
+        throw new Error("webtoon auth state unavailable");
+      }
+    } catch {
+      try {
+        const response = await fetch(authConfig.sessionUrl, {
+          credentials: "include",
+          headers: {
+            Accept: "application/json"
+          }
+        });
+
+        if (!response.ok) throw new Error("auth session unavailable");
         const session = await response.json();
         authState.authenticated = Boolean(session.authenticated);
         authState.profileComplete = Boolean(session.profileComplete);
         authState.user = session.user || null;
+        authState.author = null;
+        authState.authorApplication = null;
+      } catch {
+        authState.authenticated = false;
+        authState.profileComplete = false;
+        authState.user = null;
+        authState.author = null;
+        authState.authorApplication = null;
       }
-    } catch {
-      authState.authenticated = false;
-      authState.profileComplete = false;
-      authState.user = null;
     } finally {
       authState.checked = true;
       updateAuthLinks();

@@ -22,6 +22,8 @@ fallback으로 로그인만 확인된 경우에는 회원 표시명과 마스킹
 | `author` | 작가 권한 | 승인된 작가일 때 작가페이지 CTA 표시 |
 | `authorApplication` | 작가신청 상태 | 신청 접수/검토/반려 등 상태 표시 |
 
+초기 운영 승인 작가 `ilho.ko@dreamlabs.co.kr`는 서버 측 작가 이메일 allowlist에 등록한다. 이 계정은 클라이언트 입력값이 아니라 auth 세션에서 검증된 이메일이 일치할 때만 `Author.status=ACTIVE`에 준하는 `author` 응답을 받는다. 추가 작가는 `WEBTOON_AUTHOR_EMAILS` 또는 auth role `webtoonAuthor`/`creator`/`author`로 확장한다.
+
 ## 화면 구조
 
 ```text
@@ -59,6 +61,7 @@ fallback으로 로그인만 확인된 경우에는 회원 표시명과 마스킹
 ## 구현 범위
 
 - `authState`에 `/api/me` 응답의 `author`, `authorApplication`, `error`를 보관한다.
+- `/api/creator/me`는 작가페이지 전용 권한 확인 API로 두고, 서버의 작가 allowlist/role 판정을 공유한다.
 - `refreshAuthState()`는 `authConfig.meUrl || "/api/me"`를 먼저 호출한다.
 - `/api/me`가 비로그인이거나 실패하면 `authConfig.sessionUrl`을 fallback으로 호출해 통합로그인 UI를 회복한다.
 - 마이페이지 렌더링은 `checked`, `authenticated`, `profileComplete`, `author`, `authorApplication` 기준으로 분기한다.

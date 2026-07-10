@@ -126,10 +126,13 @@ FeedbackReport
 | `WEBTOON_PUBLIC_ORIGIN` | auth 세션 확인 시 전달할 웹툰 origin |
 | `WEBTOON_ADMIN_API_TOKEN` | 작가신청 승인 API Bearer 토큰 |
 | `WEBTOON_ADMIN_EMAILS` | 추가 사이트관리자 이메일 allowlist. 쉼표 또는 공백 구분 |
+| `WEBTOON_AUTHOR_EMAILS` | 추가 승인 작가 이메일 allowlist. 쉼표 또는 공백 구분 |
 
 auth 운영 설정은 세션 쿠키가 `webtoon.wcamper.com` API 요청에도 전달되도록 `.wcamper.com` 범위로 발급되어야 한다. 쿠키가 `auth.wcamper.com` 전용이면 브라우저의 auth 세션 확인은 가능하지만, webtoon 서버 API가 쿠키를 전달받지 못해 저장 요청을 인증할 수 없다.
 
 관리자 설정과 운영 콘솔은 `docs/SITE_ADMIN_SETTINGS_DESIGN.md`를 기준으로 확장한다. `WEBTOON_ADMIN_API_TOKEN`은 과도기 승인 API 보호용이며, 운영자 UI에는 노출하지 않는다. 초기 운영 관리자 `ilho.ko@dreamlabs.co.kr`는 웹툰 API의 서버 측 이메일 allowlist로 권한을 가진다. 최종 관리자 판정은 auth 세션 기반 관리자 role 확인과 웹툰 API의 서버 측 재검증으로 전환한다.
+
+초기 승인 작가 `ilho.ko@dreamlabs.co.kr`는 웹툰 API의 서버 측 작가 이메일 allowlist로 권한을 가진다. 클라이언트가 제출한 이메일은 신뢰하지 않고, auth 세션에서 검증된 이메일 또는 `webtoonAuthor`/`creator`/`author` role만 작가 권한으로 인정한다. `/api/me`와 `/api/creator/me`는 이 판정을 공유하며, `/creator-studio`는 `Author.status=ACTIVE`에 준하는 응답이 있을 때만 작가 관리 화면을 표시한다.
 
 ### 7. 검증 기준
 
