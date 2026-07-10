@@ -33,6 +33,14 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 
 추가 작가는 `WEBTOON_AUTHOR_EMAILS` 또는 auth role `webtoonAuthor`/`creator`/`author`로 확장한다. 최종 운영에서는 이메일 allowlist보다 `authors.status=ACTIVE`와 auth role을 우선한다.
 
+초기 공개 카탈로그 소유권:
+
+- `ilho.ko@dreamlabs.co.kr`는 현재 공개 배포된 `봉달캠퍼 유니버스 코믹스` 작품의 운영 작가 계정이다.
+- 작가 API는 이 계정의 인증 세션이 확인되면 정적 카탈로그의 `BD-Crew 단톡방`, `부라보캠프 단톡방`, `봉봉패미리 캠핑`을 DB의 `webtoon_series`에 연결한다.
+- 해당 작품의 공개/기획 회차도 `webtoon_episodes`에 연결해 `/creator-studio`의 내 작품과 회차 목록에서 확인할 수 있게 한다.
+- 이 연결은 idempotent upsert로 수행한다. 운영 DB에 같은 작품 id가 이미 있으면 해당 작가 소유권과 공개 메타데이터를 현재 카탈로그 기준으로 맞춘다.
+- 추가 초기 카탈로그 소유자는 `WEBTOON_INITIAL_CATALOG_OWNER_EMAILS`로 확장할 수 있다.
+
 ## 정보 구조
 
 ```text
