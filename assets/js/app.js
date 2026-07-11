@@ -1379,28 +1379,6 @@
       <section class="section muted-band creator-console-section" id="creator-profile">
         <div class="creator-console-layout">
           ${renderCreatorProfileForm()}
-          <article class="creator-work-card">
-            <div class="creator-work-head">
-              <div>
-                <span class="creator-status">작품목록</span>
-                <h3>등록된 작품</h3>
-                <p>작품을 선택하면 작품페이지에서 세계관, 설정, 원고 진행을 관리합니다.</p>
-              </div>
-              <button class="button primary" type="button" data-creator-open-series-dialog>작품 등록</button>
-            </div>
-            <div class="creator-episode-list">
-              ${creatorState.series.length ? creatorState.series.map((series) => `
-                <article class="creator-episode-row">
-                  <div>
-                    <span class="creator-status">${escapeHtml(creatorStatusLabel(series.status))}</span>
-                    <strong><a href="${creatorSeriesHref(series.id)}" data-link>${escapeHtml(series.title)}</a></strong>
-                    <p>${escapeHtml(series.summary || "작품 소개 없음")}</p>
-                  </div>
-                  <a class="button ghost" href="${creatorSeriesHref(series.id)}" data-link>상세</a>
-                </article>
-              `).join("") : `<p class="creator-empty-line">등록된 작품이 없습니다.</p>`}
-            </div>
-          </article>
         </div>
       </section>
 
