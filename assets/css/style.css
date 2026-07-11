@@ -620,6 +620,112 @@ h1 {
   line-height: 1;
 }
 
+.creator-page-nav {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8faf6;
+}
+
+.creator-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #5a675e;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.creator-breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.creator-breadcrumb li + li::before {
+  content: "/";
+  margin-right: 8px;
+  color: #a3aea5;
+}
+
+.creator-breadcrumb a {
+  color: #3b6e4c;
+}
+
+.creator-breadcrumb li[aria-current="page"] {
+  color: var(--ink);
+}
+
+.creator-mobile-back {
+  display: none;
+  color: #3b6e4c;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.creator-mobile-back::before {
+  content: "< ";
+}
+
+.creator-page-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.creator-page-title h2 {
+  margin: 4px 0 6px;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.creator-page-title p:not(.eyebrow) {
+  max-width: 720px;
+  margin: 0;
+  color: #46524a;
+}
+
+.creator-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.creator-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.creator-subnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid #cbd7cb;
+  border-radius: 8px;
+  background: #fff;
+  color: #344039;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.creator-subnav a:hover,
+.creator-subnav a:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .creator-console-layout {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1460,9 +1566,27 @@ button:disabled {
   .creator-work-head,
   .creator-episode-row,
   .creator-image-row,
+  .creator-page-title,
   .creator-form-actions {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .creator-breadcrumb {
+    display: none;
+  }
+
+  .creator-mobile-back {
+    display: inline-flex;
+    width: fit-content;
+  }
+
+  .creator-page-actions {
+    justify-content: flex-start;
+  }
+
+  .creator-page-title h2 {
+    font-size: 27px;
   }
 
   .creator-row-actions {

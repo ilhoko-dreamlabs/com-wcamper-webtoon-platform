@@ -1,6 +1,7 @@
 const { assertAuthor } = require("./_lib/author-auth");
 const {
   creatorStoreDiagnostics,
+  creatorWorkspace,
   ensureAuthorRecord,
   getCreatorProfile,
   updateCreatorProfile,
@@ -79,6 +80,21 @@ async function handleSummary(request, response) {
   const { author } = await authorRecord(request);
   const summary = await creatorSummary(author.id);
   sendJson(response, 200, { author, summary });
+}
+
+async function handleWorkspace(request, response) {
+  if (request.method !== "GET") {
+    methodNotAllowed(response, ["GET"]);
+    return;
+  }
+
+  const { author } = await authorRecord(request);
+  const url = new URL(request.url || "/", "https://webtoon.wcamper.com");
+  const workspace = await creatorWorkspace(author.id, {
+    seriesId: url.searchParams.get("series") || "",
+    episodeId: url.searchParams.get("episode") || ""
+  });
+  sendJson(response, 200, { author, ...workspace });
 }
 
 async function handleProfile(request, response) {
@@ -294,6 +310,11 @@ module.exports = async function handler(request, response) {
 
     if (parts.length === 1 && parts[0] === "summary") {
       await handleSummary(request, response);
+      return;
+    }
+
+    if (parts.length === 1 && parts[0] === "workspace") {
+      await handleWorkspace(request, response);
       return;
     }
 

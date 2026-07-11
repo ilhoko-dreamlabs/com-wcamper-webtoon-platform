@@ -7,7 +7,7 @@ const VERCEL_OUTPUT_ROOT = path.join(ROOT, "public");
 const SITE_ORIGIN = "https://webtoon.wcamper.com";
 const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
 const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
-const ASSET_VERSION = "20260711-creator-hero";
+const ASSET_VERSION = "20260711-creator-workspace";
 
 function loadCatalog() {
   const catalogPath = path.join(ROOT, "data", "catalog.js");

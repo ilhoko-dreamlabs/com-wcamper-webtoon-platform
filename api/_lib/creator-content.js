@@ -1079,9 +1079,67 @@ async function creatorSummary(authorId) {
   }
 }
 
+async function listCreatorWorkspaceEpisodes(authorId, options = {}) {
+  const params = [authorId];
+  let predicate = "";
+
+  if (options.episodeId) {
+    params.push(options.episodeId);
+    predicate = "and webtoon_episodes.id = $2";
+  } else if (options.seriesId) {
+    params.push(options.seriesId);
+    predicate = "and webtoon_episodes.series_id = $2";
+  } else {
+    return [];
+  }
+
+  try {
+    const result = await query(
+      `${episodeSelectSql("join webtoon_series s on s.id = webtoon_episodes.series_id where s.author_id = $1 " + predicate)}
+       order by webtoon_episodes.series_id asc, number asc, webtoon_episodes.created_at asc`,
+      params
+    );
+    return result.rows.map(serializeEpisode);
+  } catch (error) {
+    if (tableMissing(error)) throw creatorStoreNotReady(error);
+    throw error;
+  }
+}
+
+function groupEpisodesBySeries(episodes) {
+  return episodes.reduce((grouped, episode) => {
+    if (!grouped[episode.seriesId]) grouped[episode.seriesId] = [];
+    grouped[episode.seriesId].push(episode);
+    return grouped;
+  }, {});
+}
+
+async function creatorWorkspace(authorId, options = {}) {
+  const [profile, summary, series, episodes] = await Promise.all([
+    getCreatorProfile(authorId),
+    creatorSummary(authorId),
+    listCreatorSeries(authorId),
+    listCreatorWorkspaceEpisodes(authorId, options)
+  ]);
+
+  const episodeImagesByEpisode = {};
+  if (options.episodeId && episodes.some((episode) => episode.id === options.episodeId)) {
+    episodeImagesByEpisode[options.episodeId] = await listEpisodeImages(authorId, options.episodeId);
+  }
+
+  return {
+    profile,
+    summary,
+    series,
+    episodesBySeries: groupEpisodesBySeries(episodes),
+    episodeImagesByEpisode
+  };
+}
+
 module.exports = {
   creatorStoreDiagnostics,
   ensureAuthorRecord,
+  creatorWorkspace,
   getCreatorProfile,
   updateCreatorProfile,
   listCreatorSeries,

@@ -1192,6 +1192,54 @@
     return Object.values(creatorState.episodesBySeries).flat().find((episode) => episode.id === episodeId);
   }
 
+  function renderCreatorBreadcrumb(items) {
+    const visibleItems = items.filter(Boolean);
+    const previous = visibleItems.length > 1 ? visibleItems[visibleItems.length - 2] : null;
+    return `
+      <nav class="creator-breadcrumb" aria-label="작가페이지 위치">
+        <ol>
+          ${visibleItems.map((item, index) => {
+            const isCurrent = index === visibleItems.length - 1;
+            if (isCurrent || !item.href) {
+              return `<li aria-current="${isCurrent ? "page" : "false"}">${escapeHtml(item.label)}</li>`;
+            }
+            return `<li><a href="${escapeHtml(item.href)}" data-link>${escapeHtml(item.label)}</a></li>`;
+          }).join("")}
+        </ol>
+      </nav>
+      ${previous?.href ? `<a class="creator-mobile-back" href="${escapeHtml(previous.href)}" data-link>${escapeHtml(previous.label)}</a>` : ""}
+    `;
+  }
+
+  function renderCreatorTabs(tabs) {
+    if (!tabs?.length) return "";
+    return `
+      <nav class="creator-subnav" aria-label="작가페이지 하위 메뉴">
+        ${tabs.map((tab) => `<a href="${escapeHtml(tab.href)}">${escapeHtml(tab.label)}</a>`).join("")}
+      </nav>
+    `;
+  }
+
+  function renderCreatorPageHeader({ breadcrumbs, eyebrow, title, description = "", status = "", actions = "", tabs = [] }) {
+    return `
+      <header class="creator-page-nav">
+        ${renderCreatorBreadcrumb(breadcrumbs)}
+        <div class="creator-page-title">
+          <div>
+            <p class="eyebrow">${escapeHtml(eyebrow)}</p>
+            <h2>${escapeHtml(title)}</h2>
+            ${description ? `<p>${escapeHtml(description)}</p>` : ""}
+          </div>
+          <div class="creator-page-actions">
+            ${status ? `<span class="creator-status">${escapeHtml(status)}</span>` : ""}
+            ${actions}
+          </div>
+        </div>
+        ${renderCreatorTabs(tabs)}
+      </header>
+    `;
+  }
+
   function renderCreatorEpisodeRow(episode) {
     const canRequestReview = ["DRAFT", "REVISION_REQUESTED"].includes(episode.status);
     return `
@@ -1222,27 +1270,20 @@
       return `<article class="empty-state"><h2>등록된 작품이 없습니다.</h2><p>첫 작품을 등록하면 회차 작성과 검수 요청을 진행할 수 있습니다.</p></article>`;
     }
 
-    return creatorState.series.map((series) => {
-      const episodes = creatorState.episodesBySeries[series.id] || [];
-      return `
-        <article class="creator-work-card">
-          <div class="creator-work-head">
-            <div>
-              <span class="creator-status">${escapeHtml(creatorStatusLabel(series.status))}</span>
-              <h3><a href="${creatorSeriesHref(series.id)}" data-link>${escapeHtml(series.title)}</a></h3>
-              <p>${escapeHtml(series.summary)}</p>
-            </div>
-            <div class="creator-row-actions">
-              <a class="button ghost" href="${creatorSeriesHref(series.id)}" data-link>작품페이지</a>
-              <button class="button ghost" type="button" data-creator-load-episodes="${escapeHtml(series.id)}">회차 새로고침</button>
-            </div>
+    return creatorState.series.map((series) => `
+      <article class="creator-work-card">
+        <div class="creator-work-head">
+          <div>
+            <span class="creator-status">${escapeHtml(creatorStatusLabel(series.status))}</span>
+            <h3><a href="${creatorSeriesHref(series.id)}" data-link>${escapeHtml(series.title)}</a></h3>
+            <p>${escapeHtml(series.summary || "작품 소개 없음")}</p>
           </div>
-          <div class="creator-episode-list">
-            ${episodes.length ? episodes.map(renderCreatorEpisodeRow).join("") : `<p class="creator-empty-line">아직 등록된 회차가 없습니다.</p>`}
+          <div class="creator-row-actions">
+            <a class="button ghost" href="${creatorSeriesHref(series.id)}" data-link>작품페이지</a>
           </div>
-        </article>
-      `;
-    }).join("");
+        </div>
+      </article>
+    `).join("");
   }
 
   function renderCreatorProfileForm() {
@@ -1305,6 +1346,21 @@
 
     container.innerHTML = `
       <section class="section creator-console-section">
+        ${renderCreatorPageHeader({
+          breadcrumbs: [{ label: "작가 스튜디오" }],
+          eyebrow: "Creator Studio",
+          title: "작가페이지",
+          description: "대시보드, 작가 정보, 작품 목록을 한 화면에서 관리합니다.",
+          actions: `<button class="button primary" type="button" data-creator-open-series-dialog>작품 등록</button>`,
+          tabs: [
+            { label: "대시보드", href: "#creator-dashboard" },
+            { label: "작가 정보", href: "#creator-profile" },
+            { label: "작품 목록", href: "#creator-works" }
+          ]
+        })}
+      </section>
+
+      <section class="section creator-console-section" id="creator-dashboard">
         <div class="dashboard-grid creator-dashboard-grid">
           ${[
             ["작품", creatorState.series.length],
@@ -1320,7 +1376,7 @@
         </div>
       </section>
 
-      <section class="section muted-band creator-console-section">
+      <section class="section muted-band creator-console-section" id="creator-profile">
         <div class="creator-console-layout">
           ${renderCreatorProfileForm()}
           <article class="creator-work-card">
@@ -1328,7 +1384,7 @@
               <div>
                 <span class="creator-status">작품목록</span>
                 <h3>등록된 작품</h3>
-                <p>작품을 선택하면 작품페이지에서 세계관, 설정, 회차목록을 관리합니다.</p>
+                <p>작품을 선택하면 작품페이지에서 세계관, 설정, 원고 진행을 관리합니다.</p>
               </div>
               <button class="button primary" type="button" data-creator-open-series-dialog>작품 등록</button>
             </div>
@@ -1348,10 +1404,10 @@
         </div>
       </section>
 
-      <section class="section creator-console-section">
+      <section class="section creator-console-section" id="creator-works">
         <div class="section-heading">
           <p class="eyebrow">Works</p>
-          <h2>내 작품과 회차</h2>
+          <h2>내 작품</h2>
         </div>
         <div class="creator-work-list">${renderCreatorSeriesList()}</div>
       </section>
@@ -1370,11 +1426,26 @@
 
     container.innerHTML = `
       <section class="section creator-console-section">
-        <div class="section-heading">
-          <p class="eyebrow">Work</p>
-          <h2>${escapeHtml(series.title)}</h2>
-          <div class="hero-actions">${link("/creator-studio", "작가페이지", "button ghost")}</div>
-        </div>
+        ${renderCreatorPageHeader({
+          breadcrumbs: [
+            { label: "작가 스튜디오", href: "/creator-studio" },
+            { label: "내 작품", href: "/creator-studio#creator-works" },
+            { label: series.title }
+          ],
+          eyebrow: "Work",
+          title: series.title,
+          description: "작품 설정과 세계관을 정리하고 회차 목록을 관리합니다.",
+          status: creatorStatusLabel(series.status),
+          actions: link("/creator-studio", "작가페이지", "button ghost"),
+          tabs: [
+            { label: "작품 설정", href: "#series-settings" },
+            { label: "세계관/기획", href: "#series-settings" },
+            { label: "회차 목록", href: "#series-episodes" }
+          ]
+        })}
+      </section>
+
+      <section class="section creator-console-section" id="series-settings">
         <div class="creator-console-layout">
           <form class="creator-inline-form" data-creator-series-form data-series-id="${escapeHtml(series.id)}">
             <label><span>작품명</span><input name="title" value="${escapeHtml(series.title)}" ${editable ? "" : "readonly"}></label>
@@ -1396,7 +1467,7 @@
           </form>
         </div>
       </section>
-      <section class="section creator-console-section">
+      <section class="section creator-console-section" id="series-episodes">
         <div class="section-heading">
           <p class="eyebrow">Episodes</p>
           <h2>회차목록</h2>
@@ -1437,14 +1508,31 @@
 
     container.innerHTML = `
       <section class="section creator-console-section">
-        <div class="section-heading">
-          <p class="eyebrow">Episode</p>
-          <h2>${episode.number}화. ${escapeHtml(episode.title)}</h2>
-          <div class="hero-actions">
+        ${renderCreatorPageHeader({
+          breadcrumbs: [
+            { label: "작가 스튜디오", href: "/creator-studio" },
+            { label: "내 작품", href: "/creator-studio#creator-works" },
+            series ? { label: series.title, href: creatorSeriesHref(series.id) } : null,
+            { label: `${episode.number}화. ${episode.title}` }
+          ],
+          eyebrow: "Episode",
+          title: `${episode.number}화. ${episode.title}`,
+          description: "회차 상태, 원고, 이미지 등록과 사이 처리 설정을 관리합니다.",
+          status: creatorStatusLabel(episode.status),
+          actions: `
             ${series ? link(creatorSeriesHref(series.id), "작품페이지", "button ghost") : ""}
             ${link("/creator-studio", "작가페이지", "button ghost")}
-          </div>
-        </div>
+          `,
+          tabs: [
+            { label: "회차 상태", href: "#episode-status" },
+            { label: "이미지 관리", href: "#episode-images" },
+            { label: "이미지 사이 처리", href: "#episode-processing" },
+            { label: "검수", href: "#episode-status" }
+          ]
+        })}
+      </section>
+
+      <section class="section creator-console-section" id="episode-status">
         <div class="creator-console-layout">
           <form class="creator-inline-form" data-creator-episode-form data-episode-id="${escapeHtml(episode.id)}">
             <label><span>회차 번호</span><input name="number" type="number" min="1" max="9999" value="${escapeHtml(episode.number)}" ${editable ? "" : "readonly"}></label>
@@ -1465,7 +1553,7 @@
           </article>
         </div>
       </section>
-      <section class="section muted-band creator-console-section">
+      <section class="section muted-band creator-console-section" id="episode-processing">
         <div class="creator-console-layout">
           <form class="feedback-form creator-console-form" data-creator-new-image-form data-episode-id="${escapeHtml(episode.id)}">
             <span>회차 이미지 등록</span>
@@ -1483,7 +1571,7 @@
           </article>
         </div>
       </section>
-      <section class="section creator-console-section">
+      <section class="section creator-console-section" id="episode-images">
         <div class="section-heading">
           <p class="eyebrow">Images</p>
           <h2>등록 이미지</h2>
@@ -1510,18 +1598,17 @@
     renderCreatorDashboardContent();
 
     try {
-      const [summaryPayload, seriesPayload, profilePayload] = await Promise.all([
-        apiJson("/api/creator/summary"),
-        apiJson("/api/creator/series"),
-        apiJson("/api/creator/profile")
-      ]);
-      creatorState.author = summaryPayload.author || seriesPayload.author || null;
-      creatorState.profile = profilePayload.profile || null;
-      creatorState.summary = summaryPayload.summary || null;
-      creatorState.series = seriesPayload.series || [];
-      await Promise.all(creatorState.series.map((series) => loadCreatorEpisodes(series.id)));
       const view = creatorViewParams();
-      if (view.episodeId) await loadCreatorEpisodeImages(view.episodeId);
+      const params = new URLSearchParams();
+      if (view.seriesId) params.set("series", view.seriesId);
+      if (view.episodeId) params.set("episode", view.episodeId);
+      const payload = await apiJson(`/api/creator/workspace${params.toString() ? `?${params}` : ""}`);
+      creatorState.author = payload.author || null;
+      creatorState.profile = payload.profile || null;
+      creatorState.summary = payload.summary || null;
+      creatorState.series = payload.series || [];
+      creatorState.episodesBySeries = payload.episodesBySeries || {};
+      creatorState.episodeImagesByEpisode = payload.episodeImagesByEpisode || {};
       creatorState.loaded = true;
     } catch (error) {
       creatorState.error = error.message;

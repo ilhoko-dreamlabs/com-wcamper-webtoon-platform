@@ -68,6 +68,7 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 | 8 | 일반 공개 작가페이지와 작가정보 연동 | 계획 | 후속 | `/@작가아이디`를 DB 작가 프로필 기반으로 확장 필요 |
 | 9 | 실제 이미지 업로드/교체 | 계획 | 후속 | 현재는 URL 등록 방식, 파일 업로드 저장소 연동 필요 |
 | 10 | 이미지 사이 자동 처리 | 계획 | 후속 | 현재는 간격/색상 데이터 저장, 자동 합성/보정은 후속 |
+| 11 | 초기 조회 성능 개선 | 완료 | `api/creator.js`, `api/_lib/creator-content.js`, `assets/js/app.js`, `docs/CREATOR_STUDIO_PERFORMANCE_PLAN.md` | `/api/creator/workspace` 통합 조회로 작가페이지 첫 화면의 작품별 회차 API 호출 제거 |
 
 ```text
 /creator-studio
