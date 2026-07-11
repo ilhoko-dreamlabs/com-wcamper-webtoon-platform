@@ -1020,8 +1020,8 @@
 
   function renderPartnershipPage() {
     main.innerHTML = `
-      <section class="page-hero split">
-        <div>
+      <section class="page-hero partnership-hero">
+        <div class="partnership-hero-copy">
           <p class="eyebrow">Partnership</p>
           <h1>웹툰으로 브랜드 이야기를 제안하세요</h1>
           <p>캠핑 브랜드, 캠핑장, 장비, 로컬 여행 콘텐츠를 웹툰 회차와 캐릭터 상황 안에 자연스럽게 연결합니다.</p>
@@ -1030,8 +1030,11 @@
             ${link("/webtoons", "웹툰 사례 보기", "button ghost")}
           </div>
         </div>
-        <div class="info-panel">
-          <strong>협업 범위</strong>
+        <picture class="partnership-hero-visual">
+          <source srcset="/assets/img/partnership-hero.webp" type="image/webp">
+          <img src="/assets/img/partnership-hero.png" alt="AI 웹툰 협업문의 대표 이미지">
+        </picture>
+        <div class="partnership-hero-tags" aria-label="협업 범위">
           <div class="tag-row">
             <span>PPL</span>
             <span>장소 협업</span>

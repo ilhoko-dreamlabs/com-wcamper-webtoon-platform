@@ -7,7 +7,8 @@ const VERCEL_OUTPUT_ROOT = path.join(ROOT, "public");
 const SITE_ORIGIN = "https://webtoon.wcamper.com";
 const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
 const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
-const ASSET_VERSION = "20260711-creator-workspace";
+const PARTNERSHIP_HERO_IMAGE = "assets/img/partnership-hero.png";
+const ASSET_VERSION = "20260711-partnership-hero";
 
 function loadCatalog() {
   const catalogPath = path.join(ROOT, "data", "catalog.js");
@@ -117,7 +118,7 @@ function pagesForCatalog(data) {
       routePath: "/partnership",
       title: "협업문의 | WCAMPER Webtoon",
       description: "브랜드 웹툰, PPL, 캠핑장 협업, 작가 협의형 광고 캠페인 제안을 받습니다.",
-      image: DEFAULT_OG_IMAGE,
+      image: PARTNERSHIP_HERO_IMAGE,
       type: "website"
     }),
     normalizePage({
