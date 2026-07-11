@@ -1846,31 +1846,18 @@
   }
 
   function updateAuthLinks() {
-    const memberLink = document.querySelector('[data-auth-label="member"]');
-    const creatorLink = document.querySelector('[data-auth-label="creator"]');
+    const accountLink = document.querySelector('[data-auth-label="account"]');
+    const accountLabel = accountLink?.querySelector("[data-auth-account-label]");
     const returnTo = currentReturnTo();
 
-    if (memberLink) {
-      memberLink.setAttribute("href", authState.authenticated ? "/mypage" : buildLoginUrl(returnTo));
-      memberLink.toggleAttribute("data-link", authState.authenticated);
-      memberLink.setAttribute("title", authState.authenticated ? "마이페이지" : "통합로그인");
-      memberLink.setAttribute("aria-label", authState.authenticated ? "마이페이지" : "통합로그인");
-    }
-
-    if (creatorLink) {
-      const activeAuthor = isActiveAuthor();
-      const href = !authState.authenticated ? buildLoginUrl(returnTo) : activeAuthor ? "/creator-studio" : "/creators";
-      const label = !authState.authenticated
-        ? "통합로그인 후 작가신청"
-        : activeAuthor
-          ? "작가페이지"
-          : authState.authorApplication
-            ? "작가신청 상태"
-            : "작가신청";
-      creatorLink.setAttribute("href", href);
-      creatorLink.toggleAttribute("data-link", authState.authenticated);
-      creatorLink.setAttribute("title", label);
-      creatorLink.setAttribute("aria-label", label);
+    if (accountLink) {
+      const href = authState.authenticated ? "/mypage" : buildLoginUrl(returnTo);
+      const label = authState.authenticated ? "사용자 정보" : "로그인";
+      accountLink.setAttribute("href", href);
+      accountLink.toggleAttribute("data-link", authState.authenticated);
+      accountLink.setAttribute("title", label);
+      accountLink.setAttribute("aria-label", label);
+      if (accountLabel) accountLabel.textContent = label;
     }
   }
 

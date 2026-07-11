@@ -407,6 +407,17 @@ h1 {
   white-space: nowrap;
 }
 
+.button.account-utility {
+  max-width: 150px;
+}
+
+.button.account-utility span {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .button.primary-utility {
   border-color: var(--accent);
   background: var(--accent);
@@ -1664,6 +1675,13 @@ button:disabled {
 
   .auth-actions {
     gap: 4px;
+  }
+
+  .button.account-utility {
+    max-width: 92px;
+    min-height: 32px;
+    padding: 0 10px;
+    border-radius: 7px;
   }
 
   .button.icon-utility {
