@@ -1,4 +1,5 @@
 const { verifyAuthSession } = require("./auth");
+const { query } = require("./db");
 
 const AUTHOR_ROLES = new Set(["webtoonAuthor", "creator", "author"]);
 const DEFAULT_AUTHOR_EMAILS = ["ilho.ko@dreamlabs.co.kr"];
@@ -60,6 +61,31 @@ function virtualAuthorFromSession(session) {
   };
 }
 
+async function activeAuthorFromSession(session) {
+  if (!session?.authenticated || !session.user?.id) return null;
+
+  try {
+    const result = await query(
+      `select id, user_id as "userId", display_name as "displayName", status,
+              approved_at as "approvedAt", created_at as "createdAt", updated_at as "updatedAt"
+       from authors
+       where user_id = $1 and status = 'ACTIVE'
+       order by created_at desc nulls last
+       limit 1`,
+      [session.user.id]
+    );
+
+    const author = result.rows[0] || null;
+    return author ? { ...author, source: "webtoon-author-record" } : null;
+  } catch (error) {
+    if (["42P01", "42703", "3D000", "ECONNREFUSED", "ENOTFOUND", "DB_NOT_CONFIGURED"].includes(error.code)) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
 function sessionHasAuthorGrant(session) {
   if (!session?.authenticated || !session.user?.id) return false;
 
@@ -80,6 +106,17 @@ async function assertAuthor(request) {
     };
   }
 
+  const author = await activeAuthorFromSession(session);
+
+  if (author) {
+    return {
+      authType: "webtoon-author-record",
+      roles: rolesFromSession(session),
+      user: session.user,
+      author
+    };
+  }
+
   throw Object.assign(new Error("Author authorization required"), {
     statusCode: 403,
     code: "AUTHOR_FORBIDDEN",
@@ -89,6 +126,7 @@ async function assertAuthor(request) {
 
 module.exports = {
   assertAuthor,
+  activeAuthorFromSession,
   authorEmails,
   emailFromSession,
   rolesFromSession,
