@@ -266,6 +266,10 @@ textarea {
   box-shadow: 0 18px 50px rgba(20, 39, 23, 0.18);
 }
 
+.creator-call-visual picture {
+  display: block;
+}
+
 .creator-call-visual img {
   width: 100%;
   aspect-ratio: 1672 / 941;
@@ -1598,9 +1602,17 @@ button:disabled {
     padding-top: 16px;
   }
 
+  .creator-call-visual img {
+    aspect-ratio: 941 / 1672;
+  }
+
   .partnership-hero {
     grid-template-columns: 1fr;
     gap: 18px;
+  }
+
+  .partnership-hero-visual img {
+    aspect-ratio: 941 / 1672;
   }
 
   .hero-cover img,

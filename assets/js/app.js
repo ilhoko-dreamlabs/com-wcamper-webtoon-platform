@@ -727,7 +727,12 @@
       <section class="page-hero creator-call-hero">
         <h1 class="sr-only">AI 웹툰 작가 모집</h1>
         <a class="creator-call-visual" href="${applicationsOpen ? authState.authenticated ? "#author-application" : escapeHtml(loginUrl) : "#author-application"}" aria-label="AI 웹툰 작가 모집 지원하기">
-          <img src="/assets/img/creators/ai-webtoon-creator-call-16x9.png" alt="AI 웹툰 작가 모집. AI를 배우고, 스토리를 만들고, 웹툰으로 연재하세요.">
+          <picture>
+            <source media="(max-width: 760px)" srcset="/assets/img/creators/ai-webtoon-creator-call-mobile.webp" type="image/webp">
+            <source media="(max-width: 760px)" srcset="/assets/img/creators/ai-webtoon-creator-call-mobile.png" type="image/png">
+            <source srcset="/assets/img/creators/ai-webtoon-creator-call-16x9.webp" type="image/webp">
+            <img src="/assets/img/creators/ai-webtoon-creator-call-16x9.png" alt="AI 웹툰 작가 모집. AI를 배우고, 스토리를 만들고, 웹툰으로 연재하세요.">
+          </picture>
         </a>
         <div class="creator-call-actions">
           <div class="hero-actions">
@@ -1031,6 +1036,8 @@
           </div>
         </div>
         <picture class="partnership-hero-visual">
+          <source media="(max-width: 760px)" srcset="/assets/img/partnership-hero-mobile.webp" type="image/webp">
+          <source media="(max-width: 760px)" srcset="/assets/img/partnership-hero-mobile.png" type="image/png">
           <source srcset="/assets/img/partnership-hero.webp" type="image/webp">
           <img src="/assets/img/partnership-hero.png" alt="AI 웹툰 협업문의 대표 이미지">
         </picture>
