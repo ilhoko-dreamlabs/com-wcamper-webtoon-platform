@@ -17,6 +17,7 @@ module.exports = async function handler(request, response) {
       return;
     }
 
+    const hasAuthorGrant = sessionHasAuthorGrant(session);
     let dbAuthor = null;
     let authorApplication = null;
 
@@ -42,16 +43,21 @@ module.exports = async function handler(request, response) {
       dbAuthor = authorResult.rows[0] || null;
       authorApplication = applicationResult.rows[0] || null;
     } catch (error) {
-      if (!sessionHasAuthorGrant(session)) {
+      if (!hasAuthorGrant) {
         throw error;
       }
     }
+
+    const activeAuthor = String(dbAuthor?.status || "").toUpperCase() === "ACTIVE" ? dbAuthor : null;
+    const author = hasAuthorGrant
+      ? activeAuthor || virtualAuthorFromSession(session)
+      : activeAuthor;
 
     sendJson(response, 200, {
       authenticated: true,
       user: session.user,
       profileComplete: Boolean(session.profileComplete),
-      author: dbAuthor || (sessionHasAuthorGrant(session) ? virtualAuthorFromSession(session) : null),
+      author,
       authorApplication
     });
   } catch (error) {
