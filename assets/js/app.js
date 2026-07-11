@@ -18,9 +18,11 @@
     loaded: false,
     loading: false,
     author: null,
+    profile: null,
     summary: null,
     series: [],
     episodesBySeries: {},
+    episodeImagesByEpisode: {},
     error: null
   };
   const publicSettings = {
@@ -175,7 +177,7 @@
       return {
         title: "작가모집 | WCAMPER Webtoon",
         description: "웹툰기획력과 AI 제작 도구를 활용해 캠핑, 여행, 일상 이야기를 웹툰으로 연재할 작가를 모집합니다.",
-        image: "assets/img/authors/bongdal-universe-comics-logo.png",
+        image: "assets/img/creators/ai-webtoon-creator-call-16x9.png",
         path: "/creators",
         type: "website"
       };
@@ -722,11 +724,12 @@
     const trainingVisible = settingValue("creatorTraining.visible");
 
     main.innerHTML = `
-      <section class="page-hero split">
-        <div>
-          <p class="eyebrow">Creator Call</p>
-          <h1>웹툰기획력으로 작가되기</h1>
-          <p>그림 실력만이 아니라 캐릭터, 에피소드, 세계관, 대사 감각을 가진 창작자를 모집합니다. AI 제작 도구와 함께 캠핑, 여행, 일상 이야기를 연재물로 만듭니다.</p>
+      <section class="page-hero creator-call-hero">
+        <h1 class="sr-only">AI 웹툰 작가 모집</h1>
+        <a class="creator-call-visual" href="${applicationsOpen ? authState.authenticated ? "#author-application" : escapeHtml(loginUrl) : "#author-application"}" aria-label="AI 웹툰 작가 모집 지원하기">
+          <img src="/assets/img/creators/ai-webtoon-creator-call-16x9.png" alt="AI 웹툰 작가 모집. AI를 배우고, 스토리를 만들고, 웹툰으로 연재하세요.">
+        </a>
+        <div class="creator-call-actions">
           <div class="hero-actions">
             ${applicationsOpen
               ? authState.authenticated
@@ -736,15 +739,6 @@
             ${trainingVisible ? link("/creators/training", "교육자료 보기", "button ghost") : ""}
             <a class="button ghost" href="${escapeHtml(signupUrl)}">통합회원가입</a>
             ${link("/webtoons", "연재작 보기", "button ghost")}
-          </div>
-        </div>
-        <div class="info-panel">
-          <strong>지원 키워드</strong>
-          <div class="tag-row">
-            <span>스토리 기획</span>
-            <span>캐릭터</span>
-            <span>캠핑/여행</span>
-            <span>AI 제작</span>
           </div>
         </div>
       </section>
@@ -1166,9 +1160,36 @@
     return Number(creatorState.summary?.[group]?.[status] || 0);
   }
 
-  function renderCreatorSeriesOptions() {
-    if (!creatorState.series.length) return `<option value="">작품을 먼저 등록하세요</option>`;
-    return creatorState.series.map((series) => `<option value="${escapeHtml(series.id)}">${escapeHtml(series.title)}</option>`).join("");
+  function creatorViewParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      seriesId: params.get("series") || "",
+      episodeId: params.get("episode") || ""
+    };
+  }
+
+  function navigateCreatorStudio(params = {}) {
+    const url = new URL("/creator-studio", window.location.origin);
+    if (params.seriesId) url.searchParams.set("series", params.seriesId);
+    if (params.episodeId) url.searchParams.set("episode", params.episodeId);
+    window.history.pushState({}, "", `${url.pathname}${url.search}`);
+    render();
+  }
+
+  function creatorSeriesHref(seriesId) {
+    return `/creator-studio?series=${encodeURIComponent(seriesId)}`;
+  }
+
+  function creatorEpisodeHref(episodeId) {
+    return `/creator-studio?episode=${encodeURIComponent(episodeId)}`;
+  }
+
+  function findCreatorSeries(seriesId) {
+    return creatorState.series.find((series) => series.id === seriesId);
+  }
+
+  function findCreatorEpisode(episodeId) {
+    return Object.values(creatorState.episodesBySeries).flat().find((episode) => episode.id === episodeId);
   }
 
   function renderCreatorEpisodeRow(episode) {
@@ -1177,10 +1198,13 @@
       <article class="creator-episode-row">
         <div>
           <span class="creator-status">${escapeHtml(creatorStatusLabel(episode.status))}</span>
-          <strong>${episode.number}화. ${escapeHtml(episode.title)}</strong>
+          <strong><a href="${creatorEpisodeHref(episode.id)}" data-link>${episode.number}화. ${escapeHtml(episode.title)}</a></strong>
           <p>${escapeHtml(episode.summary || "요약 없음")}</p>
         </div>
-        <button class="button ghost" type="button" data-creator-review-episode="${escapeHtml(episode.id)}" ${canRequestReview ? "" : "disabled"}>검수요청</button>
+        <div class="creator-row-actions">
+          <a class="button ghost" href="${creatorEpisodeHref(episode.id)}" data-link>회차상태</a>
+          <button class="button ghost" type="button" data-creator-review-episode="${escapeHtml(episode.id)}" ${canRequestReview ? "" : "disabled"}>검수요청</button>
+        </div>
       </article>
     `;
   }
@@ -1200,29 +1224,19 @@
 
     return creatorState.series.map((series) => {
       const episodes = creatorState.episodesBySeries[series.id] || [];
-      const editable = ["DRAFT", "REVISION_REQUESTED"].includes(series.status);
-
       return `
         <article class="creator-work-card">
           <div class="creator-work-head">
             <div>
               <span class="creator-status">${escapeHtml(creatorStatusLabel(series.status))}</span>
-              <h3>${escapeHtml(series.title)}</h3>
+              <h3><a href="${creatorSeriesHref(series.id)}" data-link>${escapeHtml(series.title)}</a></h3>
               <p>${escapeHtml(series.summary)}</p>
             </div>
-            <button class="button ghost" type="button" data-creator-load-episodes="${escapeHtml(series.id)}">회차 새로고침</button>
-          </div>
-          <form class="creator-inline-form" data-creator-series-form data-series-id="${escapeHtml(series.id)}">
-            <label><span>작품명</span><input name="title" value="${escapeHtml(series.title)}" ${editable ? "" : "readonly"}></label>
-            <label><span>장르</span><input name="genre" value="${escapeHtml(series.genre || "")}" ${editable ? "" : "readonly"}></label>
-            <label><span>태그</span><input name="tags" value="${escapeHtml((series.tags || []).join(", "))}" ${editable ? "" : "readonly"}></label>
-            <label><span>표지 URL</span><input name="coverUrl" value="${escapeHtml(series.coverUrl || "")}" ${editable ? "" : "readonly"}></label>
-            <label class="creator-form-wide"><span>작품 소개</span><textarea name="summary" ${editable ? "" : "disabled"}>${escapeHtml(series.summary)}</textarea></label>
-            <div class="creator-form-actions">
-              <p class="form-status" data-creator-series-status role="status" aria-live="polite">${editable ? "" : "검수 중이거나 공개 단계인 작품은 수정할 수 없습니다."}</p>
-              <button class="button primary" type="submit" ${editable ? "" : "disabled"}>작품 저장</button>
+            <div class="creator-row-actions">
+              <a class="button ghost" href="${creatorSeriesHref(series.id)}" data-link>작품페이지</a>
+              <button class="button ghost" type="button" data-creator-load-episodes="${escapeHtml(series.id)}">회차 새로고침</button>
             </div>
-          </form>
+          </div>
           <div class="creator-episode-list">
             ${episodes.length ? episodes.map(renderCreatorEpisodeRow).join("") : `<p class="creator-empty-line">아직 등록된 회차가 없습니다.</p>`}
           </div>
@@ -1231,9 +1245,63 @@
     }).join("");
   }
 
+  function renderCreatorProfileForm() {
+    const profile = creatorState.profile || {};
+    return `
+      <form class="feedback-form creator-console-form" data-creator-profile-form>
+        <span>작가 정보 설정</span>
+        <label>공개 작가명<input name="displayName" required minlength="2" maxlength="80" value="${escapeHtml(profile.displayName || creatorState.author?.displayName || "")}"></label>
+        <label>작가 아이디<input name="handle" maxlength="48" value="${escapeHtml(profile.handle || "")}" placeholder="public-id"></label>
+        <label>작가 아이콘 URL<input name="iconUrl" value="${escapeHtml(profile.iconUrl || "")}" placeholder="/assets/... 또는 https://..."></label>
+        <label>공개 표시
+          <select name="publicPageEnabled">
+            <option value="true" ${profile.publicPageEnabled === false ? "" : "selected"}>공개</option>
+            <option value="false" ${profile.publicPageEnabled === false ? "selected" : ""}>비공개</option>
+          </select>
+        </label>
+        <label class="creator-form-wide">작가 소개<textarea name="bio" maxlength="1000">${escapeHtml(profile.bio || "")}</textarea></label>
+        <p class="form-status" data-creator-profile-status role="status" aria-live="polite"></p>
+        <button class="button primary" type="submit">작가정보 저장</button>
+      </form>
+    `;
+  }
+
+  function renderCreatorNewSeriesDialog() {
+    return `
+      <dialog class="creator-dialog" data-creator-series-dialog>
+        <form class="feedback-form creator-console-form" data-creator-new-series-form method="dialog">
+          <div class="creator-dialog-head">
+            <span>작품 등록</span>
+            <button class="button ghost" type="button" data-creator-close-dialog>닫기</button>
+          </div>
+          <label>작품명<input name="title" required minlength="2" maxlength="120" placeholder="예: 봉봉 패밀리 캠핑"></label>
+          <p class="creator-empty-line">제목만 등록하면 작품 ID가 생성되고 작품페이지로 이동합니다. 장르, 세계관, 표지는 작품페이지에서 이어서 입력합니다.</p>
+          <p class="form-status" data-creator-new-series-status role="status" aria-live="polite"></p>
+          <button class="button primary" type="submit">등록 후 작품페이지로 이동</button>
+        </form>
+      </dialog>
+    `;
+  }
+
   function renderCreatorDashboardContent() {
     const container = document.querySelector("[data-creator-content]");
     if (!container) return;
+    const view = creatorViewParams();
+
+    if (creatorState.error || creatorState.loading) {
+      container.innerHTML = `<section class="section creator-console-section"><div class="creator-work-list">${renderCreatorSeriesList()}</div></section>`;
+      return;
+    }
+
+    if (view.episodeId) {
+      renderCreatorEpisodePage(container, view.episodeId);
+      return;
+    }
+
+    if (view.seriesId) {
+      renderCreatorSeriesPage(container, view.seriesId);
+      return;
+    }
 
     container.innerHTML = `
       <section class="section creator-console-section">
@@ -1254,28 +1322,29 @@
 
       <section class="section muted-band creator-console-section">
         <div class="creator-console-layout">
-          <form class="feedback-form creator-console-form" data-creator-new-series-form>
-            <span>작품 등록</span>
-            <label>작품명<input name="title" required minlength="2" maxlength="120" placeholder="예: 봉봉 패밀리 캠핑"></label>
-            <label>장르<input name="genre" maxlength="80" placeholder="예: 가족, 캠핑"></label>
-            <label>태그<input name="tags" placeholder="쉼표로 구분"></label>
-            <label>표지 URL<input name="coverUrl" type="url" placeholder="https://..."></label>
-            <label>작품 소개<textarea name="summary" required minlength="10" maxlength="1000"></textarea></label>
-            <p class="form-status" data-creator-new-series-status role="status" aria-live="polite"></p>
-            <button class="button primary" type="submit">작품 등록</button>
-          </form>
-
-          <form class="feedback-form creator-console-form" data-creator-new-episode-form>
-            <span>회차 등록</span>
-            <label>작품<select name="seriesId" required>${renderCreatorSeriesOptions()}</select></label>
-            <label>회차 번호<input name="number" type="number" min="1" max="9999" required></label>
-            <label>회차명<input name="title" required minlength="2" maxlength="120"></label>
-            <label>원고/이미지 URL<input name="contentUrl" type="url" placeholder="https://..."></label>
-            <label>회차 요약<textarea name="summary" maxlength="1000"></textarea></label>
-            <label>원고 메모<textarea name="draftBody" maxlength="12000"></textarea></label>
-            <p class="form-status" data-creator-new-episode-status role="status" aria-live="polite"></p>
-            <button class="button primary" type="submit" ${creatorState.series.length ? "" : "disabled"}>회차 등록</button>
-          </form>
+          ${renderCreatorProfileForm()}
+          <article class="creator-work-card">
+            <div class="creator-work-head">
+              <div>
+                <span class="creator-status">작품목록</span>
+                <h3>등록된 작품</h3>
+                <p>작품을 선택하면 작품페이지에서 세계관, 설정, 회차목록을 관리합니다.</p>
+              </div>
+              <button class="button primary" type="button" data-creator-open-series-dialog>작품 등록</button>
+            </div>
+            <div class="creator-episode-list">
+              ${creatorState.series.length ? creatorState.series.map((series) => `
+                <article class="creator-episode-row">
+                  <div>
+                    <span class="creator-status">${escapeHtml(creatorStatusLabel(series.status))}</span>
+                    <strong><a href="${creatorSeriesHref(series.id)}" data-link>${escapeHtml(series.title)}</a></strong>
+                    <p>${escapeHtml(series.summary || "작품 소개 없음")}</p>
+                  </div>
+                  <a class="button ghost" href="${creatorSeriesHref(series.id)}" data-link>상세</a>
+                </article>
+              `).join("") : `<p class="creator-empty-line">등록된 작품이 없습니다.</p>`}
+            </div>
+          </article>
         </div>
       </section>
 
@@ -1286,12 +1355,152 @@
         </div>
         <div class="creator-work-list">${renderCreatorSeriesList()}</div>
       </section>
+      ${renderCreatorNewSeriesDialog()}
+    `;
+  }
+
+  function renderCreatorSeriesPage(container, seriesId) {
+    const series = findCreatorSeries(seriesId);
+    if (!series) {
+      container.innerHTML = `<section class="empty-state page"><h2>작품을 찾지 못했습니다.</h2>${link("/creator-studio", "작가페이지", "button primary")}</section>`;
+      return;
+    }
+    const episodes = creatorState.episodesBySeries[series.id] || [];
+    const editable = ["DRAFT", "REVISION_REQUESTED"].includes(series.status);
+
+    container.innerHTML = `
+      <section class="section creator-console-section">
+        <div class="section-heading">
+          <p class="eyebrow">Work</p>
+          <h2>${escapeHtml(series.title)}</h2>
+          <div class="hero-actions">${link("/creator-studio", "작가페이지", "button ghost")}</div>
+        </div>
+        <div class="creator-console-layout">
+          <form class="creator-inline-form" data-creator-series-form data-series-id="${escapeHtml(series.id)}">
+            <label><span>작품명</span><input name="title" value="${escapeHtml(series.title)}" ${editable ? "" : "readonly"}></label>
+            <label><span>장르</span><input name="genre" value="${escapeHtml(series.genre || "")}" ${editable ? "" : "readonly"}></label>
+            <label><span>태그</span><input name="tags" value="${escapeHtml((series.tags || []).join(", "))}" ${editable ? "" : "readonly"}></label>
+            <label><span>표지 URL</span><input name="coverUrl" value="${escapeHtml(series.coverUrl || "")}" ${editable ? "" : "readonly"}></label>
+            <label class="creator-form-wide"><span>세계관/작품 소개</span><textarea name="summary" ${editable ? "" : "disabled"}>${escapeHtml(series.summary)}</textarea></label>
+            <div class="creator-form-actions">
+              <p class="form-status" data-creator-series-status role="status" aria-live="polite">${editable ? "" : "검수 중이거나 공개 단계인 작품은 수정할 수 없습니다."}</p>
+              <button class="button primary" type="submit" ${editable ? "" : "disabled"}>작품 저장</button>
+            </div>
+          </form>
+          <form class="feedback-form creator-console-form" data-creator-new-episode-form data-series-id="${escapeHtml(series.id)}">
+            <span>회차 추가</span>
+            <label>회차 번호<input name="number" type="number" min="1" max="9999" placeholder="비우면 자동"></label>
+            <label>회차명<input name="title" required minlength="2" maxlength="120"></label>
+            <p class="form-status" data-creator-new-episode-status role="status" aria-live="polite"></p>
+            <button class="button primary" type="submit">추가 후 회차페이지로 이동</button>
+          </form>
+        </div>
+      </section>
+      <section class="section creator-console-section">
+        <div class="section-heading">
+          <p class="eyebrow">Episodes</p>
+          <h2>회차목록</h2>
+        </div>
+        <div class="creator-episode-list">${episodes.length ? episodes.map(renderCreatorEpisodeRow).join("") : `<p class="creator-empty-line">아직 등록된 회차가 없습니다.</p>`}</div>
+      </section>
+    `;
+  }
+
+  function renderCreatorImageRow(image) {
+    return `
+      <article class="creator-image-row">
+        <img src="${escapeHtml(image.imageUrl)}" alt="${escapeHtml(image.altText || "회차 이미지")}">
+        <form class="creator-inline-form" data-creator-image-form data-image-id="${escapeHtml(image.id)}">
+          <label><span>순서</span><input name="sortOrder" type="number" min="1" value="${escapeHtml(image.sortOrder)}"></label>
+          <label><span>간격(px)</span><input name="gapAfter" type="number" min="0" max="240" value="${escapeHtml(image.gapAfter)}"></label>
+          <label><span>사이 색상</span><input name="backgroundColor" value="${escapeHtml(image.backgroundColor)}"></label>
+          <label class="creator-form-wide"><span>이미지 URL</span><input name="imageUrl" type="url" value="${escapeHtml(image.imageUrl)}"></label>
+          <label class="creator-form-wide"><span>대체 텍스트</span><input name="altText" maxlength="300" value="${escapeHtml(image.altText)}"></label>
+          <div class="creator-form-actions">
+            <p class="form-status" data-creator-image-status role="status" aria-live="polite"></p>
+            <button class="button primary" type="submit">이미지 설정 저장</button>
+          </div>
+        </form>
+      </article>
+    `;
+  }
+
+  function renderCreatorEpisodePage(container, episodeId) {
+    const episode = findCreatorEpisode(episodeId);
+    if (!episode) {
+      container.innerHTML = `<section class="empty-state page"><h2>회차를 찾지 못했습니다.</h2>${link("/creator-studio", "작가페이지", "button primary")}</section>`;
+      return;
+    }
+    const series = findCreatorSeries(episode.seriesId);
+    const images = creatorState.episodeImagesByEpisode[episode.id] || [];
+    const editable = ["DRAFT", "REVISION_REQUESTED"].includes(episode.status);
+
+    container.innerHTML = `
+      <section class="section creator-console-section">
+        <div class="section-heading">
+          <p class="eyebrow">Episode</p>
+          <h2>${episode.number}화. ${escapeHtml(episode.title)}</h2>
+          <div class="hero-actions">
+            ${series ? link(creatorSeriesHref(series.id), "작품페이지", "button ghost") : ""}
+            ${link("/creator-studio", "작가페이지", "button ghost")}
+          </div>
+        </div>
+        <div class="creator-console-layout">
+          <form class="creator-inline-form" data-creator-episode-form data-episode-id="${escapeHtml(episode.id)}">
+            <label><span>회차 번호</span><input name="number" type="number" min="1" max="9999" value="${escapeHtml(episode.number)}" ${editable ? "" : "readonly"}></label>
+            <label><span>회차명</span><input name="title" value="${escapeHtml(episode.title)}" ${editable ? "" : "readonly"}></label>
+            <label class="creator-form-wide"><span>원고/대표 이미지 URL</span><input name="contentUrl" type="url" value="${escapeHtml(episode.contentUrl || "")}" ${editable ? "" : "readonly"}></label>
+            <label class="creator-form-wide"><span>회차 요약</span><textarea name="summary" ${editable ? "" : "disabled"}>${escapeHtml(episode.summary || "")}</textarea></label>
+            <label class="creator-form-wide"><span>원고 메모</span><textarea name="draftBody" ${editable ? "" : "disabled"}>${escapeHtml(episode.draftBody || "")}</textarea></label>
+            <div class="creator-form-actions">
+              <p class="form-status" data-creator-episode-status role="status" aria-live="polite">${editable ? "" : "검수 중이거나 공개 단계인 회차는 수정할 수 없습니다."}</p>
+              <button class="button primary" type="submit" ${editable ? "" : "disabled"}>회차 저장</button>
+            </div>
+          </form>
+          <article class="creator-work-card">
+            <span class="creator-status">${escapeHtml(creatorStatusLabel(episode.status))}</span>
+            <h3>회차 상태</h3>
+            <p>${escapeHtml(episode.reviewNote || "검수 메모가 없습니다.")}</p>
+            <button class="button ghost" type="button" data-creator-review-episode="${escapeHtml(episode.id)}" ${editable ? "" : "disabled"}>검수요청</button>
+          </article>
+        </div>
+      </section>
+      <section class="section muted-band creator-console-section">
+        <div class="creator-console-layout">
+          <form class="feedback-form creator-console-form" data-creator-new-image-form data-episode-id="${escapeHtml(episode.id)}">
+            <span>회차 이미지 등록</span>
+            <label>이미지 URL<input name="imageUrl" type="url" required placeholder="https://..."></label>
+            <label>대체 텍스트<input name="altText" maxlength="300"></label>
+            <label>이미지 뒤 간격(px)<input name="gapAfter" type="number" min="0" max="240" value="0"></label>
+            <label>사이 색상<input name="backgroundColor" value="#ffffff"></label>
+            <p class="form-status" data-creator-new-image-status role="status" aria-live="polite"></p>
+            <button class="button primary" type="submit">이미지 추가</button>
+          </form>
+          <article class="creator-work-card">
+            <span class="creator-status">계획</span>
+            <h3>이미지 사이 처리</h3>
+            <p>현재는 간격과 배경색 데이터를 저장합니다. 자동 여백 합성, 일괄 색상 보정, 다중 파일 업로드는 후속 구현 범위입니다.</p>
+          </article>
+        </div>
+      </section>
+      <section class="section creator-console-section">
+        <div class="section-heading">
+          <p class="eyebrow">Images</p>
+          <h2>등록 이미지</h2>
+        </div>
+        <div class="creator-image-list">${images.length ? images.map(renderCreatorImageRow).join("") : `<p class="creator-empty-line">등록된 이미지가 없습니다.</p>`}</div>
+      </section>
     `;
   }
 
   async function loadCreatorEpisodes(seriesId) {
     const payload = await apiJson(`/api/creator/series/${encodeURIComponent(seriesId)}/episodes`);
     creatorState.episodesBySeries[seriesId] = payload.episodes || [];
+  }
+
+  async function loadCreatorEpisodeImages(episodeId) {
+    const payload = await apiJson(`/api/creator/episodes/${encodeURIComponent(episodeId)}/images`);
+    creatorState.episodeImagesByEpisode[episodeId] = payload.images || [];
   }
 
   async function loadCreatorDashboard() {
@@ -1301,14 +1510,18 @@
     renderCreatorDashboardContent();
 
     try {
-      const [summaryPayload, seriesPayload] = await Promise.all([
+      const [summaryPayload, seriesPayload, profilePayload] = await Promise.all([
         apiJson("/api/creator/summary"),
-        apiJson("/api/creator/series")
+        apiJson("/api/creator/series"),
+        apiJson("/api/creator/profile")
       ]);
       creatorState.author = summaryPayload.author || seriesPayload.author || null;
+      creatorState.profile = profilePayload.profile || null;
       creatorState.summary = summaryPayload.summary || null;
       creatorState.series = seriesPayload.series || [];
       await Promise.all(creatorState.series.map((series) => loadCreatorEpisodes(series.id)));
+      const view = creatorViewParams();
+      if (view.episodeId) await loadCreatorEpisodeImages(view.episodeId);
       creatorState.loaded = true;
     } catch (error) {
       creatorState.error = error.message;
@@ -1916,19 +2129,49 @@
     button?.setAttribute("disabled", "disabled");
 
     try {
-      await apiJson("/api/creator/series", {
+      const payload = await apiJson("/api/creator/series", {
         method: "POST",
         body: JSON.stringify({
-          title: formData.get("title")?.toString() || "",
-          genre: formData.get("genre")?.toString() || "",
-          tags: formData.get("tags")?.toString() || "",
-          coverUrl: formData.get("coverUrl")?.toString() || "",
-          summary: formData.get("summary")?.toString() || ""
+          title: formData.get("title")?.toString() || ""
         })
       });
       form.reset();
       status.textContent = "작품이 등록되었습니다.";
       await loadCreatorDashboard();
+      navigateCreatorStudio({ seriesId: payload.series.id });
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      button?.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("submit", async (event) => {
+    const form = event.target.closest("form[data-creator-profile-form]");
+    if (!form) return;
+    event.preventDefault();
+
+    const status = form.querySelector("[data-creator-profile-status]");
+    const button = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+
+    status.textContent = "작가정보를 저장하는 중입니다.";
+    button?.setAttribute("disabled", "disabled");
+
+    try {
+      const payload = await apiJson("/api/creator/profile", {
+        method: "PATCH",
+        body: JSON.stringify({
+          displayName: formData.get("displayName")?.toString() || "",
+          handle: formData.get("handle")?.toString() || "",
+          iconUrl: formData.get("iconUrl")?.toString() || "",
+          bio: formData.get("bio")?.toString() || "",
+          publicPageEnabled: formData.get("publicPageEnabled")?.toString() !== "false"
+        })
+      });
+      creatorState.profile = payload.profile || creatorState.profile;
+      status.textContent = "저장되었습니다.";
+      renderCreatorDashboardContent();
     } catch (error) {
       status.textContent = error.message;
     } finally {
@@ -1977,7 +2220,7 @@
     const status = form.querySelector("[data-creator-new-episode-status]");
     const button = form.querySelector('button[type="submit"]');
     const formData = new FormData(form);
-    const seriesId = formData.get("seriesId")?.toString() || "";
+    const seriesId = form.dataset.seriesId || formData.get("seriesId")?.toString() || "";
 
     if (!seriesId) {
       status.textContent = "회차를 등록할 작품을 선택해주세요.";
@@ -1988,8 +2231,40 @@
     button?.setAttribute("disabled", "disabled");
 
     try {
-      await apiJson(`/api/creator/series/${encodeURIComponent(seriesId)}/episodes`, {
+      const payload = await apiJson(`/api/creator/series/${encodeURIComponent(seriesId)}/episodes`, {
         method: "POST",
+        body: JSON.stringify({
+          number: formData.get("number")?.toString() || "",
+          title: formData.get("title")?.toString() || ""
+        })
+      });
+      form.reset();
+      status.textContent = "회차가 등록되었습니다.";
+      await loadCreatorDashboard();
+      navigateCreatorStudio({ episodeId: payload.episode.id });
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      button?.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("submit", async (event) => {
+    const form = event.target.closest("form[data-creator-episode-form]");
+    if (!form) return;
+    event.preventDefault();
+
+    const status = form.querySelector("[data-creator-episode-status]");
+    const button = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    const episodeId = form.dataset.episodeId;
+
+    status.textContent = "회차를 저장하는 중입니다.";
+    button?.setAttribute("disabled", "disabled");
+
+    try {
+      await apiJson(`/api/creator/episodes/${encodeURIComponent(episodeId)}`, {
+        method: "PATCH",
         body: JSON.stringify({
           number: formData.get("number")?.toString() || "",
           title: formData.get("title")?.toString() || "",
@@ -1998,14 +2273,92 @@
           draftBody: formData.get("draftBody")?.toString() || ""
         })
       });
-      form.reset();
-      status.textContent = "회차가 등록되었습니다.";
+      status.textContent = "저장되었습니다.";
       await loadCreatorDashboard();
     } catch (error) {
       status.textContent = error.message;
     } finally {
       button?.removeAttribute("disabled");
     }
+  });
+
+  document.addEventListener("submit", async (event) => {
+    const form = event.target.closest("form[data-creator-new-image-form]");
+    if (!form) return;
+    event.preventDefault();
+
+    const status = form.querySelector("[data-creator-new-image-status]");
+    const button = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    const episodeId = form.dataset.episodeId;
+
+    status.textContent = "이미지를 등록하는 중입니다.";
+    button?.setAttribute("disabled", "disabled");
+
+    try {
+      await apiJson(`/api/creator/episodes/${encodeURIComponent(episodeId)}/images`, {
+        method: "POST",
+        body: JSON.stringify({
+          imageUrl: formData.get("imageUrl")?.toString() || "",
+          altText: formData.get("altText")?.toString() || "",
+          gapAfter: formData.get("gapAfter")?.toString() || "0",
+          backgroundColor: formData.get("backgroundColor")?.toString() || "#ffffff"
+        })
+      });
+      form.reset();
+      await loadCreatorEpisodeImages(episodeId);
+      renderCreatorDashboardContent();
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      button?.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("submit", async (event) => {
+    const form = event.target.closest("form[data-creator-image-form]");
+    if (!form) return;
+    event.preventDefault();
+
+    const status = form.querySelector("[data-creator-image-status]");
+    const button = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    const imageId = form.dataset.imageId;
+
+    status.textContent = "이미지 설정을 저장하는 중입니다.";
+    button?.setAttribute("disabled", "disabled");
+
+    try {
+      const payload = await apiJson(`/api/creator/images/${encodeURIComponent(imageId)}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          sortOrder: formData.get("sortOrder")?.toString() || "",
+          imageUrl: formData.get("imageUrl")?.toString() || "",
+          altText: formData.get("altText")?.toString() || "",
+          gapAfter: formData.get("gapAfter")?.toString() || "0",
+          backgroundColor: formData.get("backgroundColor")?.toString() || "#ffffff"
+        })
+      });
+      await loadCreatorEpisodeImages(payload.image.episodeId);
+      renderCreatorDashboardContent();
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      button?.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    const openButton = event.target.closest("[data-creator-open-series-dialog]");
+    if (!openButton) return;
+    const dialog = document.querySelector("[data-creator-series-dialog]");
+    if (dialog?.showModal) dialog.showModal();
+  });
+
+  document.addEventListener("click", (event) => {
+    const closeButton = event.target.closest("[data-creator-close-dialog]");
+    if (!closeButton) return;
+    closeButton.closest("dialog")?.close();
   });
 
   document.addEventListener("click", async (event) => {

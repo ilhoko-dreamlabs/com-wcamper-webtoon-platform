@@ -43,6 +43,32 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 
 ## 정보 구조
 
+작가 콘솔의 기본 이동 흐름은 다음 계층을 기준으로 둔다.
+
+```text
+작가페이지
+└─ 대시보드: 작품 선택
+   └─ 작품페이지: 회차 선택
+      └─ 회차페이지: 회차 상태와 이미지 관리
+```
+
+첫 화면인 작가페이지는 별도 랜딩이 아니라 현재 대시보드, 작가 공개 정보 설정, 작품 목록을 한 화면에서 제공한다. 작품 상세와 회차 상세는 목록 안에 모두 펼쳐 넣지 않고, 선택한 리소스의 상세 화면으로 이동하는 구조를 기본으로 한다.
+
+## 구현 계획표
+
+| 단계 | 범위 | 구현 상태 | 반영 파일 | 비고 |
+|---|---|---:|---|---|
+| 1 | 작가페이지 첫 화면 재구성 | 완료 | `assets/js/app.js`, `assets/css/style.css` | 대시보드 숫자, 작가 정보 설정, 작품목록을 첫 화면에 배치 |
+| 2 | 작품 등록 모달 | 완료 | `assets/js/app.js`, `api/creator.js`, `api/_lib/creator-content.js` | 제목만 입력하면 서버가 작품 ID를 생성하고 작품페이지로 이동 |
+| 3 | 작품페이지 | 완료 | `assets/js/app.js`, `api/creator.js` | `?series={id}` 상태로 작품 설정/세계관/회차목록 표시 |
+| 4 | 회차 추가 | 완료 | `assets/js/app.js`, `api/_lib/creator-content.js` | 작품페이지에서 회차명 중심으로 추가, 번호 미입력 시 자동 채번 |
+| 5 | 회차페이지 | 완료 | `assets/js/app.js`, `api/creator.js` | `?episode={id}` 상태로 회차 상태, 원고/대표 URL, 이미지 관리 표시 |
+| 6 | 회차 이미지 여러 장 관리 | 1차 완료 | `db/schema.sql`, `api/_lib/creator-content.js`, `assets/js/app.js` | URL 등록, 순서, 간격, 사이 색상 데이터 저장 |
+| 7 | 대시보드 집계 테이블 | 1차 완료 | `db/schema.sql`, `api/_lib/creator-content.js` | `creator_dashboard_counts` 추가, 변경 시 갱신/조회 시 캐시 우선 |
+| 8 | 일반 공개 작가페이지와 작가정보 연동 | 계획 | 후속 | `/@작가아이디`를 DB 작가 프로필 기반으로 확장 필요 |
+| 9 | 실제 이미지 업로드/교체 | 계획 | 후속 | 현재는 URL 등록 방식, 파일 업로드 저장소 연동 필요 |
+| 10 | 이미지 사이 자동 처리 | 계획 | 후속 | 현재는 간격/색상 데이터 저장, 자동 합성/보정은 후속 |
+
 ```text
 /creator-studio
 ├─ 대시보드
@@ -50,18 +76,29 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 │  ├─ 작품/회차 상태 요약
 │  ├─ 최근 피드백
 │  └─ 검수/공개 일정
-├─ 작품
-│  ├─ 작품 목록
-│  ├─ 작품 기본정보
+├─ 작가 정보 설정
+│  ├─ 공개 작가명
+│  ├─ 작가 아이디
+│  ├─ 작가 소개
+│  ├─ 작가 아이콘
+│  └─ 공개 작가페이지 표시 여부
+├─ 작품 목록
+│  ├─ 작품 등록
+│  ├─ 작품 카드/표
+│  └─ 작품 상세 이동
+├─ 작품페이지
+│  ├─ 작품 설정
+│  ├─ 세계관/기획 메모
 │  ├─ 공개 상태
-│  └─ AI 사용 고지/권리 메모
-├─ 회차
-│  ├─ 회차 목록
-│  ├─ 기획안
-│  ├─ 콘티/패널
-│  ├─ 원본 이미지/편집본
-│  ├─ 검수 요청
-│  └─ 공개 예약
+│  ├─ AI 사용 고지/권리 메모
+│  └─ 회차 목록
+├─ 회차페이지
+│  ├─ 회차 상태
+│  ├─ 회차 이미지 등록/교체
+│  ├─ 이미지 여러 장 등록
+│  ├─ 이미지 순서 조정
+│  ├─ 이미지 사이 처리 설정
+│  └─ 검수 요청
 ├─ 피드백
 │  ├─ 회차별 피드백
 │  ├─ 반복 의견
@@ -85,6 +122,8 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 ### 1. 대시보드
 
 목적: 작가가 지금 처리해야 할 일을 바로 파악한다.
+
+대시보드 수치는 API별로 분리해 계산하되, 운영 트래픽이 늘면 매번 원본 테이블을 `count(*)` 하지 않고 별도 집계 테이블을 우선 검토한다. 조회 속도를 우선하는 경우 `creator_dashboard_counts` 같은 테이블을 두고 작품/회차/피드백 상태 변경 시 갱신한다. 단, 집계 테이블은 원본 데이터와 불일치할 수 있으므로 재계산 배치나 관리자용 재동기화 절차를 같이 둔다.
 
 구성:
 
@@ -113,11 +152,15 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 
 작품은 작가가 직접 공개하지 않고, 상태를 변경해 운영 검수 흐름으로 보낸다.
 
+작가페이지의 작품 목록 상단에는 `작품 등록` 버튼을 둔다. 버튼을 누르면 모달에서 제목만 먼저 입력받고, 서버가 작품 ID와 기본 초안 레코드를 생성한 뒤 해당 작품페이지로 이동한다. 상세 설정은 작품페이지에서 이어서 입력한다.
+
 작품 필드:
 
 - 제목
+- 작품 ID
 - 슬러그
 - 한 줄 소개
+- 세계관/기획 메모
 - 장르/태그
 - 대상 독자
 - 연재 상태: `DRAFT`, `IN_REVIEW`, `READY`, `PUBLISHED`, `PAUSED`, `ARCHIVED`
@@ -143,6 +186,8 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 ### 3. 회차 제작
 
 회차는 제작 단계가 명확해야 한다. AI 웹툰 제작 특성상 결과 이미지만 저장하면 다음 회차 재현성이 떨어지므로 기획/패널/자산/QA를 함께 관리한다.
+
+작품페이지의 회차 목록 상단에는 `회차 추가` 버튼을 둔다. 작품 등록과 같은 흐름으로 기본 회차 번호와 제목을 입력받아 초안 회차를 만들고, 생성 후 회차페이지로 이동한다.
 
 회차 상태:
 
@@ -172,6 +217,8 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 - QA 체크리스트 결과
 - 검수 상태와 반려 사유
 - 예약 공개 시각
+
+회차 이미지 자산은 회차 본문 URL 하나로 끝내지 않고 여러 장을 등록할 수 있는 별도 목록으로 관리한다. 각 이미지는 순서, 원본 URL, 표시 URL, 사이 간격, 배경/여백 색상 같은 표시 옵션을 가진다. 이미지 사이 처리 기능은 초기 구현에서는 데이터 구조와 UI 자리만 잡고 실제 자동 편집 기능은 후속 범위로 둔다.
 
 패널 필드:
 
@@ -309,6 +356,35 @@ create table if not exists creator_feedback_actions (
   updated_at timestamptz not null default now(),
   unique (feedback_id, author_id)
 );
+
+create table if not exists creator_dashboard_counts (
+  author_id text primary key,
+  series_total integer not null default 0,
+  series_draft integer not null default 0,
+  series_review_requested integer not null default 0,
+  series_published integer not null default 0,
+  episodes_total integer not null default 0,
+  episodes_draft integer not null default 0,
+  episodes_review_requested integer not null default 0,
+  episodes_revision_requested integer not null default 0,
+  episodes_published integer not null default 0,
+  feedback_total integer not null default 0,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists episode_images (
+  id text primary key,
+  episode_id text not null,
+  sort_order integer not null,
+  original_url text not null,
+  display_url text,
+  gap_px integer not null default 0,
+  background_color text not null default '#ffffff',
+  note text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (episode_id, sort_order)
+);
 ```
 
 강한 FK는 auth DB와 분리 원칙 때문에 auth user에는 두지 않는다. 웹툰 서비스 내부 테이블 간 FK는 운영 migration 시점에 적용 여부를 결정한다.
@@ -340,6 +416,10 @@ create table if not exists creator_feedback_actions (
 | `PATCH` | `/api/creator/feedback/:id/action` | 작가 | 피드백 반영 상태 변경 |
 | `GET` | `/api/creator/partnership-inquiries` | 작가 | 연결된 협업 문의 목록 |
 | `PATCH` | `/api/creator/profile` | 작가 | 작가 표시정보 수정 |
+| `GET` | `/api/creator/profile` | 작가 | 작가 표시정보 조회 |
+| `POST` | `/api/creator/episodes/:id/images` | 작가 | 회차 이미지 등록 |
+| `PATCH` | `/api/creator/episodes/:id/images/:imageId` | 작가 | 회차 이미지 교체/표시 옵션 수정 |
+| `PATCH` | `/api/creator/episodes/:id/images/reorder` | 작가 | 회차 이미지 순서 조정 |
 
 모든 API는 서버에서 작가 소유권을 확인한다. `authorId`, `seriesId`, `episodeId`를 클라이언트가 보냈더라도 해당 리소스가 현재 작가에게 속하지 않으면 접근을 허용하지 않는다.
 

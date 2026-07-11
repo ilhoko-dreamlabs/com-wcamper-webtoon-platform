@@ -3,6 +3,9 @@ create table if not exists authors (
   user_id text not null unique,
   display_name text not null,
   bio text not null default '',
+  handle text,
+  icon_url text,
+  public_page_enabled boolean not null default true,
   status text not null default 'PENDING' check (status in ('PENDING', 'ACTIVE', 'SUSPENDED', 'REJECTED')),
   approved_at timestamptz,
   created_at timestamptz not null default now(),
@@ -100,6 +103,29 @@ create table if not exists webtoon_episodes (
 
 create index if not exists webtoon_episodes_series_number_idx
   on webtoon_episodes (series_id, number asc);
+
+create table if not exists episode_images (
+  id text primary key,
+  episode_id text not null references webtoon_episodes(id) on delete cascade,
+  sort_order integer not null default 1,
+  image_url text not null,
+  alt_text text not null default '',
+  gap_after integer not null default 0,
+  background_color text not null default '#ffffff',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists episode_images_episode_order_idx
+  on episode_images (episode_id, sort_order asc);
+
+create table if not exists creator_dashboard_counts (
+  author_id text primary key references authors(id) on delete cascade,
+  series_counts jsonb not null default '{}'::jsonb,
+  episode_counts jsonb not null default '{}'::jsonb,
+  feedback_count integer not null default 0,
+  refreshed_at timestamptz not null default now()
+);
 
 create table if not exists site_settings (
   key text primary key,

@@ -2,13 +2,19 @@ const { assertAuthor } = require("./_lib/author-auth");
 const {
   creatorStoreDiagnostics,
   ensureAuthorRecord,
+  getCreatorProfile,
+  updateCreatorProfile,
   listCreatorSeries,
   getCreatorSeries,
   createCreatorSeries,
   updateCreatorSeries,
   listCreatorEpisodes,
+  getCreatorEpisode,
   createCreatorEpisode,
   updateCreatorEpisode,
+  listEpisodeImages,
+  createEpisodeImage,
+  updateEpisodeImage,
   requestEpisodeReview,
   creatorSummary
 } = require("./_lib/creator-content");
@@ -73,6 +79,25 @@ async function handleSummary(request, response) {
   const { author } = await authorRecord(request);
   const summary = await creatorSummary(author.id);
   sendJson(response, 200, { author, summary });
+}
+
+async function handleProfile(request, response) {
+  if (request.method === "GET") {
+    const { author } = await authorRecord(request);
+    const profile = await getCreatorProfile(author.id);
+    sendJson(response, 200, { author, profile });
+    return;
+  }
+
+  if (request.method === "PATCH") {
+    const authorContext = await assertAuthor(request);
+    const [author, body] = await Promise.all([ensureAuthorRecord(authorContext), readJson(request)]);
+    const profile = await updateCreatorProfile(author.id, body);
+    sendJson(response, 200, { profile });
+    return;
+  }
+
+  methodNotAllowed(response, ["GET", "PATCH"]);
 }
 
 async function handleSeriesCollection(request, response) {
@@ -157,8 +182,21 @@ async function handleSeriesEpisodes(request, response, seriesId) {
 }
 
 async function handleEpisodeItem(request, response, episodeId) {
+  if (request.method === "GET") {
+    const { author } = await authorRecord(request);
+    const episode = await getCreatorEpisode(author.id, episodeId);
+
+    if (!episode) {
+      sendJson(response, 404, { error: "NOT_FOUND", message: "회차를 찾지 못했습니다." });
+      return;
+    }
+
+    sendJson(response, 200, { episode });
+    return;
+  }
+
   if (request.method !== "PATCH") {
-    methodNotAllowed(response, ["PATCH"]);
+    methodNotAllowed(response, ["GET", "PATCH"]);
     return;
   }
 
@@ -172,6 +210,55 @@ async function handleEpisodeItem(request, response, episodeId) {
   }
 
   sendJson(response, 200, { episode });
+}
+
+async function handleEpisodeImages(request, response, episodeId) {
+  if (request.method === "GET") {
+    const { author } = await authorRecord(request);
+    const images = await listEpisodeImages(author.id, episodeId);
+
+    if (!images) {
+      sendJson(response, 404, { error: "NOT_FOUND", message: "회차를 찾지 못했습니다." });
+      return;
+    }
+
+    sendJson(response, 200, { images });
+    return;
+  }
+
+  if (request.method === "POST") {
+    const authorContext = await assertAuthor(request);
+    const [author, body] = await Promise.all([ensureAuthorRecord(authorContext), readJson(request)]);
+    const image = await createEpisodeImage(author.id, episodeId, body);
+
+    if (!image) {
+      sendJson(response, 404, { error: "NOT_FOUND", message: "회차를 찾지 못했습니다." });
+      return;
+    }
+
+    sendJson(response, 201, { image });
+    return;
+  }
+
+  methodNotAllowed(response, ["GET", "POST"]);
+}
+
+async function handleEpisodeImageItem(request, response, imageId) {
+  if (request.method !== "PATCH") {
+    methodNotAllowed(response, ["PATCH"]);
+    return;
+  }
+
+  const authorContext = await assertAuthor(request);
+  const [author, body] = await Promise.all([ensureAuthorRecord(authorContext), readJson(request)]);
+  const image = await updateEpisodeImage(author.id, imageId, body);
+
+  if (!image) {
+    sendJson(response, 404, { error: "NOT_FOUND", message: "이미지를 찾지 못했습니다." });
+    return;
+  }
+
+  sendJson(response, 200, { image });
 }
 
 async function handleEpisodeReviewRequest(request, response, episodeId) {
@@ -210,6 +297,11 @@ module.exports = async function handler(request, response) {
       return;
     }
 
+    if (parts.length === 1 && parts[0] === "profile") {
+      await handleProfile(request, response);
+      return;
+    }
+
     if (parts.length === 1 && parts[0] === "series") {
       await handleSeriesCollection(request, response);
       return;
@@ -230,8 +322,18 @@ module.exports = async function handler(request, response) {
       return;
     }
 
+    if (parts.length === 3 && parts[0] === "episodes" && parts[2] === "images") {
+      await handleEpisodeImages(request, response, parts[1]);
+      return;
+    }
+
     if (parts.length === 3 && parts[0] === "episodes" && parts[2] === "request-review") {
       await handleEpisodeReviewRequest(request, response, parts[1]);
+      return;
+    }
+
+    if (parts.length === 2 && parts[0] === "images") {
+      await handleEpisodeImageItem(request, response, parts[1]);
       return;
     }
 

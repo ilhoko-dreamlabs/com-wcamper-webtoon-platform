@@ -7,7 +7,7 @@ const VERCEL_OUTPUT_ROOT = path.join(ROOT, "public");
 const SITE_ORIGIN = "https://webtoon.wcamper.com";
 const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp";
 const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
-const ASSET_VERSION = "20260711-creator-studio-cache";
+const ASSET_VERSION = "20260711-creator-hero";
 
 function loadCatalog() {
   const catalogPath = path.join(ROOT, "data", "catalog.js");
@@ -103,7 +103,7 @@ function pagesForCatalog(data) {
       routePath: "/creators",
       title: "작가모집 | WCAMPER Webtoon",
       description: "웹툰기획력과 AI 제작 도구를 활용해 캠핑, 여행, 일상 이야기를 웹툰으로 연재할 작가를 모집합니다.",
-      image: "assets/img/authors/bongdal-universe-comics-logo.png",
+      image: "assets/img/creators/ai-webtoon-creator-call-16x9.png",
       type: "website"
     }),
     normalizePage({
