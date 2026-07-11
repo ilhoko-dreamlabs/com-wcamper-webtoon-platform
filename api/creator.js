@@ -1,4 +1,4 @@
-const { assertAuthor } = require("../_lib/author-auth");
+const { assertAuthor } = require("./_lib/author-auth");
 const {
   creatorStoreDiagnostics,
   ensureAuthorRecord,
@@ -11,8 +11,8 @@ const {
   updateCreatorEpisode,
   requestEpisodeReview,
   creatorSummary
-} = require("../_lib/creator-content");
-const { handleError, methodNotAllowed, readJson, sendJson } = require("../_lib/http");
+} = require("./_lib/creator-content");
+const { handleError, methodNotAllowed, readJson, sendJson } = require("./_lib/http");
 
 function pathParts(request) {
   const path = request.query?.path;

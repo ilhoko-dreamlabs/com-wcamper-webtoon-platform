@@ -1,6 +1,12 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/api/creator/:path*",
+      "destination": "/api/creator?path=:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
