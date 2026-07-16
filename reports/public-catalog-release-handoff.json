@@ -1,0 +1,26 @@
+{
+  "role": "public-catalog-release-handoff",
+  "generatedAt": "2026-07-16T12:32:50.225Z",
+  "handoffPath": "docs/06-operations/public-catalog-default-runtime-release-handoff-v0.16.md",
+  "releaseReadinessReportPath": "reports/public-catalog-release-readiness.json",
+  "switchReportPath": "reports/public-catalog-default-runtime-switch.json",
+  "defaultRuntimeScript": "/data/catalog.generated.js",
+  "legacyRuntimeScript": "/data/catalog.js",
+  "rollbackCommand": "npm run build:legacy-catalog",
+  "payloadHash": "7ffb97dd5794dd7abba055bfe1940c0670e029b7b3453483068019e91ec584d4",
+  "counts": {
+    "authors": 1,
+    "series": 2,
+    "episodes": 16,
+    "images": 17
+  },
+  "releaseReadinessPassed": true,
+  "defaultBuildReferencesGeneratedScript": true,
+  "generatedArtifactExistsAfterDefaultBuild": true,
+  "handoffIncludesApprovalBoundary": true,
+  "handoffIncludesRollback": true,
+  "productionDeployment": false,
+  "remotePush": false,
+  "databaseMigration": false,
+  "secretRotation": false
+}

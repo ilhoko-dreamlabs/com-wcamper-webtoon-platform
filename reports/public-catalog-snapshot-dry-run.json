@@ -1,0 +1,452 @@
+{
+  "role": "public-catalog-snapshot-dry-run",
+  "source": "static-catalog-import-plan",
+  "mutationPerformed": false,
+  "generatedAt": "2026-07-16T12:33:24.543Z",
+  "authors": [
+    {
+      "id": "bongdal-universe-comics",
+      "handle": "bongdal-universe-comics",
+      "displayName": "봉달캠퍼 유니버스 코믹스",
+      "bio": "캠핑 크루와 가족, 모임의 대화를 웹툰 컷으로 엮어 공개 연재하는 봉달캠퍼 기반 코믹스 레이블입니다.",
+      "iconUrl": "/assets/img/authors/bongdal-universe-comics-logo.png",
+      "status": "ACTIVE"
+    }
+  ],
+  "series": [
+    {
+      "id": "bd-crew-chat-season-1",
+      "authorId": "bongdal-universe-comics",
+      "title": "BD-Crew 단톡방",
+      "summary": "BD-Crew의 캠핑, 차량, 웹툰 제작, 일상 대화가 단톡방처럼 이어지는 봉달캠퍼 유니버스 시즌 1.",
+      "genre": "캠핑",
+      "tags": [
+        "캠핑",
+        "BD-Crew",
+        "단톡방",
+        "일상 코미디"
+      ],
+      "coverUrl": "/assets/img/covers/bd-crew-chat-season-1-main.png",
+      "episodes": [
+        "2026-07-09-season-1-01",
+        "2026-07-09-season-1-02",
+        "2026-07-09-season-1-03",
+        "2026-07-09-season-1-04",
+        "2026-07-09-season-1-05",
+        "2026-07-09-season-1-06",
+        "2026-07-09-season-1-07",
+        "2026-07-09-season-1-08",
+        "2026-07-09-season-1-09",
+        "2026-07-09-season-1-10",
+        "2026-07-09-season-1-11",
+        "2026-07-09-season-1-12",
+        "2026-07-09-season-1-13"
+      ]
+    },
+    {
+      "id": "bravo-camp-chat-season-2",
+      "authorId": "bongdal-universe-comics",
+      "title": "부라보캠프 단톡방",
+      "summary": "부라보캠프 멤버들이 캠핑장에서 주고받는 밝은 리액션과 소동을 짧은 컷으로 묶은 시즌 2.",
+      "genre": "부라보캠프",
+      "tags": [
+        "부라보캠프",
+        "캠핑",
+        "단톡방",
+        "시즌 2"
+      ],
+      "coverUrl": "/assets/img/drive/season-2/BRAVOCAMP-WEBTOON-작품페이지.png",
+      "episodes": [
+        "2026-07-09-season-2-01",
+        "2026-07-09-season-2-02",
+        "2026-07-09-season-2-03"
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "id": "2026-07-09-season-1-01",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 1,
+      "title": "오프닝",
+      "summary": "새로운 차량 검사와 즐거운 만남으로 BD-Crew 단톡방 시즌이 열린다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-01",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-01-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-01.png",
+          "altText": "새로운 차량 검사와 즐거운 만남으로 BD-Crew 단톡방 시즌이 열린다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-02",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 2,
+      "title": "아침 회의",
+      "summary": "웹툰 팀의 행복한 아침 회의가 캠핑 일정과 맞물린다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-02",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-02-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-02.png",
+          "altText": "웹툰 팀의 행복한 아침 회의가 캠핑 일정과 맞물린다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-03",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 3,
+      "title": "제작 모임",
+      "summary": "웹툰 제작 모임과 함께한 하루가 크루의 기록으로 남는다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-03",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-03-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-03.png",
+          "altText": "웹툰 제작 모임과 함께한 하루가 크루의 기록으로 남는다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-04",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 4,
+      "title": "합동 캠핑",
+      "summary": "첫 합동 캠핑 대모험에서 각자의 장비와 농담이 한 자리에 모인다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-04",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-04-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-04.png",
+          "altText": "첫 합동 캠핑 대모험에서 각자의 장비와 농담이 한 자리에 모인다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-05",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 5,
+      "title": "먹거리",
+      "summary": "캠핑 이야기, 모임, 음식들이 단톡방의 속도를 올린다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-05",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-05-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-05.png",
+          "altText": "캠핑 이야기, 모임, 음식들이 단톡방의 속도를 올린다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-06",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 6,
+      "title": "아침 인사",
+      "summary": "따뜻한 아침 인사가 밤새 이어진 대화를 정리한다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-06",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-06-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-06.png",
+          "altText": "따뜻한 아침 인사가 밤새 이어진 대화를 정리한다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-07",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 7,
+      "title": "꿈꾸는 크루",
+      "summary": "함께 꿈꾸는 캠핑 프로그래머들이 다음 장면을 상상한다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-07",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-07-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-07.png",
+          "altText": "함께 꿈꾸는 캠핑 프로그래머들이 다음 장면을 상상한다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-08",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 8,
+      "title": "우정",
+      "summary": "축구와 우정, 일상 웹툰의 가벼운 리듬이 들어온다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-08",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-08-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-08.png",
+          "altText": "축구와 우정, 일상 웹툰의 가벼운 리듬이 들어온다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-09",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 9,
+      "title": "금요일",
+      "summary": "금요일의 웹툰 이야기가 다음 업로드 기대감을 만든다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-09",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-09-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-09.png",
+          "altText": "금요일의 웹툰 이야기가 다음 업로드 기대감을 만든다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-10",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 10,
+      "title": "따뜻한 하루",
+      "summary": "캠핑에서의 따뜻한 하루가 시즌의 정서를 잡는다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-10",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-10-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-10.png",
+          "altText": "캠핑에서의 따뜻한 하루가 시즌의 정서를 잡는다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-11",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 11,
+      "title": "인터뷰",
+      "summary": "BD-Crew Weekly 독도인별 인터뷰가 캐릭터의 목소리를 더한다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-11",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-11-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-11.png",
+          "altText": "BD-Crew Weekly 독도인별 인터뷰가 캐릭터의 목소리를 더한다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-12",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 12,
+      "title": "일상",
+      "summary": "캠핑과 함께한 BD-Crew 일상이 시즌의 중심으로 이어진다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-12",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-12-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-12.png",
+          "altText": "캠핑과 함께한 BD-Crew 일상이 시즌의 중심으로 이어진다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-13",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 13,
+      "title": "주의 환기",
+      "summary": "공무원 사칭 사기 경고가 단톡방의 현실감을 남기며 회차를 닫는다.",
+      "contentUrl": "/episodes/2026-07-09-season-1-13",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-1-13-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-1/s1-13.png",
+          "altText": "공무원 사칭 사기 경고가 단톡방의 현실감을 남기며 회차를 닫는다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-2-01",
+      "seriesId": "bravo-camp-chat-season-2",
+      "number": 1,
+      "title": "부라보캠프 첫 소개",
+      "summary": "부라보캠프 시즌 2의 전체 캐릭터 로스터와 자기소개를 이어서 보여주는 첫 회차.",
+      "contentUrl": "/episodes/2026-07-09-season-2-01",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-2-01-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png",
+          "altText": "부라보캠프 시즌 2의 전체 캐릭터 로스터를 한눈에 보여준다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        },
+        {
+          "id": "2026-07-09-season-2-01-image-002",
+          "sortOrder": 2,
+          "imageUrl": "/assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
+          "altText": "부라보tv가 캠핑장 멤버들을 한 명씩 소개하며 시즌 2의 단톡방 톤을 연다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-2-02",
+      "seriesId": "bravo-camp-chat-season-2",
+      "number": 2,
+      "title": "워킹데드",
+      "summary": "캠핑장의 농담이 좀비극 상상으로 번지며 부라보캠프식 코미디 장면을 만든다.",
+      "contentUrl": "/episodes/2026-07-09-season-2-02",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-2-02-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png",
+          "altText": "캠핑장의 농담이 좀비극 상상으로 번지며 부라보캠프식 코미디 장면을 만든다.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "2026-07-09-season-2-03",
+      "seriesId": "bravo-camp-chat-season-2",
+      "number": 3,
+      "title": "데쓰노트",
+      "summary": "수다방 평화 유지를 위해 데쓰노트를 꺼내는 장난스러운 캠핑 단톡방 회차.",
+      "contentUrl": "/episodes/2026-07-09-season-2-03",
+      "publishedAt": "2026-07-09",
+      "images": [
+        {
+          "id": "2026-07-09-season-2-03-image-001",
+          "sortOrder": 1,
+          "imageUrl": "/assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png",
+          "altText": "수다방 평화 유지를 위해 데쓰노트를 꺼내는 장난스러운 캠핑 단톡방 회차.",
+          "gapAfter": 0,
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    }
+  ],
+  "imageCount": 17,
+  "orphanPublishedEpisodes": [],
+  "missingEpisodeRows": [],
+  "sourceHash": "e02c38ddd8e1cd3736c531fbe1bafe1f24ac0a82dd95e84cc80038698bd7c26f",
+  "counts": {
+    "authors": 1,
+    "series": 2,
+    "episodes": 16,
+    "images": 17
+  },
+  "baselineComparison": {
+    "expected": {
+      "seriesIds": [
+        "bd-crew-chat-season-1",
+        "bravo-camp-chat-season-2"
+      ],
+      "episodeIds": [
+        "2026-07-09-season-1-01",
+        "2026-07-09-season-1-02",
+        "2026-07-09-season-1-03",
+        "2026-07-09-season-1-04",
+        "2026-07-09-season-1-05",
+        "2026-07-09-season-1-06",
+        "2026-07-09-season-1-07",
+        "2026-07-09-season-1-08",
+        "2026-07-09-season-1-09",
+        "2026-07-09-season-1-10",
+        "2026-07-09-season-1-11",
+        "2026-07-09-season-1-12",
+        "2026-07-09-season-1-13",
+        "2026-07-09-season-2-01",
+        "2026-07-09-season-2-02",
+        "2026-07-09-season-2-03"
+      ],
+      "imageRows": 17
+    },
+    "actual": {
+      "seriesIds": [
+        "bd-crew-chat-season-1",
+        "bravo-camp-chat-season-2"
+      ],
+      "episodeIds": [
+        "2026-07-09-season-1-01",
+        "2026-07-09-season-1-02",
+        "2026-07-09-season-1-03",
+        "2026-07-09-season-1-04",
+        "2026-07-09-season-1-05",
+        "2026-07-09-season-1-06",
+        "2026-07-09-season-1-07",
+        "2026-07-09-season-1-08",
+        "2026-07-09-season-1-09",
+        "2026-07-09-season-1-10",
+        "2026-07-09-season-1-11",
+        "2026-07-09-season-1-12",
+        "2026-07-09-season-1-13",
+        "2026-07-09-season-2-01",
+        "2026-07-09-season-2-02",
+        "2026-07-09-season-2-03"
+      ],
+      "imageRows": 17
+    },
+    "seriesDiff": {
+      "missing": [],
+      "unexpected": []
+    },
+    "episodeDiff": {
+      "missing": [],
+      "unexpected": []
+    },
+    "mismatches": [],
+    "matches": true
+  }
+}

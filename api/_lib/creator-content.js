@@ -1,60 +1,34 @@
 const crypto = require("node:crypto");
+const {
+  buildStaticCatalogImportPlan,
+  loadStaticCatalog,
+  upsertStaticCatalogSeed
+} = require("./catalog-import-service");
+const {
+  DEFAULT_AUTHOR_ICON,
+  groupEpisodesBySeries,
+  serializeAuthorProfile,
+  serializeEpisode,
+  serializeEpisodeImage,
+  serializeSeries
+} = require("./creator-read-model");
+const {
+  episodeSelectSql,
+  findCreatorProfile,
+  findEpisodeByAuthor,
+  findSeriesByAuthor,
+  listEpisodesBySeries,
+  listImagesByEpisode,
+  listSeriesByAuthor,
+  listWorkspaceEpisodes,
+  seriesSelectSql
+} = require("./creator-repository");
 const { query, transaction } = require("./db");
 const { requiredString, optionalUrl } = require("./validation");
 
 const SERIES_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
 const EPISODE_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
 const DEFAULT_CATALOG_OWNER_EMAILS = ["ilho.ko@dreamlabs.co.kr"];
-const DEFAULT_AUTHOR_ICON = "/assets/img/authors/bongdal-universe-comics-logo.png";
-
-const initialPublishedCatalog = {
-  series: [
-    {
-      id: "bd-crew-chat-season-1",
-      title: "BD-Crew 단톡방",
-      summary: "BD-Crew의 캠핑, 차량, 웹툰 제작, 일상 대화가 단톡방처럼 이어지는 봉달캠퍼 유니버스 시즌 1.",
-      genre: "캠핑 일상 코미디",
-      tags: ["캠핑", "BD-Crew", "단톡방", "일상 코미디"],
-      coverUrl: "/assets/img/covers/bd-crew-chat-season-1-main.png"
-    },
-    {
-      id: "bravo-camp-chat-season-2",
-      title: "부라보캠프 단톡방",
-      summary: "부라보캠프 멤버들이 캠핑장에서 주고받는 밝은 리액션과 소동을 짧은 컷으로 묶은 시즌 2.",
-      genre: "캠핑 단톡방 코미디",
-      tags: ["부라보캠프", "캠핑", "단톡방", "시즌 2"],
-      coverUrl: "/assets/img/drive/season-2/BRAVOCAMP-WEBTOON-작품페이지.png"
-    },
-    {
-      id: "bongbong-family-camping",
-      title: "봉봉패미리 캠핑",
-      summary: "가족 캠핑의 작은 준비와 현장 리듬을 봉봉패미리 중심으로 풀어낼 예정작.",
-      genre: "가족 캠핑",
-      tags: ["봉봉패미리", "가족 캠핑", "기획중"],
-      coverUrl: "/assets/img/hero-panel-3.svg",
-      status: "DRAFT"
-    }
-  ],
-  episodes: [
-    ["2026-07-09-season-1-01", "bd-crew-chat-season-1", 1, "새로운 차량 검사와 즐거운 만남", "새로운 차량 검사와 즐거운 만남으로 BD-Crew 단톡방 시즌이 열린다.", "/episodes/2026-07-09-season-1-01"],
-    ["2026-07-09-season-1-02", "bd-crew-chat-season-1", 2, "아침 회의", "웹툰 팀의 행복한 아침 회의가 캠핑 일정과 맞물린다.", "/episodes/2026-07-09-season-1-02"],
-    ["2026-07-09-season-1-03", "bd-crew-chat-season-1", 3, "제작 모임", "웹툰 제작 모임과 함께한 하루가 크루의 기록으로 남는다.", "/episodes/2026-07-09-season-1-03"],
-    ["2026-07-09-season-1-04", "bd-crew-chat-season-1", 4, "합동 캠핑", "첫 합동 캠핑 대모험에서 각자의 장비와 농담이 한 자리에 모인다.", "/episodes/2026-07-09-season-1-04"],
-    ["2026-07-09-season-1-05", "bd-crew-chat-season-1", 5, "먹거리", "캠핑 이야기, 모임, 음식들이 단톡방의 속도를 올린다.", "/episodes/2026-07-09-season-1-05"],
-    ["2026-07-09-season-1-06", "bd-crew-chat-season-1", 6, "아침 인사", "따뜻한 아침 인사가 밤새 이어진 대화를 정리한다.", "/episodes/2026-07-09-season-1-06"],
-    ["2026-07-09-season-1-07", "bd-crew-chat-season-1", 7, "꿈꾸는 크루", "함께 꿈꾸는 캠핑 프로그래머들이 다음 장면을 상상한다.", "/episodes/2026-07-09-season-1-07"],
-    ["2026-07-09-season-1-08", "bd-crew-chat-season-1", 8, "우정", "축구와 우정, 일상 웹툰의 가벼운 리듬이 들어온다.", "/episodes/2026-07-09-season-1-08"],
-    ["2026-07-09-season-1-09", "bd-crew-chat-season-1", 9, "금요일", "금요일의 웹툰 이야기가 다음 업로드 기대감을 만든다.", "/episodes/2026-07-09-season-1-09"],
-    ["2026-07-09-season-1-10", "bd-crew-chat-season-1", 10, "따뜻한 하루", "캠핑에서의 따뜻한 하루가 시즌의 정서를 잡는다.", "/episodes/2026-07-09-season-1-10"],
-    ["2026-07-09-season-1-11", "bd-crew-chat-season-1", 11, "인터뷰", "BD-Crew Weekly 독도인별 인터뷰가 캐릭터의 목소리를 더한다.", "/episodes/2026-07-09-season-1-11"],
-    ["2026-07-09-season-1-12", "bd-crew-chat-season-1", 12, "일상", "캠핑과 함께한 BD-Crew 일상이 시즌의 중심으로 이어진다.", "/episodes/2026-07-09-season-1-12"],
-    ["2026-07-09-season-1-13", "bd-crew-chat-season-1", 13, "주의 환기", "공무원 사칭 사기 경고가 단톡방의 현실감을 남기며 회차를 닫는다.", "/episodes/2026-07-09-season-1-13"],
-    ["2026-07-09-season-2-01", "bravo-camp-chat-season-2", 1, "부라보캠프 첫 소개", "부라보캠프 시즌 2의 전체 캐릭터 로스터와 자기소개를 이어서 보여주는 첫 회차.", "/episodes/2026-07-09-season-2-01"],
-    ["2026-07-09-season-2-02", "bravo-camp-chat-season-2", 2, "워킹데드", "캠핑장의 농담이 좀비극 상상으로 번지며 부라보캠프식 코미디 장면을 만든다.", "/episodes/2026-07-09-season-2-02"],
-    ["2026-07-09-season-2-03", "bravo-camp-chat-season-2", 3, "데쓰노트", "수다방 평화 유지를 위해 데쓰노트를 꺼내는 장난스러운 캠핑 단톡방 회차.", "/episodes/2026-07-09-season-2-03"],
-    ["2026-07-23-bongbong-family-planning", "bongbong-family-camping", 1, "기획중 - 봉봉패미리 캠핑", "봉봉패미리 캠핑은 캐릭터와 첫 에피소드 구조를 기획중입니다.", null, "DRAFT"]
-  ]
-};
 
 let schemaReady;
 
@@ -431,167 +405,22 @@ async function ensureAuthorRecord(authorContext, tx = query) {
 
 async function attachInitialPublishedCatalog(authorId) {
   try {
+    const catalog = loadStaticCatalog();
+    const plan = buildStaticCatalogImportPlan(catalog);
+
     await transaction(async (tx) => {
-      for (const series of initialPublishedCatalog.series) {
-        const existing = await tx("select id from webtoon_series where id = $1 limit 1", [series.id]);
-        const params = [
-          series.id,
-          authorId,
-          series.title,
-          series.summary,
-          series.genre,
-          JSON.stringify(series.tags),
-          series.coverUrl,
-          series.status || "PUBLISHED"
-        ];
-
-        if (existing.rows[0]) {
-          await tx(
-            `update webtoon_series
-             set author_id = $2,
-                 title = $3,
-                 summary = $4,
-                 genre = $5,
-                 tags = $6::jsonb,
-                 cover_url = $7,
-                 status = $8,
-                 updated_at = now()
-             where id = $1`,
-            params
-          );
-        } else {
-          await tx(
-            `insert into webtoon_series (id, author_id, title, summary, genre, tags, cover_url, status, updated_at)
-             values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, now())`,
-            params
-          );
-        }
-      }
-
-      for (const [id, seriesId, number, title, summary, contentUrl, status = "PUBLISHED"] of initialPublishedCatalog.episodes) {
-        const existing = await tx("select id from webtoon_episodes where id = $1 limit 1", [id]);
-        const params = [id, seriesId, number, title, summary, contentUrl, status];
-
-        if (existing.rows[0]) {
-          await tx(
-            `update webtoon_episodes
-             set series_id = $2,
-                 number = $3,
-                 title = $4,
-                 summary = $5,
-                 content_url = $6,
-                 status = $7,
-                 published_at = case when $7 = 'PUBLISHED' then '2026-07-09'::timestamptz else null end,
-                 updated_at = now()
-             where id = $1`,
-            params
-          );
-        } else {
-          await tx(
-            `insert into webtoon_episodes (id, series_id, number, title, summary, content_url, status, published_at, updated_at)
-             values ($1, $2, $3, $4, $5, $6, $7, case when $7 = 'PUBLISHED' then '2026-07-09'::timestamptz else null end, now())`,
-            params
-          );
-        }
-      }
+      await upsertStaticCatalogSeed(tx, plan, { authorId });
     });
+    await refreshCreatorDashboardCounts(authorId);
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
   }
 }
 
-function serializeSeries(row) {
-  return {
-    id: row.id,
-    authorId: row.authorId,
-    title: row.title,
-    summary: row.summary,
-    genre: row.genre,
-    tags: row.tags || [],
-    coverUrl: row.coverUrl,
-    status: row.status,
-    reviewNote: row.reviewNote,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt
-  };
-}
-
-function serializeAuthorProfile(row) {
-  return {
-    id: row.id,
-    userId: row.userId,
-    displayName: row.displayName,
-    bio: row.bio || "",
-    handle: row.handle || row.id,
-    iconUrl: row.iconUrl || DEFAULT_AUTHOR_ICON,
-    publicPageEnabled: row.publicPageEnabled !== false,
-    status: row.status,
-    approvedAt: row.approvedAt,
-    updatedAt: row.updatedAt
-  };
-}
-
-function serializeEpisode(row) {
-  return {
-    id: row.id,
-    seriesId: row.seriesId,
-    number: row.number,
-    title: row.title,
-    summary: row.summary,
-    draftBody: row.draftBody,
-    contentUrl: row.contentUrl,
-    status: row.status,
-    reviewNote: row.reviewNote,
-    scheduledAt: row.scheduledAt,
-    publishedAt: row.publishedAt,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt
-  };
-}
-
-function serializeEpisodeImage(row) {
-  return {
-    id: row.id,
-    episodeId: row.episodeId,
-    sortOrder: row.sortOrder,
-    imageUrl: row.imageUrl,
-    altText: row.altText || "",
-    gapAfter: row.gapAfter || 0,
-    backgroundColor: row.backgroundColor || "#ffffff",
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt
-  };
-}
-
-function seriesSelectSql(whereClause) {
-  return `select webtoon_series.id, author_id as "authorId", title, summary, genre, tags, cover_url as "coverUrl",
-                 status, review_note as "reviewNote", created_at as "createdAt", updated_at as "updatedAt"
-          from webtoon_series
-          ${whereClause}`;
-}
-
-function episodeSelectSql(whereClause) {
-  return `select webtoon_episodes.id, series_id as "seriesId", number, title, summary, draft_body as "draftBody",
-                 content_url as "contentUrl", webtoon_episodes.status, webtoon_episodes.review_note as "reviewNote",
-                 scheduled_at as "scheduledAt", published_at as "publishedAt",
-                 webtoon_episodes.created_at as "createdAt", webtoon_episodes.updated_at as "updatedAt"
-          from webtoon_episodes
-          ${whereClause}`;
-}
-
 async function getCreatorProfile(authorId) {
   try {
-    const result = await query(
-      `select id, user_id as "userId", display_name as "displayName", bio, handle, icon_url as "iconUrl",
-              public_page_enabled as "publicPageEnabled", status, approved_at as "approvedAt",
-              updated_at as "updatedAt"
-       from authors
-       where id = $1
-       limit 1`,
-      [authorId]
-    );
-    return result.rows[0] ? serializeAuthorProfile(result.rows[0]) : null;
+    return findCreatorProfile(authorId);
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
@@ -632,8 +461,7 @@ async function updateCreatorProfile(authorId, body) {
 
 async function listCreatorSeries(authorId) {
   try {
-    const result = await query(`${seriesSelectSql("where author_id = $1")} order by updated_at desc`, [authorId]);
-    return result.rows.map(serializeSeries);
+    return listSeriesByAuthor(authorId);
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
@@ -642,8 +470,7 @@ async function listCreatorSeries(authorId) {
 
 async function getCreatorSeries(authorId, seriesId) {
   try {
-    const result = await query(`${seriesSelectSql("where author_id = $1 and id = $2")} limit 1`, [authorId, seriesId]);
-    return result.rows[0] ? serializeSeries(result.rows[0]) : null;
+    return findSeriesByAuthor(authorId, seriesId);
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
@@ -717,8 +544,7 @@ async function listCreatorEpisodes(authorId, seriesId) {
   if (!series) return null;
 
   try {
-    const result = await query(`${episodeSelectSql("where series_id = $1")} order by number asc, created_at asc`, [seriesId]);
-    return result.rows.map(serializeEpisode);
+    return listEpisodesBySeries(seriesId);
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
@@ -727,11 +553,7 @@ async function listCreatorEpisodes(authorId, seriesId) {
 
 async function getCreatorEpisode(authorId, episodeId) {
   try {
-    const result = await query(
-      `${episodeSelectSql("join webtoon_series s on s.id = webtoon_episodes.series_id where s.author_id = $1 and webtoon_episodes.id = $2")} limit 1`,
-      [authorId, episodeId]
-    );
-    return result.rows[0] ? serializeEpisode(result.rows[0]) : null;
+    return findEpisodeByAuthor(authorId, episodeId);
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
@@ -898,16 +720,7 @@ async function listEpisodeImages(authorId, episodeId) {
   if (!episode) return null;
 
   try {
-    const result = await query(
-      `select id, episode_id as "episodeId", sort_order as "sortOrder", image_url as "imageUrl",
-              alt_text as "altText", gap_after as "gapAfter", background_color as "backgroundColor",
-              created_at as "createdAt", updated_at as "updatedAt"
-       from episode_images
-       where episode_id = $1
-       order by sort_order asc, created_at asc`,
-      [episodeId]
-    );
-    return result.rows.map(serializeEpisodeImage);
+    return listImagesByEpisode(episodeId);
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
@@ -1079,47 +892,15 @@ async function creatorSummary(authorId) {
   }
 }
 
-async function listCreatorWorkspaceEpisodes(authorId, options = {}) {
-  const params = [authorId];
-  let predicate = "";
-
-  if (options.episodeId) {
-    params.push(options.episodeId);
-    predicate = "and webtoon_episodes.id = $2";
-  } else if (options.seriesId) {
-    params.push(options.seriesId);
-    predicate = "and webtoon_episodes.series_id = $2";
-  } else {
-    return [];
-  }
-
-  try {
-    const result = await query(
-      `${episodeSelectSql("join webtoon_series s on s.id = webtoon_episodes.series_id where s.author_id = $1 " + predicate)}
-       order by webtoon_episodes.series_id asc, number asc, webtoon_episodes.created_at asc`,
-      params
-    );
-    return result.rows.map(serializeEpisode);
-  } catch (error) {
-    if (tableMissing(error)) throw creatorStoreNotReady(error);
-    throw error;
-  }
-}
-
-function groupEpisodesBySeries(episodes) {
-  return episodes.reduce((grouped, episode) => {
-    if (!grouped[episode.seriesId]) grouped[episode.seriesId] = [];
-    grouped[episode.seriesId].push(episode);
-    return grouped;
-  }, {});
-}
-
 async function creatorWorkspace(authorId, options = {}) {
   const [profile, summary, series, episodes] = await Promise.all([
     getCreatorProfile(authorId),
     creatorSummary(authorId),
     listCreatorSeries(authorId),
-    listCreatorWorkspaceEpisodes(authorId, options)
+    listWorkspaceEpisodes(authorId, options).catch((error) => {
+      if (tableMissing(error)) throw creatorStoreNotReady(error);
+      throw error;
+    })
   ]);
 
   const episodeImagesByEpisode = {};

@@ -1,0 +1,26 @@
+{
+  "role": "public-catalog-default-runtime-proposal-readiness",
+  "generatedAt": "2026-07-15T18:28:44.135Z",
+  "proposalPath": "docs/04-data/public-catalog-default-runtime-proposal-v0.14.md",
+  "readinessReportPath": "reports/public-catalog-release-readiness.json",
+  "defaultRuntimeScript": "/data/catalog.js",
+  "proposedRuntimeScript": "/data/catalog.generated.js",
+  "observedDefaultRuntimeScript": "/data/catalog.generated.js",
+  "readinessPayloadHash": "7ffb97dd5794dd7abba055bfe1940c0670e029b7b3453483068019e91ec584d4",
+  "counts": {
+    "htmlFiles": 30,
+    "sharedNonHtmlFiles": 81,
+    "generatedArtifactSeries": 2,
+    "generatedArtifactEpisodes": 16,
+    "generatedArtifactImages": 17
+  },
+  "proposalIncludesRollbackChecklist": true,
+  "readinessPassed": true,
+  "defaultBuildReferencesDefaultScript": false,
+  "defaultBuildReferencesGeneratedScript": true,
+  "generatedArtifactExistsAfterDefaultBuild": true,
+  "defaultRuntimeReplacement": true,
+  "productionDeployment": false,
+  "remotePush": false,
+  "databaseMigration": false
+}

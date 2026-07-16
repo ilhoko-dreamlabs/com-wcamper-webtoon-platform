@@ -1,0 +1,608 @@
+{
+  "role": "public-catalog-release-readiness",
+  "generatedAt": "2026-07-16T12:33:24.179Z",
+  "legacyRuntimeScript": "/data/catalog.js",
+  "defaultRuntimeScript": "/data/catalog.generated.js",
+  "generatedRuntimeScript": "/data/catalog.generated.js",
+  "artifactPath": "public/data/catalog.generated.js",
+  "artifactVersion": "public-catalog-artifact.v0.8",
+  "payloadHash": "7ffb97dd5794dd7abba055bfe1940c0670e029b7b3453483068019e91ec584d4",
+  "counts": {
+    "defaultFiles": 111,
+    "generatedFiles": 112,
+    "htmlFiles": 30,
+    "sharedNonHtmlFiles": 81,
+    "generatedArtifactSeries": 2,
+    "generatedArtifactEpisodes": 16,
+    "generatedArtifactImages": 17
+  },
+  "fileDiff": {
+    "defaultOnly": [],
+    "generatedOnly": [
+      "data/catalog.generated.js"
+    ],
+    "allowedGeneratedOnly": [
+      "data/catalog.generated.js"
+    ],
+    "unexpectedGeneratedOnly": [],
+    "missingAllowedGeneratedOnly": []
+  },
+  "htmlComparison": [
+    {
+      "path": "404.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/1/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/10/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/11/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/12/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/13/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/2/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/3/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/4/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/5/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/6/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/7/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/8/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/9/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bd-crew-chat-season-1/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bongbong-family-camping/episodes/1/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bongbong-family-camping/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bravo-camp-chat-season-2/episodes/1/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bravo-camp-chat-season-2/episodes/2/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bravo-camp-chat-season-2/episodes/3/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "@bongdal-universe-comics/works/bravo-camp-chat-season-2/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "admin/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "creator-studio/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "creators/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "creators/training/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "mypage/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "partnership/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    },
+    {
+      "path": "webtoons/index.html",
+      "defaultReferencesDefaultScript": true,
+      "generatedReferencesGeneratedScript": true,
+      "matchesAfterRuntimeScriptNormalization": true
+    }
+  ],
+  "sharedFileComparison": [
+    {
+      "path": "assets/css/mypage-auth-status.css",
+      "matches": true
+    },
+    {
+      "path": "assets/css/style.css",
+      "matches": true
+    },
+    {
+      "path": "assets/img/authors/bongdal-universe-comics-logo.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/cover-bd-crew.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/covers/bd-crew-chat-season-1-main.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/creators/ai-webtoon-creator-call-16x9.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/creators/ai-webtoon-creator-call-16x9.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/creators/ai-webtoon-creator-call-mobile.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/creators/ai-webtoon-creator-call-mobile.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-01.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-02.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-03.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-04.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-05.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-06.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-07.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-08.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-09.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-10.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-11.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-12.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-1/s1-13.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-작품페이지.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/favicon.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/hero-panel-1.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/hero-panel-2.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/hero-panel-3.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/home/wcamper-home-main-20260709.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/icons/creator-login.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/icons/member-login.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/icons/search.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/og.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-001.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-002.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-003.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-004.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-005.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-006.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-007.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-008.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-009.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-010.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-011.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-012.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-201.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-202.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-203.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-204.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-205.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/panel-206.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/partnership-hero-mobile.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/partnership-hero-mobile.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/partnership-hero.png",
+      "matches": true
+    },
+    {
+      "path": "assets/img/partnership-hero.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumb-episode-001.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumb-episode-002.svg",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-02-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-03-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-04-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-05-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-06-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-07-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-08-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-09-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-10-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-11-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-12-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bd-crew-episode-13-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bravo-camp-episode-01-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bravo-camp-episode-02-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bravo-camp-episode-03-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/img/thumbnails/bravo-camp-thumbnail.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/js/app.js",
+      "matches": true
+    },
+    {
+      "path": "assets/js/mypage-auth-status.js",
+      "matches": true
+    },
+    {
+      "path": "assets/video/home/wcamper-home-main-20260710.mp4",
+      "matches": true
+    },
+    {
+      "path": "data/catalog.js",
+      "matches": true
+    }
+  ],
+  "baselineComparison": {
+    "expected": {
+      "seriesIds": [
+        "bd-crew-chat-season-1",
+        "bravo-camp-chat-season-2"
+      ],
+      "episodeIds": [
+        "2026-07-09-season-1-01",
+        "2026-07-09-season-1-02",
+        "2026-07-09-season-1-03",
+        "2026-07-09-season-1-04",
+        "2026-07-09-season-1-05",
+        "2026-07-09-season-1-06",
+        "2026-07-09-season-1-07",
+        "2026-07-09-season-1-08",
+        "2026-07-09-season-1-09",
+        "2026-07-09-season-1-10",
+        "2026-07-09-season-1-11",
+        "2026-07-09-season-1-12",
+        "2026-07-09-season-1-13",
+        "2026-07-09-season-2-01",
+        "2026-07-09-season-2-02",
+        "2026-07-09-season-2-03"
+      ],
+      "imageRows": 17
+    },
+    "actual": {
+      "seriesIds": [
+        "bd-crew-chat-season-1",
+        "bravo-camp-chat-season-2"
+      ],
+      "episodeIds": [
+        "2026-07-09-season-1-01",
+        "2026-07-09-season-1-02",
+        "2026-07-09-season-1-03",
+        "2026-07-09-season-1-04",
+        "2026-07-09-season-1-05",
+        "2026-07-09-season-1-06",
+        "2026-07-09-season-1-07",
+        "2026-07-09-season-1-08",
+        "2026-07-09-season-1-09",
+        "2026-07-09-season-1-10",
+        "2026-07-09-season-1-11",
+        "2026-07-09-season-1-12",
+        "2026-07-09-season-1-13",
+        "2026-07-09-season-2-01",
+        "2026-07-09-season-2-02",
+        "2026-07-09-season-2-03"
+      ],
+      "imageRows": 17
+    },
+    "seriesDiff": {
+      "missing": [],
+      "unexpected": []
+    },
+    "episodeDiff": {
+      "missing": [],
+      "unexpected": []
+    },
+    "mismatches": [],
+    "matches": true
+  },
+  "artifactHashMatches": true,
+  "passed": true,
+  "approvalBoundary": {
+    "defaultRuntimeReplacement": true,
+    "productionDeployment": false,
+    "remotePush": false,
+    "databaseMigration": false
+  }
+}

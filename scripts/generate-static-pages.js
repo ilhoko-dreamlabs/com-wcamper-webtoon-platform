@@ -1,6 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const vm = require("vm");
+const {
+  buildPublicCatalogArtifact,
+  loadPublicCatalogForBuild,
+  readStaticCatalogBaseline,
+  writePublicCatalogArtifactFile
+} = require("../api/_lib/public-catalog-snapshot");
 
 const ROOT = path.resolve(__dirname, "..");
 const VERCEL_OUTPUT_ROOT = path.join(ROOT, "public");
@@ -9,14 +14,12 @@ const DEFAULT_OG_IMAGE = "assets/img/thumbnails/bd-crew-episode-01-thumbnail.web
 const HOME_MAIN_IMAGE = "assets/img/home/wcamper-home-main-20260709.png";
 const PARTNERSHIP_HERO_IMAGE = "assets/img/partnership-hero.png";
 const ASSET_VERSION = "20260711-creator-hero-mobile-v2";
+const GENERATED_CATALOG_SCRIPT_PATH = "/data/catalog.generated.js";
+const LEGACY_CATALOG_SCRIPT_PATH = "/data/catalog.js";
+const DEFAULT_CATALOG_SCRIPT_PATH = GENERATED_CATALOG_SCRIPT_PATH;
 
-function loadCatalog() {
-  const catalogPath = path.join(ROOT, "data", "catalog.js");
-  const source = fs.readFileSync(catalogPath, "utf8");
-  const context = { window: {} };
-  vm.createContext(context);
-  vm.runInContext(source, context, { filename: catalogPath });
-  return context.window.WCAMPER_WEBTOON;
+function catalogScriptPath() {
+  return process.env.WCAMPER_CATALOG_SCRIPT_PATH || DEFAULT_CATALOG_SCRIPT_PATH;
 }
 
 function escapeHtml(value) {
@@ -211,7 +214,9 @@ function headHtml(page) {
   <link rel="stylesheet" href="/assets/css/mypage-auth-status.css?v=${ASSET_VERSION}">`;
 }
 
-function bodyHtml() {
+function bodyHtml(options = {}) {
+  const runtimeCatalogScriptPath = options.catalogScriptPath || DEFAULT_CATALOG_SCRIPT_PATH;
+
   return `<body>
   <a class="skip" href="#main">본문으로 이동</a>
 
@@ -263,19 +268,19 @@ function bodyHtml() {
     </div>
   </footer>
 
-  <script src="/data/catalog.js"></script>
+  <script src="${escapeHtml(runtimeCatalogScriptPath)}"></script>
   <script src="/assets/js/app.js?v=${ASSET_VERSION}"></script>
   <script src="/assets/js/mypage-auth-status.js?v=${ASSET_VERSION}"></script>
 </body>`;
 }
 
-function htmlForPage(page) {
+function htmlForPage(page, options = {}) {
   return `<!doctype html>
 <html lang="ko">
 <head>
 ${headHtml(page)}
 </head>
-${bodyHtml()}
+${bodyHtml(options)}
 </html>
 `;
 }
@@ -286,10 +291,10 @@ function outputPathForRoute(root, routePath) {
   return path.join(root, routePath, "index.html");
 }
 
-function writePage(root, page) {
+function writePage(root, page, options = {}) {
   const outputPath = outputPathForRoute(root, page.routePath);
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, htmlForPage(page));
+  fs.writeFileSync(outputPath, htmlForPage(page, options));
   return path.relative(ROOT, outputPath);
 }
 
@@ -300,16 +305,44 @@ function prepareVercelOutput() {
   fs.cpSync(path.join(ROOT, "data"), path.join(VERCEL_OUTPUT_ROOT, "data"), { recursive: true });
 }
 
+function writeGeneratedCatalogArtifact(catalog) {
+  const artifact = buildPublicCatalogArtifact(catalog, {
+    baseline: readStaticCatalogBaseline()
+  });
+
+  if (!artifact.baselineComparison.matches) {
+    throw new Error("Generated public catalog artifact does not match the published baseline.");
+  }
+
+  if (!artifact.invariants.publishedOnlySeries || !artifact.invariants.publishedOnlyEpisodes) {
+    throw new Error("Generated public catalog artifact is not published-only.");
+  }
+
+  return writePublicCatalogArtifactFile(
+    artifact,
+    path.join(VERCEL_OUTPUT_ROOT, "data", "catalog.generated.js")
+  );
+}
+
 function main() {
-  const data = loadCatalog();
+  const { catalog: data } = loadPublicCatalogForBuild();
+  const pageOptions = { catalogScriptPath: catalogScriptPath() };
   const pages = pagesForCatalog(data);
-  const rootPages = pages.map((page) => writePage(ROOT, page));
+  const rootPages = pages.map((page) => writePage(ROOT, page, pageOptions));
 
   prepareVercelOutput();
-  const vercelPages = pages.map((page) => writePage(VERCEL_OUTPUT_ROOT, page));
+  const artifact = pageOptions.catalogScriptPath === GENERATED_CATALOG_SCRIPT_PATH
+    ? writeGeneratedCatalogArtifact(data)
+    : null;
+  const vercelPages = pages.map((page) => writePage(VERCEL_OUTPUT_ROOT, page, pageOptions));
 
   console.log(`Generated ${rootPages.length} static pages`);
   console.log(`Generated ${vercelPages.length} Vercel static pages in public/`);
+  console.log(`Runtime catalog script: ${pageOptions.catalogScriptPath}`);
+  if (artifact) {
+    console.log(`Generated catalog artifact: ${path.relative(ROOT, artifact.outputPath)}`);
+    console.log(`Generated catalog payload hash: ${artifact.payloadHash}`);
+  }
 }
 
 main();

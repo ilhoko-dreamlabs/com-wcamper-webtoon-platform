@@ -1,0 +1,90 @@
+{
+  "role": "public-catalog-generated-build",
+  "generatedAt": "2026-07-15T18:28:11.275Z",
+  "runtimeScript": "/data/catalog.generated.js",
+  "artifactPath": "public/data/catalog.generated.js",
+  "artifactVersion": "public-catalog-artifact.v0.8",
+  "payloadHash": "7ffb97dd5794dd7abba055bfe1940c0670e029b7b3453483068019e91ec584d4",
+  "counts": {
+    "authors": 1,
+    "series": 2,
+    "episodes": 16,
+    "images": 17
+  },
+  "baselineComparison": {
+    "expected": {
+      "seriesIds": [
+        "bd-crew-chat-season-1",
+        "bravo-camp-chat-season-2"
+      ],
+      "episodeIds": [
+        "2026-07-09-season-1-01",
+        "2026-07-09-season-1-02",
+        "2026-07-09-season-1-03",
+        "2026-07-09-season-1-04",
+        "2026-07-09-season-1-05",
+        "2026-07-09-season-1-06",
+        "2026-07-09-season-1-07",
+        "2026-07-09-season-1-08",
+        "2026-07-09-season-1-09",
+        "2026-07-09-season-1-10",
+        "2026-07-09-season-1-11",
+        "2026-07-09-season-1-12",
+        "2026-07-09-season-1-13",
+        "2026-07-09-season-2-01",
+        "2026-07-09-season-2-02",
+        "2026-07-09-season-2-03"
+      ],
+      "imageRows": 17
+    },
+    "actual": {
+      "seriesIds": [
+        "bd-crew-chat-season-1",
+        "bravo-camp-chat-season-2"
+      ],
+      "episodeIds": [
+        "2026-07-09-season-1-01",
+        "2026-07-09-season-1-02",
+        "2026-07-09-season-1-03",
+        "2026-07-09-season-1-04",
+        "2026-07-09-season-1-05",
+        "2026-07-09-season-1-06",
+        "2026-07-09-season-1-07",
+        "2026-07-09-season-1-08",
+        "2026-07-09-season-1-09",
+        "2026-07-09-season-1-10",
+        "2026-07-09-season-1-11",
+        "2026-07-09-season-1-12",
+        "2026-07-09-season-1-13",
+        "2026-07-09-season-2-01",
+        "2026-07-09-season-2-02",
+        "2026-07-09-season-2-03"
+      ],
+      "imageRows": 17
+    },
+    "seriesDiff": {
+      "missing": [],
+      "unexpected": []
+    },
+    "episodeDiff": {
+      "missing": [],
+      "unexpected": []
+    },
+    "mismatches": [],
+    "matches": true
+  },
+  "checkedRoutes": [
+    "/",
+    "/webtoons",
+    "/@bongdal-universe-comics/works/bd-crew-chat-season-1",
+    "/@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/1"
+  ],
+  "checkedHtml": [
+    "public/index.html",
+    "public/webtoons/index.html",
+    "public/@bongdal-universe-comics/works/bd-crew-chat-season-1/index.html",
+    "public/@bongdal-universe-comics/works/bd-crew-chat-season-1/episodes/1/index.html"
+  ],
+  "defaultBuildChanged": false,
+  "productionDeployment": false
+}

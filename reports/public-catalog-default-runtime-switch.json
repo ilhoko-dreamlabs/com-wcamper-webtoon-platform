@@ -1,0 +1,24 @@
+{
+  "role": "public-catalog-default-runtime-switch",
+  "generatedAt": "2026-07-16T12:33:04.741Z",
+  "readinessReportPath": "reports/public-catalog-release-readiness.json",
+  "defaultRuntimeScript": "/data/catalog.generated.js",
+  "legacyRuntimeScript": "/data/catalog.js",
+  "artifactPath": "public/data/catalog.generated.js",
+  "artifactVersion": "public-catalog-artifact.v0.8",
+  "payloadHash": "7ffb97dd5794dd7abba055bfe1940c0670e029b7b3453483068019e91ec584d4",
+  "counts": {
+    "authors": 1,
+    "series": 2,
+    "episodes": 16,
+    "images": 17
+  },
+  "releaseReadinessPassed": true,
+  "defaultBuildReferencesGeneratedScript": true,
+  "legacyRollbackBuildReferencesLegacyScript": true,
+  "restoredDefaultBuildReferencesGeneratedScript": true,
+  "defaultRuntimeReplacement": true,
+  "productionDeployment": false,
+  "remotePush": false,
+  "databaseMigration": false
+}

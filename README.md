@@ -52,6 +52,16 @@
 - `api/`: Vercel Functions 기반 회원 피드백, 작가신청, 작가 콘솔 API
 - `db/schema.sql`: 웹툰 서비스 전용 Postgres 스키마
 
+## 저장소 기준
+
+Primary repository remote: GitHub.
+
+```text
+origin: https://github.com/ilhoko-dreamlabs/com-wcamper-webtoon-platform.git
+```
+
+로컬 환경에 `gitlab-preview` remote가 있을 수 있지만, 이는 보조 preview remote입니다. GitHub 업로드/PR 작업에는 worker00 GitLab 작업이 필요하지 않습니다.
+
 ## 로컬 실행
 
 ```bash
@@ -67,7 +77,7 @@ npm run start
 npm run build
 ```
 
-현재 저장소에서 확인된 로컬 검증 명령은 정적 페이지 생성용 `build`입니다. 테스트, 린트, 타입체크 스크립트는 아직 정의되어 있지 않습니다.
+주요 로컬 검증 명령은 `package.json`의 scripts를 기준으로 합니다. 테스트, 린트, 타입체크 스크립트는 아직 정의되어 있지 않습니다.
 
 ## 2차 백엔드 운영 설정
 

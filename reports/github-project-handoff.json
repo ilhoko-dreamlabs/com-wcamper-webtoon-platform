@@ -1,0 +1,18 @@
+{
+  "role": "github-project-handoff",
+  "generatedAt": "2026-07-16T12:33:24.762Z",
+  "docPath": "docs/06-operations/github-project-handoff-v0.17.md",
+  "originRemote": "https://github.com/ilhoko-dreamlabs/com-wcamper-webtoon-platform.git",
+  "gitlabPreviewRemotePresent": true,
+  "githubIsPrimaryRemote": true,
+  "worker00Required": false,
+  "gitLabMrHandoffRemoved": true,
+  "gitLabCiCandidateRemoved": true,
+  "packageGitLabScriptsRemoved": true,
+  "remotePushPerformed": false,
+  "pullRequestCreated": false,
+  "deploymentPerformed": false,
+  "databaseMigration": false,
+  "secretRotation": false,
+  "nextAction": "Prepare a GitHub push/PR request after owner approval."
+}

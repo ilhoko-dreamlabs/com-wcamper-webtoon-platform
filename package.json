@@ -4,7 +4,23 @@
   "private": true,
   "scripts": {
     "start": "python3 -m http.server 5174",
-    "build": "node scripts/generate-static-pages.js"
+    "build": "node scripts/generate-static-pages.js",
+    "build:legacy-catalog": "WCAMPER_CATALOG_SCRIPT_PATH=/data/catalog.js node scripts/generate-static-pages.js",
+    "baseline:catalog": "node scripts/generate-static-catalog-baseline.js",
+    "import:catalog": "node scripts/import-static-catalog-to-db.js --dry-run",
+    "snapshot:catalog": "node scripts/generate-public-catalog.js --dry-run",
+    "artifact:catalog": "node scripts/generate-public-catalog.js --dry-run --write-artifact",
+    "build:public-artifact": "node scripts/build-public-catalog-generated.js --generated-artifact-build",
+    "readiness:public-artifact": "node scripts/verify-public-catalog-release-readiness.js --release-readiness",
+    "readiness:public-artifact-proposal": "node scripts/verify-public-catalog-default-runtime-proposal.js --proposal-readiness",
+    "readiness:public-artifact-switch": "node scripts/verify-public-catalog-default-runtime-switch.js --default-runtime-switch",
+    "readiness:public-artifact-handoff": "node scripts/verify-public-catalog-release-handoff.js --release-handoff",
+    "readiness:github-handoff": "node scripts/verify-github-handoff.js --github-handoff",
+    "verify:public-catalog": "node scripts/verify-public-catalog-boundary.js",
+    "verify:public-artifact": "node scripts/verify-public-catalog-artifact.js",
+    "smoke:public-artifact-runtime": "node scripts/verify-public-catalog-runtime-smoke.js",
+    "smoke:public-artifact-browser": "node scripts/verify-public-catalog-browser-smoke.js",
+    "validate:assets": "node scripts/validate-static-assets.js"
   },
   "dependencies": {
     "pg": "^8.16.3"

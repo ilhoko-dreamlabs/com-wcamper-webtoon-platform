@@ -1,0 +1,329 @@
+{
+  "generatedAt": "2026-07-15T18:28:12.061Z",
+  "source": "data/catalog.js",
+  "role": "migration-input-baseline",
+  "counts": {
+    "authors": 1,
+    "series": 3,
+    "publishedSeries": 2,
+    "episodes": 17,
+    "publishedEpisodes": 16,
+    "panels": 17,
+    "crew": 4,
+    "notes": 3,
+    "feedbackTargets": 3,
+    "goals": 3,
+    "localImageRefs": 38,
+    "missingLocalImageRefs": 0
+  },
+  "series": [
+    {
+      "id": "bd-crew-chat-season-1",
+      "authorId": "bongdal-universe-comics",
+      "title": "BD-Crew 단톡방",
+      "status": "공개 연재",
+      "episodeIds": [
+        "2026-07-09-season-1-01",
+        "2026-07-09-season-1-02",
+        "2026-07-09-season-1-03",
+        "2026-07-09-season-1-04",
+        "2026-07-09-season-1-05",
+        "2026-07-09-season-1-06",
+        "2026-07-09-season-1-07",
+        "2026-07-09-season-1-08",
+        "2026-07-09-season-1-09",
+        "2026-07-09-season-1-10",
+        "2026-07-09-season-1-11",
+        "2026-07-09-season-1-12",
+        "2026-07-09-season-1-13"
+      ],
+      "episodeCount": 13
+    },
+    {
+      "id": "bravo-camp-chat-season-2",
+      "authorId": "bongdal-universe-comics",
+      "title": "부라보캠프 단톡방",
+      "status": "공개 연재",
+      "episodeIds": [
+        "2026-07-09-season-2-01",
+        "2026-07-09-season-2-02",
+        "2026-07-09-season-2-03"
+      ],
+      "episodeCount": 3
+    },
+    {
+      "id": "bongbong-family-camping",
+      "authorId": "bongdal-universe-comics",
+      "title": "봉봉패미리 캠핑",
+      "status": "기획중",
+      "episodeIds": [
+        "2026-07-23-bongbong-family-planning"
+      ],
+      "episodeCount": 1
+    }
+  ],
+  "episodes": [
+    {
+      "id": "2026-07-09-season-1-01",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 1,
+      "title": "오프닝",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-01.png",
+        "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-02",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 2,
+      "title": "아침 회의",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-02.png",
+        "assets/img/thumbnails/bd-crew-episode-02-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-03",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 3,
+      "title": "제작 모임",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-03.png",
+        "assets/img/thumbnails/bd-crew-episode-03-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-04",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 4,
+      "title": "합동 캠핑",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-04.png",
+        "assets/img/thumbnails/bd-crew-episode-04-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-05",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 5,
+      "title": "먹거리",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-05.png",
+        "assets/img/thumbnails/bd-crew-episode-05-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-06",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 6,
+      "title": "아침 인사",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-06.png",
+        "assets/img/thumbnails/bd-crew-episode-06-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-07",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 7,
+      "title": "꿈꾸는 크루",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-07.png",
+        "assets/img/thumbnails/bd-crew-episode-07-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-08",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 8,
+      "title": "우정",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-08.png",
+        "assets/img/thumbnails/bd-crew-episode-08-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-09",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 9,
+      "title": "금요일",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-09.png",
+        "assets/img/thumbnails/bd-crew-episode-09-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-10",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 10,
+      "title": "따뜻한 하루",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-10.png",
+        "assets/img/thumbnails/bd-crew-episode-10-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-11",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 11,
+      "title": "인터뷰",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-11.png",
+        "assets/img/thumbnails/bd-crew-episode-11-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-12",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 12,
+      "title": "일상",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-12.png",
+        "assets/img/thumbnails/bd-crew-episode-12-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-1-13",
+      "seriesId": "bd-crew-chat-season-1",
+      "number": 13,
+      "title": "주의 환기",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-1/s1-13.png",
+        "assets/img/thumbnails/bd-crew-episode-13-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-2-01",
+      "seriesId": "bravo-camp-chat-season-2",
+      "number": 1,
+      "title": "부라보캠프 첫 소개",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 2,
+      "imageRefs": [
+        "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png",
+        "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
+        "assets/img/thumbnails/bravo-camp-episode-01-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-2-02",
+      "seriesId": "bravo-camp-chat-season-2",
+      "number": 2,
+      "title": "워킹데드",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png",
+        "assets/img/thumbnails/bravo-camp-episode-02-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-09-season-2-03",
+      "seriesId": "bravo-camp-chat-season-2",
+      "number": 3,
+      "title": "데쓰노트",
+      "status": "공개",
+      "publishedAt": "2026-07-09",
+      "panelCount": 1,
+      "imageRefs": [
+        "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png",
+        "assets/img/thumbnails/bravo-camp-episode-03-thumbnail.webp"
+      ]
+    },
+    {
+      "id": "2026-07-23-bongbong-family-planning",
+      "seriesId": "bongbong-family-camping",
+      "number": 1,
+      "title": "기획중 - 봉봉패미리 캠핑",
+      "status": "기획중",
+      "publishedAt": "2026-07-23",
+      "panelCount": 0,
+      "imageRefs": [
+        "assets/img/hero-panel-3.svg"
+      ]
+    }
+  ],
+  "localImageRefs": [
+    "assets/img/authors/bongdal-universe-comics-logo.png",
+    "assets/img/covers/bd-crew-chat-season-1-main.png",
+    "assets/img/drive/season-1/s1-01.png",
+    "assets/img/drive/season-1/s1-02.png",
+    "assets/img/drive/season-1/s1-03.png",
+    "assets/img/drive/season-1/s1-04.png",
+    "assets/img/drive/season-1/s1-05.png",
+    "assets/img/drive/season-1/s1-06.png",
+    "assets/img/drive/season-1/s1-07.png",
+    "assets/img/drive/season-1/s1-08.png",
+    "assets/img/drive/season-1/s1-09.png",
+    "assets/img/drive/season-1/s1-10.png",
+    "assets/img/drive/season-1/s1-11.png",
+    "assets/img/drive/season-1/s1-12.png",
+    "assets/img/drive/season-1/s1-13.png",
+    "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP001-2-부라보캠프_전체_캐릭터_그리드.png",
+    "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP001-3-부라보캠프_자기소개_타임.png",
+    "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP002-워킹데드.png.png",
+    "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-20260708-EP003-데쓰노트.png",
+    "assets/img/drive/season-2/BRAVOCAMP-WEBTOON-작품페이지.png",
+    "assets/img/hero-panel-3.svg",
+    "assets/img/thumbnails/bd-crew-episode-01-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-02-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-03-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-04-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-05-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-06-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-07-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-08-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-09-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-10-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-11-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-12-thumbnail.webp",
+    "assets/img/thumbnails/bd-crew-episode-13-thumbnail.webp",
+    "assets/img/thumbnails/bravo-camp-episode-01-thumbnail.webp",
+    "assets/img/thumbnails/bravo-camp-episode-02-thumbnail.webp",
+    "assets/img/thumbnails/bravo-camp-episode-03-thumbnail.webp",
+    "assets/img/thumbnails/bravo-camp-thumbnail.webp"
+  ],
+  "missingLocalImageRefs": []
+}
