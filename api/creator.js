@@ -16,6 +16,8 @@ const {
   listEpisodeImages,
   createEpisodeImage,
   updateEpisodeImage,
+  listCreatorAssets,
+  createCreatorAsset,
   requestEpisodeReview,
   creatorSummary
 } = require("./_lib/creator-content");
@@ -294,6 +296,25 @@ async function handleEpisodeReviewRequest(request, response, episodeId) {
   sendJson(response, 200, { episode });
 }
 
+async function handleAssets(request, response) {
+  if (request.method === "GET") {
+    const { author } = await authorRecord(request);
+    const assets = await listCreatorAssets(author.id);
+    sendJson(response, 200, { assets });
+    return;
+  }
+
+  if (request.method === "POST") {
+    const authorContext = await assertAuthor(request);
+    const [author, body] = await Promise.all([ensureAuthorRecord(authorContext), readJson(request)]);
+    const asset = await createCreatorAsset(author.id, body);
+    sendJson(response, 201, { asset });
+    return;
+  }
+
+  methodNotAllowed(response, ["GET", "POST"]);
+}
+
 module.exports = async function handler(request, response) {
   try {
     const parts = pathParts(request);
@@ -320,6 +341,11 @@ module.exports = async function handler(request, response) {
 
     if (parts.length === 1 && parts[0] === "profile") {
       await handleProfile(request, response);
+      return;
+    }
+
+    if (parts.length === 1 && parts[0] === "assets") {
+      await handleAssets(request, response);
       return;
     }
 

@@ -16,6 +16,7 @@
     "readiness:public-artifact-switch": "node scripts/verify-public-catalog-default-runtime-switch.js --default-runtime-switch",
     "readiness:public-artifact-handoff": "node scripts/verify-public-catalog-release-handoff.js --release-handoff",
     "readiness:github-handoff": "node scripts/verify-github-handoff.js --github-handoff",
+    "readiness:mvp-gap": "node scripts/verify-mvp-gap-implementation.js",
     "verify:public-catalog": "node scripts/verify-public-catalog-boundary.js",
     "verify:public-artifact": "node scripts/verify-public-catalog-artifact.js",
     "smoke:public-artifact-runtime": "node scripts/verify-public-catalog-runtime-smoke.js",

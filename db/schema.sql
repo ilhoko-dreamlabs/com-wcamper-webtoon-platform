@@ -38,6 +38,9 @@ create table if not exists feedback (
   target_id text not null,
   body text not null,
   status text not null default 'VISIBLE' check (status in ('VISIBLE', 'HIDDEN', 'DELETED', 'REPORTED')),
+  moderated_by text,
+  moderated_at timestamptz,
+  moderation_note text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -65,6 +68,32 @@ create table if not exists feedback_reports (
 
 create index if not exists feedback_reports_feedback_idx
   on feedback_reports (feedback_id, created_at desc);
+
+create table if not exists reader_events (
+  id text primary key,
+  user_id text,
+  anonymous_id text,
+  event_type text not null check (event_type in ('VIEW', 'READ_START', 'READ_COMPLETE', 'RETURN_VISIT')),
+  target_type text not null check (target_type in ('AUTHOR', 'SERIES', 'EPISODE')),
+  target_id text not null,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists reader_events_target_created_idx
+  on reader_events (target_type, target_id, created_at desc);
+
+create table if not exists reader_activity_daily (
+  activity_date date not null,
+  target_type text not null,
+  target_id text not null,
+  views integer not null default 0,
+  read_starts integer not null default 0,
+  read_completes integer not null default 0,
+  return_visits integer not null default 0,
+  updated_at timestamptz not null default now(),
+  primary key (activity_date, target_type, target_id)
+);
 
 create table if not exists webtoon_series (
   id text primary key,
@@ -118,6 +147,72 @@ create table if not exists episode_images (
 
 create index if not exists episode_images_episode_order_idx
   on episode_images (episode_id, sort_order asc);
+
+create table if not exists asset_objects (
+  id text primary key,
+  author_id text not null references authors(id) on delete cascade,
+  object_key text not null,
+  public_url text,
+  original_filename text,
+  mime_type text,
+  byte_size integer,
+  status text not null default 'REGISTERED' check (status in ('REGISTERED', 'READY', 'FAILED', 'DELETED')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists asset_objects_author_created_idx
+  on asset_objects (author_id, created_at desc);
+
+create table if not exists publication_reviews (
+  id text primary key,
+  target_type text not null check (target_type in ('SERIES', 'EPISODE')),
+  target_id text not null,
+  author_id text not null references authors(id) on delete cascade,
+  status text not null default 'REQUESTED' check (status in ('REQUESTED', 'APPROVED', 'REVISION_REQUESTED', 'PUBLISHED', 'REJECTED')),
+  requested_by text,
+  reviewed_by text,
+  review_note text,
+  requested_at timestamptz not null default now(),
+  reviewed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists publication_reviews_status_created_idx
+  on publication_reviews (status, created_at desc);
+
+create table if not exists publication_snapshots (
+  id text primary key,
+  source text not null default 'database',
+  status text not null default 'GENERATED' check (status in ('GENERATED', 'PUBLISHED', 'ROLLED_BACK')),
+  catalog_json jsonb not null,
+  generated_by text,
+  generated_at timestamptz not null default now(),
+  published_at timestamptz
+);
+
+create table if not exists content_goals (
+  id text primary key,
+  target_type text not null check (target_type in ('AUTHOR', 'SERIES', 'EPISODE')),
+  target_id text not null,
+  metric text not null check (metric in ('VIEWS', 'READ_COMPLETES', 'FAVORITES', 'FEEDBACK')),
+  goal_value integer not null check (goal_value >= 0),
+  starts_at timestamptz,
+  ends_at timestamptz,
+  created_by text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists content_scores (
+  target_type text not null,
+  target_id text not null,
+  score integer not null default 0,
+  metrics jsonb not null default '{}'::jsonb,
+  refreshed_at timestamptz not null default now(),
+  primary key (target_type, target_id)
+);
 
 create table if not exists creator_dashboard_counts (
   author_id text primary key references authors(id) on delete cascade,

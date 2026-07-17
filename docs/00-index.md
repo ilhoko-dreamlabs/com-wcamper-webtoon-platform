@@ -30,6 +30,8 @@ This index separates current operating decisions from historical MVP notes. New 
 | `docs/04-data/public-catalog-default-runtime-proposal-v0.14.md` | Proposed default runtime replacement and rollback plan | Use before changing the default build from `/data/catalog.js` to `/data/catalog.generated.js` |
 | `docs/04-data/public-catalog-default-runtime-switch-v0.15.md` | Applied local default runtime switch | Use for current generated artifact default build and rollback verification |
 | `docs/04-data/publication-review-migration.sql` | Draft migration SQL | Review only; do not execute without separate approval |
+| `docs/05-implementation/mvp-gap-implementation-plan-v0.20.md` | Applied MVP gap implementation plan | Use for admin, feedback, reader activity, favorites, review, and asset-object completion status |
+| `docs/05-implementation/mvp-gap-design-v0.20.md` | Applied MVP gap design supplement | Use as the current API/state model for MVP gap features |
 | `docs/06-operations/public-catalog-default-runtime-release-handoff-v0.16.md` | Release handoff package for generated default runtime | Use before requesting release approval or deployment work |
 | `docs/06-operations/github-project-handoff-v0.17.md` | Corrected GitHub project identity and handoff boundary | Use before preparing GitHub push/PR work; worker00 GitLab MR work is not required |
 | `docs/06-operations/worklog-v0.1.md` | Work record | Use for what was changed in this planning session |

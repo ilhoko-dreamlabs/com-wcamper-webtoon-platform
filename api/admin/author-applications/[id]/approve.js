@@ -3,6 +3,7 @@ const { assertAdmin } = require("../../../_lib/admin-auth");
 const { writeAdminAuditLog } = require("../../../_lib/admin-audit");
 const { query, transaction } = require("../../../_lib/db");
 const { handleError, methodNotAllowed, sendJson } = require("../../../_lib/http");
+const { ensurePlatformSchema } = require("../../../_lib/platform-schema");
 
 module.exports = async function handler(request, response) {
   if (request.method !== "POST") {
@@ -12,6 +13,7 @@ module.exports = async function handler(request, response) {
 
   try {
     const admin = await assertAdmin(request);
+    await ensurePlatformSchema();
 
     const applicationId = request.query?.id;
     const applicationResult = await query(
@@ -41,9 +43,9 @@ module.exports = async function handler(request, response) {
 
       await tx(
         `update author_applications
-         set author_id = $1, status = 'APPROVED', reviewed_at = now(), updated_at = now()
+         set author_id = $1, status = 'APPROVED', reviewed_by = $3, reviewed_at = now(), updated_at = now()
          where id = $2`,
-        [authorResult.rows[0].id, application.id]
+        [authorResult.rows[0].id, application.id, admin.id]
       );
 
       return authorResult.rows[0];

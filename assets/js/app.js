@@ -365,6 +365,45 @@
     return payload;
   }
 
+  function anonymousReaderId() {
+    const key = "wcamper.readerId";
+    try {
+      const existing = window.localStorage.getItem(key);
+      if (existing) return existing;
+      const next = `reader-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      window.localStorage.setItem(key, next);
+      return next;
+    } catch {
+      return "reader-anonymous";
+    }
+  }
+
+  function sendReaderEvent(eventType, targetType, targetId, metadata = {}) {
+    apiJson("/api/reader-events", {
+      method: "POST",
+      body: JSON.stringify({
+        eventType,
+        targetType,
+        targetId,
+        anonymousId: anonymousReaderId(),
+        metadata
+      })
+    }).catch(() => {});
+  }
+
+  function scheduleReaderEvent(callback, delay) {
+    const timer = typeof window.setTimeout === "function"
+      ? window.setTimeout.bind(window)
+      : typeof setTimeout === "function"
+        ? setTimeout
+        : null;
+    if (timer) timer(callback, delay);
+  }
+
+  function favoriteButton(targetType, targetId) {
+    return `<button class="button ghost" type="button" data-favorite-toggle data-target-type="${escapeHtml(targetType)}" data-target-id="${escapeHtml(targetId)}">관심작</button>`;
+  }
+
   async function refreshPublicSettings() {
     try {
       const payload = await apiJson("/api/site-settings/public");
@@ -1762,6 +1801,64 @@
     return rawValue;
   }
 
+  function adminStatusClass(status) {
+    return `creator-status admin-status-${String(status || "").toLowerCase().replace(/[^a-z0-9_-]/g, "-")}`;
+  }
+
+  function renderAdminApplicationsList(items) {
+    const rows = (items || []).map((item) => `
+      <article class="creator-episode-row">
+        <div>
+          <span class="${adminStatusClass(item.status)}">${escapeHtml(item.status)}</span>
+          <strong>${escapeHtml(item.displayName)}</strong>
+          <p>${escapeHtml(item.introduction || "소개 없음")}</p>
+          ${item.portfolioUrl ? `<a href="${escapeHtml(item.portfolioUrl)}" target="_blank" rel="noreferrer">포트폴리오</a>` : ""}
+        </div>
+        <div class="creator-row-actions">
+          <button class="button ghost" type="button" data-admin-application-approve="${escapeHtml(item.id)}" ${["SUBMITTED", "REVIEWING"].includes(item.status) ? "" : "disabled"}>승인</button>
+          <button class="button ghost" type="button" data-admin-application-reject="${escapeHtml(item.id)}" ${["SUBMITTED", "REVIEWING"].includes(item.status) ? "" : "disabled"}>반려</button>
+        </div>
+      </article>
+    `).join("");
+    return rows || `<p class="creator-empty-line">작가신청이 없습니다.</p>`;
+  }
+
+  function renderAdminFeedbackList(items) {
+    const rows = (items || []).map((item) => `
+      <article class="creator-episode-row">
+        <div>
+          <span class="${adminStatusClass(item.status)}">${escapeHtml(item.status)} · 신고 ${escapeHtml(item.reportCount || 0)}</span>
+          <strong>${escapeHtml(item.targetType)} / ${escapeHtml(item.targetId)}</strong>
+          <p>${escapeHtml(item.body)}</p>
+        </div>
+        <div class="creator-row-actions">
+          <button class="button ghost" type="button" data-admin-feedback-status="VISIBLE" data-feedback-id="${escapeHtml(item.id)}">복구</button>
+          <button class="button ghost" type="button" data-admin-feedback-status="HIDDEN" data-feedback-id="${escapeHtml(item.id)}">숨김</button>
+          <button class="button ghost" type="button" data-admin-feedback-status="DELETED" data-feedback-id="${escapeHtml(item.id)}">삭제</button>
+        </div>
+      </article>
+    `).join("");
+    return rows || `<p class="creator-empty-line">피드백이 없습니다.</p>`;
+  }
+
+  function renderAdminPublicationReviews(items) {
+    const rows = (items || []).map((item) => `
+      <article class="creator-episode-row">
+        <div>
+          <span class="${adminStatusClass(item.status)}">${escapeHtml(item.status)} · ${escapeHtml(item.targetType)}</span>
+          <strong>${escapeHtml(item.targetTitle || item.targetId)}</strong>
+          <p>${escapeHtml(item.authorName || item.authorId)}${item.reviewNote ? ` · ${escapeHtml(item.reviewNote)}` : ""}</p>
+        </div>
+        <div class="creator-row-actions">
+          <button class="button ghost" type="button" data-admin-review-action="approve" data-review-id="${escapeHtml(item.id)}">승인</button>
+          <button class="button ghost" type="button" data-admin-review-action="request-revision" data-review-id="${escapeHtml(item.id)}">보완</button>
+          <button class="button ghost" type="button" data-admin-review-action="publish" data-review-id="${escapeHtml(item.id)}">공개</button>
+        </div>
+      </article>
+    `).join("");
+    return rows || `<p class="creator-empty-line">검수 요청이 없습니다.</p>`;
+  }
+
   async function loadAdminDashboard() {
     const status = document.querySelector("[data-admin-status]");
     const content = document.querySelector("[data-admin-content]");
@@ -1771,9 +1868,44 @@
 
     try {
       const adminResult = await apiJson("/api/admin/me");
-      const settingsResult = await apiJson("/api/admin/site-settings");
+      const [settingsResult, applicationsResult, feedbackResult, reviewsResult] = await Promise.all([
+        apiJson("/api/admin/site-settings"),
+        apiJson("/api/admin/author-applications").catch((error) => ({ error: error.message, authorApplications: [] })),
+        apiJson("/api/admin/feedback").catch((error) => ({ error: error.message, feedback: [] })),
+        apiJson("/api/admin/publication-reviews").catch((error) => ({ error: error.message, publicationReviews: [] }))
+      ]);
       status.textContent = `${adminResult.admin.authType === "session" ? "통합로그인 role" : "운영 토큰"} 기준으로 관리자 권한이 확인되었습니다.`;
       content.innerHTML = `
+        <section class="section admin-section">
+          <div class="section-heading">
+            <p class="eyebrow">Author Applications</p>
+            <h2>작가신청</h2>
+            <p>신청 목록을 검토하고 승인 또는 반려합니다.</p>
+          </div>
+          ${applicationsResult.error ? `<p class="admin-warning">${escapeHtml(applicationsResult.error)}</p>` : ""}
+          <div class="creator-episode-list">${renderAdminApplicationsList(applicationsResult.authorApplications)}</div>
+        </section>
+
+        <section class="section muted-band admin-section">
+          <div class="section-heading">
+            <p class="eyebrow">Feedback Moderation</p>
+            <h2>피드백 검수</h2>
+            <p>신고된 피드백과 공개 피드백을 숨김/복구/삭제 처리합니다.</p>
+          </div>
+          ${feedbackResult.error ? `<p class="admin-warning">${escapeHtml(feedbackResult.error)}</p>` : ""}
+          <div class="creator-episode-list">${renderAdminFeedbackList(feedbackResult.feedback)}</div>
+        </section>
+
+        <section class="section admin-section">
+          <div class="section-heading">
+            <p class="eyebrow">Publication Review</p>
+            <h2>콘텐츠 검수</h2>
+            <p>작가가 요청한 회차 검수를 승인, 보완 요청, 공개 처리합니다.</p>
+          </div>
+          ${reviewsResult.error ? `<p class="admin-warning">${escapeHtml(reviewsResult.error)}</p>` : ""}
+          <div class="creator-episode-list">${renderAdminPublicationReviews(reviewsResult.publicationReviews)}</div>
+        </section>
+
         <section class="section admin-section">
           <div class="section-heading">
             <p class="eyebrow">Site Settings</p>
@@ -1975,6 +2107,7 @@
           </div>
           <div class="hero-actions">
             ${link(pathForAuthor(author), `작가 ${author.name}`, "button ghost")}
+            ${favoriteButton("SERIES", series.id)}
             ${episodes[0] ? link(pathForEpisode(episodes[0]), "1화 보기", "button primary") : ""}
           </div>
         </div>
@@ -2036,6 +2169,17 @@
       </section>
       ${renderFeedbackBox("episode", `${series.title} ${episode.number}화`)}
     `;
+    sendReaderEvent("VIEW", "EPISODE", episode.id, { seriesId: series.id, number: episode.number });
+    scheduleReaderEvent(() => {
+      if (window.location.pathname === pathForEpisode(episode)) {
+        sendReaderEvent("READ_START", "EPISODE", episode.id, { seriesId: series.id, number: episode.number });
+      }
+    }, 3000);
+    scheduleReaderEvent(() => {
+      if (window.location.pathname === pathForEpisode(episode)) {
+        sendReaderEvent("READ_COMPLETE", "EPISODE", episode.id, { seriesId: series.id, number: episode.number, heuristic: "time-on-page" });
+      }
+    }, 20000);
   }
 
   function renderNotFound() {
@@ -2175,6 +2319,82 @@
       status.textContent = error.message;
     } finally {
       button?.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const approveButton = event.target.closest("[data-admin-application-approve]");
+    if (!approveButton) return;
+    approveButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson(`/api/admin/author-applications/${encodeURIComponent(approveButton.dataset.adminApplicationApprove)}/approve`, {
+        method: "POST",
+        body: JSON.stringify({})
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      approveButton.textContent = error.message;
+    } finally {
+      approveButton.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const rejectButton = event.target.closest("[data-admin-application-reject]");
+    if (!rejectButton) return;
+    const reason = window.prompt("작가신청 반려 사유를 입력하세요.");
+    if (!reason) return;
+    rejectButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson(`/api/admin/author-applications/${encodeURIComponent(rejectButton.dataset.adminApplicationReject)}/reject`, {
+        method: "POST",
+        body: JSON.stringify({ reason })
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      rejectButton.textContent = error.message;
+    } finally {
+      rejectButton.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const feedbackButton = event.target.closest("[data-admin-feedback-status]");
+    if (!feedbackButton) return;
+    feedbackButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson(`/api/admin/feedback/${encodeURIComponent(feedbackButton.dataset.feedbackId)}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          status: feedbackButton.dataset.adminFeedbackStatus,
+          note: "admin-console"
+        })
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      feedbackButton.textContent = error.message;
+    } finally {
+      feedbackButton.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const reviewButton = event.target.closest("[data-admin-review-action]");
+    if (!reviewButton) return;
+    reviewButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson(`/api/admin/publication-reviews/${encodeURIComponent(reviewButton.dataset.reviewId)}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          action: reviewButton.dataset.adminReviewAction,
+          note: "admin-console"
+        })
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      reviewButton.textContent = error.message;
+    } finally {
+      reviewButton.removeAttribute("disabled");
     }
   });
 
@@ -2487,6 +2707,38 @@
       status.textContent = error.message;
     } finally {
       button.textContent = originalText;
+      button.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-favorite-toggle]");
+    if (!button) return;
+
+    if (!authState.authenticated) {
+      window.location.href = buildLoginUrl(currentReturnTo());
+      return;
+    }
+
+    const originalText = button.textContent;
+    button.textContent = "저장 중";
+    button.setAttribute("disabled", "disabled");
+
+    try {
+      await apiJson("/api/favorites", {
+        method: "POST",
+        body: JSON.stringify({
+          targetType: button.dataset.targetType,
+          targetId: button.dataset.targetId
+        })
+      });
+      button.textContent = "관심 등록됨";
+    } catch (error) {
+      button.textContent = error.message;
+      window.setTimeout(() => {
+        button.textContent = originalText;
+      }, 2000);
+    } finally {
       button.removeAttribute("disabled");
     }
   });

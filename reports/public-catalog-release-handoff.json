@@ -1,6 +1,6 @@
 {
   "role": "public-catalog-release-handoff",
-  "generatedAt": "2026-07-16T12:32:50.225Z",
+  "generatedAt": "2026-07-17T13:23:46.404Z",
   "handoffPath": "docs/06-operations/public-catalog-default-runtime-release-handoff-v0.16.md",
   "releaseReadinessReportPath": "reports/public-catalog-release-readiness.json",
   "switchReportPath": "reports/public-catalog-default-runtime-switch.json",

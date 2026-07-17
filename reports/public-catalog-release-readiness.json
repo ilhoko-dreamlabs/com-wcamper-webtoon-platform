@@ -1,6 +1,6 @@
 {
   "role": "public-catalog-release-readiness",
-  "generatedAt": "2026-07-16T12:33:24.179Z",
+  "generatedAt": "2026-07-17T13:23:46.021Z",
   "legacyRuntimeScript": "/data/catalog.js",
   "defaultRuntimeScript": "/data/catalog.generated.js",
   "generatedRuntimeScript": "/data/catalog.generated.js",

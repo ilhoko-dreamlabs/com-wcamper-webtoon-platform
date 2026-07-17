@@ -1,6 +1,6 @@
 {
   "role": "public-catalog-default-runtime-switch",
-  "generatedAt": "2026-07-16T12:33:04.741Z",
+  "generatedAt": "2026-07-17T13:23:36.256Z",
   "readinessReportPath": "reports/public-catalog-release-readiness.json",
   "defaultRuntimeScript": "/data/catalog.generated.js",
   "legacyRuntimeScript": "/data/catalog.js",

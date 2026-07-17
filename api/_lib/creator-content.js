@@ -24,6 +24,7 @@ const {
   seriesSelectSql
 } = require("./creator-repository");
 const { query, transaction } = require("./db");
+const { ensurePlatformSchema } = require("./platform-schema");
 const { requiredString, optionalUrl } = require("./validation");
 
 const SERIES_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
@@ -688,6 +689,7 @@ async function requestEpisodeReview(authorId, episodeId) {
   }
 
   try {
+    await ensurePlatformSchema();
     const result = await transaction(async (tx) => {
       await tx(
         `update webtoon_series
@@ -696,7 +698,7 @@ async function requestEpisodeReview(authorId, episodeId) {
          where author_id = $1 and id = $2`,
         [authorId, current.seriesId]
       );
-      return tx(
+      const updated = await tx(
         `with updated as (
            update webtoon_episodes
            set status = 'REVIEW_REQUESTED', review_requested_at = now(), updated_at = now()
@@ -706,9 +708,68 @@ async function requestEpisodeReview(authorId, episodeId) {
          ${episodeSelectSql("join updated on updated.id = webtoon_episodes.id")}`,
         [authorId, episodeId]
       );
+      await tx(
+        `insert into publication_reviews (id, target_type, target_id, author_id, status, requested_by, requested_at, updated_at)
+         values ($1, 'EPISODE', $2, $3, 'REQUESTED', $4, now(), now())`,
+        [crypto.randomUUID(), episodeId, authorId, authorId]
+      );
+      return updated;
     });
     await refreshCreatorDashboardCounts(authorId);
     return serializeEpisode(result.rows[0]);
+  } catch (error) {
+    if (tableMissing(error)) throw creatorStoreNotReady(error);
+    throw error;
+  }
+}
+
+async function listCreatorAssets(authorId) {
+  try {
+    await ensurePlatformSchema();
+    const result = await query(
+      `select id, author_id as "authorId", object_key as "objectKey", public_url as "publicUrl",
+              original_filename as "originalFilename", mime_type as "mimeType", byte_size as "byteSize",
+              status, created_at as "createdAt", updated_at as "updatedAt"
+       from asset_objects
+       where author_id = $1 and status <> 'DELETED'
+       order by created_at desc
+       limit 100`,
+      [authorId]
+    );
+    return result.rows;
+  } catch (error) {
+    if (tableMissing(error)) throw creatorStoreNotReady(error);
+    throw error;
+  }
+}
+
+async function createCreatorAsset(authorId, body) {
+  const publicUrl = optionalAssetUrl(body.publicUrl || body.url, "publicUrl");
+  if (!publicUrl) {
+    throw Object.assign(new Error("publicUrl is required"), {
+      statusCode: 400,
+      code: "VALIDATION_ERROR",
+      publicMessage: "자산 URL을 입력해주세요."
+    });
+  }
+
+  const originalFilename = optionalString(body.originalFilename || body.filename || "", 240) || null;
+  const mimeType = optionalString(body.mimeType || "", 120) || null;
+  const byteSize = body.byteSize === undefined ? null : Math.max(0, Number.parseInt(body.byteSize, 10) || 0);
+  const objectKey = optionalString(body.objectKey || publicUrl, 500) || publicUrl;
+  const id = crypto.randomUUID();
+
+  try {
+    await ensurePlatformSchema();
+    const result = await query(
+      `insert into asset_objects (id, author_id, object_key, public_url, original_filename, mime_type, byte_size, status, updated_at)
+       values ($1, $2, $3, $4, $5, $6, $7, 'READY', now())
+       returning id, author_id as "authorId", object_key as "objectKey", public_url as "publicUrl",
+                 original_filename as "originalFilename", mime_type as "mimeType", byte_size as "byteSize",
+                 status, created_at as "createdAt", updated_at as "updatedAt"`,
+      [id, authorId, objectKey, publicUrl, originalFilename, mimeType, byteSize]
+    );
+    return result.rows[0];
   } catch (error) {
     if (tableMissing(error)) throw creatorStoreNotReady(error);
     throw error;
@@ -934,6 +995,8 @@ module.exports = {
   listEpisodeImages,
   createEpisodeImage,
   updateEpisodeImage,
+  listCreatorAssets,
+  createCreatorAsset,
   requestEpisodeReview,
   refreshCreatorDashboardCounts,
   creatorSummary,
