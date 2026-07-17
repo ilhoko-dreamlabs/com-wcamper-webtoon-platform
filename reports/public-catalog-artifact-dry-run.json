@@ -5,7 +5,7 @@
   "sourceHash": "e02c38ddd8e1cd3736c531fbe1bafe1f24ac0a82dd95e84cc80038698bd7c26f",
   "payloadHash": "7ffb97dd5794dd7abba055bfe1940c0670e029b7b3453483068019e91ec584d4",
   "mutationPerformed": false,
-  "generatedAt": "2026-07-17T13:26:07.018Z",
+  "generatedAt": "2026-07-17T13:32:31.778Z",
   "runtimeContract": {
     "globalName": "WCAMPER_WEBTOON",
     "assignment": "window.WCAMPER_WEBTOON",

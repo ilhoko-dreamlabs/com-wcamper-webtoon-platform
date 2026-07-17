@@ -3,6 +3,34 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/api/admin/author-applications",
+      "destination": "/api/admin-operations?path=author-applications"
+    },
+    {
+      "source": "/api/admin/author-applications/:path*",
+      "destination": "/api/admin-operations?path=author-applications/:path*"
+    },
+    {
+      "source": "/api/admin/feedback",
+      "destination": "/api/admin-operations?path=feedback"
+    },
+    {
+      "source": "/api/admin/feedback/:path*",
+      "destination": "/api/admin-operations?path=feedback/:path*"
+    },
+    {
+      "source": "/api/admin/publication-reviews",
+      "destination": "/api/admin-operations?path=publication-reviews"
+    },
+    {
+      "source": "/api/admin/publication-reviews/:path*",
+      "destination": "/api/admin-operations?path=publication-reviews/:path*"
+    },
+    {
+      "source": "/api/feedback/:path*",
+      "destination": "/api/feedback?path=:path*"
+    },
+    {
       "source": "/api/creator/:path*",
       "destination": "/api/creator?path=:path*"
     }

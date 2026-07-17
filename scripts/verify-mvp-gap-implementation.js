@@ -4,15 +4,8 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 
 const requiredFiles = [
-  "api/admin/author-applications.js",
-  "api/admin/author-applications/[id].js",
-  "api/admin/author-applications/[id]/reject.js",
-  "api/admin/feedback.js",
-  "api/admin/feedback/[id].js",
-  "api/admin/publication-reviews.js",
-  "api/admin/publication-reviews/[id].js",
+  "api/admin-operations.js",
   "api/favorites.js",
-  "api/feedback/[id]/report.js",
   "api/reader-events.js",
   "api/_lib/platform-schema.js",
   "docs/05-implementation/mvp-gap-implementation-plan-v0.20.md",
