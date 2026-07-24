@@ -276,3 +276,46 @@ Close remaining local release-readiness gaps, align outdated documents with the 
 ### External State
 
 No remote push, pull request, staging deployment, production deployment, staging or production database migration, secret rotation, DNS/CDN change, public URL change, object storage write, CDN invalidation, or production promote was performed.
+
+## Iteration 22
+
+Date: 2026-07-24
+
+Task: Execute approved external release work and complete production smoke.
+
+### Goal
+
+Push the completed creator publication pipeline to the primary remote, verify the production Vercel deployment, repair any release-blocking route issues found during smoke, and record remaining environment-only blockers.
+
+### Completed
+
+| Work item | Status |
+|---|---|
+| DreamLabs registry deployment/release workflow reread | Complete |
+| Full local verification suite rerun before push | Complete |
+| Secret scan review rerun with redacted output | Complete |
+| Local release commit created | Complete |
+| GitHub `origin/main` push completed | Complete |
+| Vercel production deployment confirmed `READY` | Complete |
+| Production public route smoke completed | Complete |
+| Missing Vercel rewrite for publication admin APIs identified | Complete |
+| Publication snapshot/release rewrites added | Complete |
+| Publication readiness verifier updated to check Vercel rewrites | Complete |
+
+### Changed Files
+
+| File | Purpose |
+|---|---|
+| `vercel.json` | Adds admin publication snapshot/release rewrites to `api/admin-operations` |
+| `scripts/verify-publication-pipeline-readiness.js` | Adds readiness guard for publication admin rewrites |
+| `docs/06-operations/validation-v0.1.md` | Records external release verification |
+| `docs/06-operations/worklog-v0.1.md` | Records external release worklog |
+| `docs/06-operations/creator-publication-completion-report-v0.33.md` | Updates completion status after production deployment |
+
+### External Blockers
+
+| Item | State |
+|---|---|
+| GitLab preview remote | Blocked because the project has no default branch; Owner/Maintainer must initialize it |
+| DB migration | Not executed because no staging/production DB connection string is available in the worker environment |
+| Authenticated production QA | Not executed because browser auth/admin session is not available in the worker environment |

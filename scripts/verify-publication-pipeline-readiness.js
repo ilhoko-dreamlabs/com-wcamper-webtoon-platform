@@ -25,6 +25,7 @@ const pipeline = read("api/_lib/publication-pipeline.js");
 const app = read("assets/js/app.js");
 const creatorContent = read("api/_lib/creator-content.js");
 const catalogImport = read("api/_lib/catalog-import-service.js");
+const vercelConfig = read("vercel.json");
 const packageJson = JSON.parse(read("package.json"));
 
 const sampleSnapshot = buildSnapshotPayload({
@@ -110,6 +111,12 @@ const checks = {
   adminPipelineRoutes: requiredAdminTerms.every((term) => adminApi.includes(term)),
   pipelineServiceContract: requiredPipelineTerms.every((term) => pipeline.includes(term)),
   adminUiControls: requiredAppTerms.every((term) => app.includes(term)),
+  vercelAdminRewrites: [
+    "/api/admin/publication-snapshots",
+    "/api/admin/publication-snapshots/:path*",
+    "/api/admin/publication-releases",
+    "/api/admin/publication-releases/:path*"
+  ].every((term) => vercelConfig.includes(term)),
   reviewPublishActionRemoved: !adminApi.includes("\"publish\"") && !app.includes('data-admin-review-action="publish"'),
   legacyAutoSeedOptIn: creatorContent.includes('WEBTOON_ENABLE_INITIAL_CATALOG_ATTACH === "true"'),
   explicitImportMaintainsSplitStatus: catalogImport.includes("draft_status = excluded.draft_status")
@@ -155,6 +162,12 @@ const report = {
   missingAdminTerms: requiredAdminTerms.filter((term) => !adminApi.includes(term)),
   missingPipelineTerms: requiredPipelineTerms.filter((term) => !pipeline.includes(term)),
   missingAppTerms: requiredAppTerms.filter((term) => !app.includes(term))
+    .concat([
+      "/api/admin/publication-snapshots",
+      "/api/admin/publication-snapshots/:path*",
+      "/api/admin/publication-releases",
+      "/api/admin/publication-releases/:path*"
+    ].filter((term) => !vercelConfig.includes(term)))
 };
 
 fs.mkdirSync(path.dirname(REPORT_PATH), { recursive: true });

@@ -27,6 +27,22 @@
       "destination": "/api/admin-operations?path=publication-reviews/:path*"
     },
     {
+      "source": "/api/admin/publication-snapshots",
+      "destination": "/api/admin-operations?path=publication-snapshots"
+    },
+    {
+      "source": "/api/admin/publication-snapshots/:path*",
+      "destination": "/api/admin-operations?path=publication-snapshots/:path*"
+    },
+    {
+      "source": "/api/admin/publication-releases",
+      "destination": "/api/admin-operations?path=publication-releases"
+    },
+    {
+      "source": "/api/admin/publication-releases/:path*",
+      "destination": "/api/admin-operations?path=publication-releases/:path*"
+    },
+    {
       "source": "/api/feedback/:path*",
       "destination": "/api/feedback?path=:path*"
     },

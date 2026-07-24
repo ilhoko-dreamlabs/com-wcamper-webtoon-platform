@@ -192,6 +192,54 @@ Commands run:
 | CDN invalidation | Not performed |
 | Production promote | Not performed |
 
+## Iteration 22 Verification
+
+Date: 2026-07-24
+
+Status: Passed for GitHub production deployment after publication admin rewrite fix.
+
+| Check | Result | Notes |
+|---|---|---|
+| GitHub push | Passed | `main` fast-forwarded to `b45b284`; follow-up rewrite fix prepared for redeploy |
+| Vercel deployment | Passed | Latest GitHub production deployment reached `READY` |
+| Production route smoke | Passed | `/`, creator studio nested routes, and `/data/catalog.generated.js` returned `200` |
+| Admin publication route smoke | Fixed locally | `/api/admin/publication-snapshots` initially returned Vercel `404`; `vercel.json` rewrite was added and readiness now guards it |
+| Runtime error log check | Passed | No `error` or `fatal` logs found for latest deployment during post-deploy check window |
+| GitLab preview push | Blocked externally | Auth succeeded, but GitLab rejected push because preview project has no default branch; Owner/Maintainer setup required |
+
+Commands run:
+
+| Command | Status |
+|---|---|
+| `npm run readiness:publication-pipeline` | Passed |
+| `npm run readiness:creator-studio` | Passed |
+| `npm run build` | Passed |
+| `npm run verify:public-catalog` | Passed |
+| `npm run verify:public-artifact` | Passed |
+| `npm run validate:assets` | Passed |
+| `npm run smoke:public-artifact-runtime` | Passed |
+| `npm run smoke:public-artifact-browser` | Passed |
+| `npm run readiness:public-artifact` | Passed |
+| `git diff --check` | Passed |
+| Production HTTP route smoke | Passed |
+| Vercel runtime error log query | Passed |
+
+## Iteration 22 External State
+
+| Action | State |
+|---|---|
+| Remote push to GitHub `origin/main` | Complete |
+| Production Vercel deployment | Complete |
+| Production static route smoke | Complete |
+| Production authenticated creator/admin workflow QA | Not performed; requires real auth session and admin account in browser |
+| Staging DB migration | Not performed; DB connection not present in worker environment |
+| Production DB migration | Not performed; DB connection not present in worker environment |
+| GitLab preview push | Blocked by remote default-branch configuration |
+| Secret rotation | Not performed |
+| DNS/CDN/public URL change | Not performed |
+| Object storage write | Not performed |
+| CDN invalidation | Not performed |
+
 ## Iteration 21 Verification
 
 Date: 2026-07-24

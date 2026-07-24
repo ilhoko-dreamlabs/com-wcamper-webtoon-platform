@@ -1,12 +1,13 @@
 {
   "task": "publication-pipeline-readiness-v0.32",
-  "generatedAt": "2026-07-24T17:45:16.765Z",
+  "generatedAt": "2026-07-24T17:51:35.093Z",
   "mutationPerformed": false,
   "checks": {
     "requiredFiles": true,
     "adminPipelineRoutes": true,
     "pipelineServiceContract": true,
     "adminUiControls": true,
+    "vercelAdminRewrites": true,
     "reviewPublishActionRemoved": true,
     "legacyAutoSeedOptIn": true,
     "explicitImportMaintainsSplitStatus": true,

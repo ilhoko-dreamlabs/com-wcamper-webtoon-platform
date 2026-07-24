@@ -1,7 +1,7 @@
 # Creator Publication Completion Report v0.33
 
 Date: 2026-07-24
-Status: Local implementation complete and release-ready
+Status: Implemented, pushed to GitHub `main`, and deployed to Vercel production
 
 ## Objective
 
@@ -35,21 +35,24 @@ Complete the creator studio refactor and publication pipeline work through desig
 | Operation documents | Complete | Migration runbook, release runbook, release handoff, validation record |
 | Skill candidates | Complete | `docs/06-operations/skill-candidates-v0.32.md` |
 | Local release readiness | Complete | Full command suite passed on 2026-07-24 |
+| Primary remote push | Complete | GitHub `origin/main` updated to the release commits |
+| Production deployment | Complete | Vercel production deployment reached `READY` |
+| Production public smoke | Complete | Public and creator static routes returned `200` |
+| Production admin route boundary | Complete | Publication admin endpoints are covered by `vercel.json` rewrites and readiness checks |
 
-## External Work Boundary
+## Remaining External Boundary
 
-These actions are prepared but were not executed in this local worker session because they require a concrete target environment and authenticated deployment/migration context.
+These actions still require environment-specific credentials, browser session context, or remote project owner setup.
 
 | External action | Prepared artifact | Execution requirement |
 |---|---|---|
-| Remote push or PR | Local diff and handoff docs | Confirm target remote/branch and review policy |
+| GitLab preview publish | GitHub release commit and GitLab preview remote | GitLab Owner/Maintainer must create the preview project default branch |
 | Staging DB migration | `docs/04-data/publication-review-migration.sql` and migration runbook | Staging DB connection through approved channel |
-| Staging deployment | Build output, route rewrite, release handoff | Confirm hosting project and deploy credential |
+| Staging deployment | Build output, route rewrite, release handoff | Staging hosting target if separate from production Vercel |
 | Staging performance measurement | Updated performance plan | Representative staging data and network access |
-| Production change request | Runbooks, validation record, rollback notes | Owner change window and release approver |
 | Production DB migration | Additive SQL runbook | Production DB connection through approved channel |
-| Production deploy/promote | Publication pipeline runbook | Approved production deployment target |
-| Post-deploy monitoring | Monitoring checklist in runbook | Runtime logs, latency, and admin release access |
+| Authenticated production QA | Publication pipeline runbook | Real admin/creator browser session |
+| Post-deploy monitoring | Monitoring checklist in runbook | Continued traffic window and admin release access |
 
 ## Verification Summary
 
@@ -67,7 +70,11 @@ These actions are prepared but were not executed in this local worker session be
 | `npm run readiness:public-artifact` | Passed |
 | Local HTTP route check against `npm run start` | Passed |
 | Secret scan review | Passed; no secret values identified |
+| GitHub push | Passed |
+| Vercel production deployment | Passed; latest deployment `READY` |
+| Production public HTTP route smoke | Passed |
+| Production runtime error log check | Passed; no error/fatal logs found in checked window |
 
 ## Final Recommendation
 
-Treat this repository state as the release candidate. The next non-local step should be an explicit remote/branch selection followed by staging migration and deployment using the runbooks in `docs/06-operations/`.
+Treat the GitHub/Vercel production deployment as complete for the code and static route layer. Finish the environment-only items by applying the additive DB migration through the approved DB channel, performing authenticated admin/creator QA, and initializing the GitLab preview project's default branch if that preview path is still required.
