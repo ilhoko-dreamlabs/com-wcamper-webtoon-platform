@@ -57,6 +57,6 @@ Expected report invariants:
 
 ## Non-Goals
 
-- Do not publish or serve `public/data/catalog.generated.js` in this phase.
-- Do not replace `<script src="/data/catalog.js">` in generated pages in this phase.
-- Do not connect to production DB or execute a DB-backed export in this phase.
+- Do not connect to production DB from local readiness commands.
+- Do not deploy or promote production without the publication release runbook.
+- Do not treat `data/catalog.js` as the operating source of truth after v0.32; it remains a legacy seed/input only.

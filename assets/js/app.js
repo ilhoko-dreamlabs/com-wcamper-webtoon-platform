@@ -23,6 +23,8 @@
     series: [],
     episodesBySeries: {},
     episodeImagesByEpisode: {},
+    feedback: [],
+    currentRouteKey: "",
     error: null
   };
   const publicSettings = {
@@ -293,6 +295,30 @@
       PUBLISHED: "공개",
       ARCHIVED: "보관"
     }[status] || status || "미정";
+  }
+
+  function creatorDraftStatus(item) {
+    return item?.draftStatus || item?.status || "";
+  }
+
+  function creatorPublicationStatusLabel(status) {
+    return {
+      UNPUBLISHED: "미공개",
+      SCHEDULED: "예약",
+      PUBLISHED: "공개",
+      WITHDRAWN: "공개중지"
+    }[status] || status || "미공개";
+  }
+
+  function creatorCombinedStatusLabel(item) {
+    const draftLabel = creatorStatusLabel(creatorDraftStatus(item));
+    const publicationStatus = item?.publicationStatus || "";
+    if (!publicationStatus || publicationStatus === "UNPUBLISHED") return draftLabel;
+    return `${draftLabel} · ${creatorPublicationStatusLabel(publicationStatus)}`;
+  }
+
+  function creatorEditable(item) {
+    return ["DRAFT", "REVISION_REQUESTED"].includes(creatorDraftStatus(item));
   }
 
   const trainingPrinciples = [
@@ -1210,27 +1236,43 @@
   }
 
   function creatorViewParams() {
+    const cleanPath = window.location.pathname.replace(/\/+$/, "") || "/";
+    const parts = cleanPath.split("/").filter(Boolean);
     const params = new URLSearchParams(window.location.search);
+    if (parts[0] === "creator-studio") {
+      if (!parts[1]) return { view: "dashboard", seriesId: "", episodeId: "" };
+      if (parts[1] === "dashboard") return { view: "dashboard", seriesId: "", episodeId: "" };
+      if (parts[1] === "works" && parts[2]) return { view: "series", seriesId: parts[2], episodeId: "" };
+      if (parts[1] === "works") return { view: "works", seriesId: "", episodeId: "" };
+      if (parts[1] === "episodes" && parts[2]) return { view: "episode", seriesId: "", episodeId: parts[2] };
+      if (parts[1] === "feedback") return { view: "feedback", seriesId: "", episodeId: "" };
+      if (parts[1] === "settings") return { view: "settings", seriesId: "", episodeId: "" };
+    }
     return {
+      view: params.get("episode") ? "episode" : params.get("series") ? "series" : "dashboard",
       seriesId: params.get("series") || "",
       episodeId: params.get("episode") || ""
     };
   }
 
   function navigateCreatorStudio(params = {}) {
-    const url = new URL("/creator-studio", window.location.origin);
-    if (params.seriesId) url.searchParams.set("series", params.seriesId);
-    if (params.episodeId) url.searchParams.set("episode", params.episodeId);
-    window.history.pushState({}, "", `${url.pathname}${url.search}`);
+    const pathname = params.episodeId
+      ? `/creator-studio/episodes/${encodeURIComponent(params.episodeId)}`
+      : params.seriesId
+        ? `/creator-studio/works/${encodeURIComponent(params.seriesId)}`
+        : params.view
+          ? `/creator-studio/${params.view}`
+          : "/creator-studio/dashboard";
+    window.history.pushState({}, "", pathname);
     render();
   }
 
   function creatorSeriesHref(seriesId) {
-    return `/creator-studio?series=${encodeURIComponent(seriesId)}`;
+    return `/creator-studio/works/${encodeURIComponent(seriesId)}`;
   }
 
   function creatorEpisodeHref(episodeId) {
-    return `/creator-studio?episode=${encodeURIComponent(episodeId)}`;
+    return `/creator-studio/episodes/${encodeURIComponent(episodeId)}`;
   }
 
   function findCreatorSeries(seriesId) {
@@ -1264,7 +1306,21 @@
     if (!tabs?.length) return "";
     return `
       <nav class="creator-subnav" aria-label="작가페이지 하위 메뉴">
-        ${tabs.map((tab) => `<a href="${escapeHtml(tab.href)}">${escapeHtml(tab.label)}</a>`).join("")}
+        ${tabs.map((tab) => `<a href="${escapeHtml(tab.href)}" ${tab.href.startsWith("/") ? "data-link" : ""}>${escapeHtml(tab.label)}</a>`).join("")}
+      </nav>
+    `;
+  }
+
+  function renderCreatorPrimaryNav(activeView) {
+    const items = [
+      ["dashboard", "/creator-studio/dashboard", "대시보드"],
+      ["works", "/creator-studio/works", "작품"],
+      ["feedback", "/creator-studio/feedback", "피드백"],
+      ["settings", "/creator-studio/settings", "설정"]
+    ];
+    return `
+      <nav class="creator-section-nav" aria-label="작가페이지 메뉴">
+        ${items.map(([view, href, label]) => `<a href="${href}" data-link ${view === activeView ? `aria-current="page"` : ""}>${label}</a>`).join("")}
       </nav>
     `;
   }
@@ -1290,11 +1346,11 @@
   }
 
   function renderCreatorEpisodeRow(episode) {
-    const canRequestReview = ["DRAFT", "REVISION_REQUESTED"].includes(episode.status);
+    const canRequestReview = creatorEditable(episode);
     return `
       <article class="creator-episode-row">
         <div>
-          <span class="creator-status">${escapeHtml(creatorStatusLabel(episode.status))}</span>
+          <span class="creator-status">${escapeHtml(creatorCombinedStatusLabel(episode))}</span>
           <strong><a href="${creatorEpisodeHref(episode.id)}" data-link>${episode.number}화. ${escapeHtml(episode.title)}</a></strong>
           <p>${escapeHtml(episode.summary || "요약 없음")}</p>
         </div>
@@ -1323,13 +1379,34 @@
       <article class="creator-work-card">
         <div class="creator-work-head">
           <div>
-            <span class="creator-status">${escapeHtml(creatorStatusLabel(series.status))}</span>
+            <span class="creator-status">${escapeHtml(creatorCombinedStatusLabel(series))}</span>
             <h3><a href="${creatorSeriesHref(series.id)}" data-link>${escapeHtml(series.title)}</a></h3>
             <p>${escapeHtml(series.summary || "작품 소개 없음")}</p>
           </div>
           <div class="creator-row-actions">
             <a class="button ghost" href="${creatorSeriesHref(series.id)}" data-link>작품페이지</a>
           </div>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  function renderCreatorFeedbackList(items) {
+    if (creatorState.loading) {
+      return `<article class="empty-state"><h2>피드백을 불러오고 있습니다.</h2><p>작가 소유 콘텐츠 기준으로 조회합니다.</p></article>`;
+    }
+    if (creatorState.error) {
+      return `<article class="empty-state"><h2>피드백을 불러오지 못했습니다.</h2><p>${escapeHtml(creatorState.error)}</p></article>`;
+    }
+    if (!items?.length) {
+      return `<article class="empty-state"><h2>아직 피드백이 없습니다.</h2><p>독자 피드백이 등록되면 작품과 회차 단위로 표시됩니다.</p></article>`;
+    }
+    return items.map((item) => `
+      <article class="creator-episode-row">
+        <div>
+          <span class="creator-status">${escapeHtml(item.status)} · ${escapeHtml(item.targetType)}</span>
+          <strong>${escapeHtml(item.targetTitle || item.targetId)}</strong>
+          <p>${escapeHtml(item.body)}</p>
         </div>
       </article>
     `).join("");
@@ -1379,32 +1456,51 @@
     const view = creatorViewParams();
 
     if (creatorState.error || creatorState.loading) {
-      container.innerHTML = `<section class="section creator-console-section"><div class="creator-work-list">${renderCreatorSeriesList()}</div></section>`;
+      const message = creatorState.error
+        ? `<article class="empty-state"><h2>작가페이지를 사용할 수 없습니다.</h2><p>${escapeHtml(creatorState.error)}</p></article>`
+        : `<article class="empty-state"><h2>화면 데이터를 불러오고 있습니다.</h2><p>현재 메뉴에 필요한 데이터만 조회합니다.</p></article>`;
+      container.innerHTML = `<section class="section creator-console-section">${renderCreatorPrimaryNav(view.view === "series" || view.view === "episode" ? "works" : view.view)}<div class="creator-work-list">${message}</div></section>`;
       return;
     }
 
-    if (view.episodeId) {
+    if (view.view === "episode" && view.episodeId) {
       renderCreatorEpisodePage(container, view.episodeId);
       return;
     }
 
-    if (view.seriesId) {
+    if (view.view === "series" && view.seriesId) {
       renderCreatorSeriesPage(container, view.seriesId);
+      return;
+    }
+
+    if (view.view === "works") {
+      renderCreatorWorksPage(container);
+      return;
+    }
+
+    if (view.view === "feedback") {
+      renderCreatorFeedbackPage(container);
+      return;
+    }
+
+    if (view.view === "settings") {
+      renderCreatorSettingsPage(container);
       return;
     }
 
     container.innerHTML = `
       <section class="section creator-console-section">
+        ${renderCreatorPrimaryNav("dashboard")}
         ${renderCreatorPageHeader({
-          breadcrumbs: [{ label: "작가 스튜디오" }],
+          breadcrumbs: [{ label: "작가 스튜디오" }, { label: "대시보드" }],
           eyebrow: "Creator Studio",
-          title: "작가페이지",
-          description: "대시보드, 작가 정보, 작품 목록을 한 화면에서 관리합니다.",
+          title: "대시보드",
+          description: "작가 운영 상태와 검수 대기 작업을 요약합니다.",
           actions: `<button class="button primary" type="button" data-creator-open-series-dialog>작품 등록</button>`,
           tabs: [
-            { label: "대시보드", href: "#creator-dashboard" },
-            { label: "작가 정보", href: "#creator-profile" },
-            { label: "작품 목록", href: "#creator-works" }
+            { label: "작품 목록", href: "/creator-studio/works" },
+            { label: "피드백", href: "/creator-studio/feedback" },
+            { label: "설정", href: "/creator-studio/settings" }
           ]
         })}
       </section>
@@ -1412,7 +1508,7 @@
       <section class="section creator-console-section" id="creator-dashboard">
         <div class="dashboard-grid creator-dashboard-grid">
           ${[
-            ["작품", creatorState.series.length],
+            ["작품", Object.values(creatorState.summary?.series || {}).reduce((sum, value) => sum + Number(value || 0), 0)],
             ["검수 대기 회차", creatorSummaryNumber("episodes", "REVIEW_REQUESTED")],
             ["보완 요청", creatorSummaryNumber("episodes", "REVISION_REQUESTED")],
             ["독자 피드백", Number(creatorState.summary?.feedbackCount || 0)]
@@ -1425,20 +1521,61 @@
         </div>
       </section>
 
-      <section class="section muted-band creator-console-section" id="creator-profile">
-        <div class="creator-console-layout">
-          ${renderCreatorProfileForm()}
-        </div>
-      </section>
-
-      <section class="section creator-console-section" id="creator-works">
+      <section class="section muted-band creator-console-section" id="creator-feedback-preview">
         <div class="section-heading">
-          <p class="eyebrow">Works</p>
-          <h2>내 작품</h2>
+          <p class="eyebrow">Feedback</p>
+          <h2>최근 피드백</h2>
         </div>
+        <div class="creator-episode-list">${renderCreatorFeedbackList(creatorState.feedback)}</div>
+      </section>
+      ${renderCreatorNewSeriesDialog()}
+    `;
+  }
+
+  function renderCreatorWorksPage(container) {
+    container.innerHTML = `
+      <section class="section creator-console-section">
+        ${renderCreatorPrimaryNav("works")}
+        ${renderCreatorPageHeader({
+          breadcrumbs: [{ label: "작가 스튜디오", href: "/creator-studio/dashboard" }, { label: "작품" }],
+          eyebrow: "Works",
+          title: "작품 목록",
+          description: "작품 카드에 필요한 최소 데이터만 조회합니다.",
+          actions: `<button class="button primary" type="button" data-creator-open-series-dialog>작품 등록</button>`
+        })}
         <div class="creator-work-list">${renderCreatorSeriesList()}</div>
       </section>
       ${renderCreatorNewSeriesDialog()}
+    `;
+  }
+
+  function renderCreatorFeedbackPage(container) {
+    container.innerHTML = `
+      <section class="section creator-console-section">
+        ${renderCreatorPrimaryNav("feedback")}
+        ${renderCreatorPageHeader({
+          breadcrumbs: [{ label: "작가 스튜디오", href: "/creator-studio/dashboard" }, { label: "피드백" }],
+          eyebrow: "Feedback",
+          title: "독자 피드백",
+          description: "작가 소유 콘텐츠에 달린 피드백만 분리 조회합니다."
+        })}
+        <div class="creator-episode-list">${renderCreatorFeedbackList(creatorState.feedback)}</div>
+      </section>
+    `;
+  }
+
+  function renderCreatorSettingsPage(container) {
+    container.innerHTML = `
+      <section class="section creator-console-section">
+        ${renderCreatorPrimaryNav("settings")}
+        ${renderCreatorPageHeader({
+          breadcrumbs: [{ label: "작가 스튜디오", href: "/creator-studio/dashboard" }, { label: "설정" }],
+          eyebrow: "Settings",
+          title: "작가 설정",
+          description: "공개 작가 프로필과 표시 상태만 조회하고 저장합니다."
+        })}
+        <div class="creator-console-layout">${renderCreatorProfileForm()}</div>
+      </section>
     `;
   }
 
@@ -1449,21 +1586,22 @@
       return;
     }
     const episodes = creatorState.episodesBySeries[series.id] || [];
-    const editable = ["DRAFT", "REVISION_REQUESTED"].includes(series.status);
+    const editable = creatorEditable(series);
 
     container.innerHTML = `
       <section class="section creator-console-section">
+        ${renderCreatorPrimaryNav("works")}
         ${renderCreatorPageHeader({
           breadcrumbs: [
-            { label: "작가 스튜디오", href: "/creator-studio" },
-            { label: "내 작품", href: "/creator-studio#creator-works" },
+            { label: "작가 스튜디오", href: "/creator-studio/dashboard" },
+            { label: "작품", href: "/creator-studio/works" },
             { label: series.title }
           ],
           eyebrow: "Work",
           title: series.title,
           description: "작품 설정과 세계관을 정리하고 회차 목록을 관리합니다.",
-          status: creatorStatusLabel(series.status),
-          actions: link("/creator-studio", "작가페이지", "button ghost"),
+          status: creatorCombinedStatusLabel(series),
+          actions: link("/creator-studio/works", "작품 목록", "button ghost"),
           tabs: [
             { label: "작품 설정", href: "#series-settings" },
             { label: "세계관/기획", href: "#series-settings" },
@@ -1531,24 +1669,25 @@
     }
     const series = findCreatorSeries(episode.seriesId);
     const images = creatorState.episodeImagesByEpisode[episode.id] || [];
-    const editable = ["DRAFT", "REVISION_REQUESTED"].includes(episode.status);
+    const editable = creatorEditable(episode);
 
     container.innerHTML = `
       <section class="section creator-console-section">
+        ${renderCreatorPrimaryNav("works")}
         ${renderCreatorPageHeader({
           breadcrumbs: [
-            { label: "작가 스튜디오", href: "/creator-studio" },
-            { label: "내 작품", href: "/creator-studio#creator-works" },
+            { label: "작가 스튜디오", href: "/creator-studio/dashboard" },
+            { label: "작품", href: "/creator-studio/works" },
             series ? { label: series.title, href: creatorSeriesHref(series.id) } : null,
             { label: `${episode.number}화. ${episode.title}` }
           ],
           eyebrow: "Episode",
           title: `${episode.number}화. ${episode.title}`,
           description: "회차 상태, 원고, 이미지 등록과 사이 처리 설정을 관리합니다.",
-          status: creatorStatusLabel(episode.status),
+          status: creatorCombinedStatusLabel(episode),
           actions: `
             ${series ? link(creatorSeriesHref(series.id), "작품페이지", "button ghost") : ""}
-            ${link("/creator-studio", "작가페이지", "button ghost")}
+            ${link("/creator-studio/dashboard", "대시보드", "button ghost")}
           `,
           tabs: [
             { label: "회차 상태", href: "#episode-status" },
@@ -1573,7 +1712,7 @@
             </div>
           </form>
           <article class="creator-work-card">
-            <span class="creator-status">${escapeHtml(creatorStatusLabel(episode.status))}</span>
+            <span class="creator-status">${escapeHtml(creatorCombinedStatusLabel(episode))}</span>
             <h3>회차 상태</h3>
             <p>${escapeHtml(episode.reviewNote || "검수 메모가 없습니다.")}</p>
             <button class="button ghost" type="button" data-creator-review-episode="${escapeHtml(episode.id)}" ${editable ? "" : "disabled"}>검수요청</button>
@@ -1618,24 +1757,65 @@
     creatorState.episodeImagesByEpisode[episodeId] = payload.images || [];
   }
 
-  async function loadCreatorDashboard() {
+  async function loadCreatorView() {
     if (creatorState.loading) return;
+    const view = creatorViewParams();
+    const routeKey = `${view.view}:${view.seriesId || ""}:${view.episodeId || ""}`;
+    if (creatorState.loaded && creatorState.currentRouteKey === routeKey) return;
+
     creatorState.loading = true;
     creatorState.error = null;
+    creatorState.currentRouteKey = routeKey;
     renderCreatorDashboardContent();
 
     try {
-      const view = creatorViewParams();
-      const params = new URLSearchParams();
-      if (view.seriesId) params.set("series", view.seriesId);
-      if (view.episodeId) params.set("episode", view.episodeId);
-      const payload = await apiJson(`/api/creator/workspace${params.toString() ? `?${params}` : ""}`);
-      creatorState.author = payload.author || null;
-      creatorState.profile = payload.profile || null;
-      creatorState.summary = payload.summary || null;
-      creatorState.series = payload.series || [];
-      creatorState.episodesBySeries = payload.episodesBySeries || {};
-      creatorState.episodeImagesByEpisode = payload.episodeImagesByEpisode || {};
+      if (view.view === "dashboard") {
+        const payload = await apiJson("/api/creator/dashboard");
+        creatorState.author = payload.author || null;
+        creatorState.profile = payload.profile || null;
+        creatorState.summary = payload.summary || null;
+        creatorState.feedback = payload.recentFeedback || [];
+      } else if (view.view === "works") {
+        const payload = await apiJson("/api/creator/series");
+        creatorState.author = payload.author || null;
+        creatorState.series = payload.series || [];
+      } else if (view.view === "series" && view.seriesId) {
+        const [seriesPayload, episodesPayload] = await Promise.all([
+          apiJson(`/api/creator/series/${encodeURIComponent(view.seriesId)}`),
+          apiJson(`/api/creator/series/${encodeURIComponent(view.seriesId)}/episodes`)
+        ]);
+        const series = seriesPayload.series;
+        creatorState.series = series
+          ? [series, ...creatorState.series.filter((item) => item.id !== series.id)]
+          : creatorState.series;
+        creatorState.episodesBySeries[view.seriesId] = episodesPayload.episodes || [];
+      } else if (view.view === "episode" && view.episodeId) {
+        const [episodePayload, imagesPayload] = await Promise.all([
+          apiJson(`/api/creator/episodes/${encodeURIComponent(view.episodeId)}`),
+          apiJson(`/api/creator/episodes/${encodeURIComponent(view.episodeId)}/images`)
+        ]);
+        const episode = episodePayload.episode;
+        if (episode) {
+          creatorState.episodesBySeries[episode.seriesId] = [
+            episode,
+            ...(creatorState.episodesBySeries[episode.seriesId] || []).filter((item) => item.id !== episode.id)
+          ];
+          const seriesPayload = await apiJson(`/api/creator/series/${encodeURIComponent(episode.seriesId)}`);
+          const series = seriesPayload.series;
+          creatorState.series = series
+            ? [series, ...creatorState.series.filter((item) => item.id !== series.id)]
+            : creatorState.series;
+        }
+        creatorState.episodeImagesByEpisode[view.episodeId] = imagesPayload.images || [];
+      } else if (view.view === "feedback") {
+        const payload = await apiJson("/api/creator/feedback");
+        creatorState.author = payload.author || null;
+        creatorState.feedback = payload.feedback || [];
+      } else if (view.view === "settings") {
+        const payload = await apiJson("/api/creator/profile");
+        creatorState.author = payload.author || null;
+        creatorState.profile = payload.profile || null;
+      }
       creatorState.loaded = true;
     } catch (error) {
       creatorState.error = error.message;
@@ -1643,6 +1823,12 @@
       creatorState.loading = false;
       renderCreatorDashboardContent();
     }
+  }
+
+  async function refreshCreatorCurrentView() {
+    creatorState.loaded = false;
+    creatorState.currentRouteKey = "";
+    await loadCreatorView();
   }
 
   function renderCreatorStudio() {
@@ -1737,7 +1923,7 @@
       <div data-creator-content></div>
     `;
 
-    loadCreatorDashboard();
+    loadCreatorView();
   }
 
   function renderSettingControl(setting) {
@@ -1852,11 +2038,47 @@
         <div class="creator-row-actions">
           <button class="button ghost" type="button" data-admin-review-action="approve" data-review-id="${escapeHtml(item.id)}">승인</button>
           <button class="button ghost" type="button" data-admin-review-action="request-revision" data-review-id="${escapeHtml(item.id)}">보완</button>
-          <button class="button ghost" type="button" data-admin-review-action="publish" data-review-id="${escapeHtml(item.id)}">공개</button>
         </div>
       </article>
     `).join("");
     return rows || `<p class="creator-empty-line">검수 요청이 없습니다.</p>`;
+  }
+
+  function renderAdminPublicationPipeline(snapshots, releases) {
+    const snapshotRows = (snapshots || []).map((item) => `
+      <article class="creator-episode-row">
+        <div>
+          <span class="${adminStatusClass(item.status)}">${escapeHtml(item.status)} · ${escapeHtml(item.snapshotType || "CATALOG")}</span>
+          <strong>${escapeHtml(item.outputPath || item.id)}</strong>
+          <p>${escapeHtml(item.sourceHash || "source hash 없음")}</p>
+        </div>
+        <div class="creator-row-actions">
+          <button class="button ghost" type="button" data-admin-snapshot-preview="${escapeHtml(item.id)}">Preview</button>
+        </div>
+      </article>
+    `).join("");
+    const releaseRows = (releases || []).map((item) => `
+      <article class="creator-episode-row">
+        <div>
+          <span class="${adminStatusClass(item.status)}">${escapeHtml(item.environment)} · ${escapeHtml(item.status)}</span>
+          <strong>${escapeHtml(item.releaseUrl || item.id)}</strong>
+          <p>${escapeHtml(item.snapshotId || "")}</p>
+        </div>
+        <div class="creator-row-actions">
+          ${item.environment === "PREVIEW" && item.status === "CREATED" ? `<button class="button ghost" type="button" data-admin-release-smoke="${escapeHtml(item.id)}">Smoke 통과</button>` : ""}
+          ${item.environment === "PREVIEW" && item.status === "SMOKE_PASSED" ? `<button class="button ghost" type="button" data-admin-release-promote="${escapeHtml(item.id)}">Production 반영</button>` : ""}
+          ${item.environment === "PRODUCTION" && item.status === "PROMOTED" ? `<button class="button ghost" type="button" data-admin-release-rollback="${escapeHtml(item.id)}">Rollback</button>` : ""}
+        </div>
+      </article>
+    `).join("");
+
+    return `
+      <div class="creator-row-actions admin-pipeline-actions">
+        <button class="button primary" type="button" data-admin-snapshot-generate>Snapshot 생성</button>
+      </div>
+      <div class="creator-episode-list">${snapshotRows || `<p class="creator-empty-line">생성된 snapshot이 없습니다.</p>`}</div>
+      <div class="creator-episode-list">${releaseRows || `<p class="creator-empty-line">release 기록이 없습니다.</p>`}</div>
+    `;
   }
 
   async function loadAdminDashboard() {
@@ -1868,11 +2090,13 @@
 
     try {
       const adminResult = await apiJson("/api/admin/me");
-      const [settingsResult, applicationsResult, feedbackResult, reviewsResult] = await Promise.all([
+      const [settingsResult, applicationsResult, feedbackResult, reviewsResult, snapshotsResult, releasesResult] = await Promise.all([
         apiJson("/api/admin/site-settings"),
         apiJson("/api/admin/author-applications").catch((error) => ({ error: error.message, authorApplications: [] })),
         apiJson("/api/admin/feedback").catch((error) => ({ error: error.message, feedback: [] })),
-        apiJson("/api/admin/publication-reviews").catch((error) => ({ error: error.message, publicationReviews: [] }))
+        apiJson("/api/admin/publication-reviews").catch((error) => ({ error: error.message, publicationReviews: [] })),
+        apiJson("/api/admin/publication-snapshots").catch((error) => ({ error: error.message, publicationSnapshots: [] })),
+        apiJson("/api/admin/publication-releases").catch((error) => ({ error: error.message, publicationReleases: [] }))
       ]);
       status.textContent = `${adminResult.admin.authType === "session" ? "통합로그인 role" : "운영 토큰"} 기준으로 관리자 권한이 확인되었습니다.`;
       content.innerHTML = `
@@ -1900,10 +2124,21 @@
           <div class="section-heading">
             <p class="eyebrow">Publication Review</p>
             <h2>콘텐츠 검수</h2>
-            <p>작가가 요청한 회차 검수를 승인, 보완 요청, 공개 처리합니다.</p>
+            <p>작가가 요청한 회차 검수를 승인 또는 보완 요청합니다. 공개 반영은 배포 파이프라인에서 별도로 처리합니다.</p>
           </div>
           ${reviewsResult.error ? `<p class="admin-warning">${escapeHtml(reviewsResult.error)}</p>` : ""}
           <div class="creator-episode-list">${renderAdminPublicationReviews(reviewsResult.publicationReviews)}</div>
+        </section>
+
+        <section class="section muted-band admin-section">
+          <div class="section-heading">
+            <p class="eyebrow">Publication Pipeline</p>
+            <h2>공개 배포</h2>
+            <p>승인된 공개 상태 데이터를 snapshot, preview, smoke, production, rollback 순서로 처리합니다.</p>
+          </div>
+          ${snapshotsResult.error ? `<p class="admin-warning">${escapeHtml(snapshotsResult.error)}</p>` : ""}
+          ${releasesResult.error ? `<p class="admin-warning">${escapeHtml(releasesResult.error)}</p>` : ""}
+          ${renderAdminPublicationPipeline(snapshotsResult.publicationSnapshots, releasesResult.publicationReleases)}
         </section>
 
         <section class="section admin-section">
@@ -2201,7 +2436,7 @@
     if (cleanPath === "/creators") return { name: "creators" };
     if (cleanPath === "/partnership") return { name: "partnership" };
     if (cleanPath === "/mypage") return { name: "mypage" };
-    if (cleanPath === "/creator-studio") return { name: "creatorStudio" };
+    if (cleanPath === "/creator-studio" || cleanPath.startsWith("/creator-studio/")) return { name: "creatorStudio" };
     if (cleanPath === "/admin") return { name: "admin" };
     const parts = cleanPath.split("/").filter(Boolean);
     if (parts[0] && parts[0].startsWith("@") && parts.length === 1) {
@@ -2398,6 +2633,91 @@
     }
   });
 
+  document.addEventListener("click", async (event) => {
+    const generateButton = event.target.closest("[data-admin-snapshot-generate]");
+    if (!generateButton) return;
+    generateButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson("/api/admin/publication-snapshots", {
+        method: "POST",
+        body: JSON.stringify({})
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      generateButton.textContent = error.message;
+    } finally {
+      generateButton.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const previewButton = event.target.closest("[data-admin-snapshot-preview]");
+    if (!previewButton) return;
+    previewButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson(`/api/admin/publication-snapshots/${encodeURIComponent(previewButton.dataset.adminSnapshotPreview)}/preview`, {
+        method: "POST",
+        body: JSON.stringify({})
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      previewButton.textContent = error.message;
+    } finally {
+      previewButton.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const smokeButton = event.target.closest("[data-admin-release-smoke]");
+    if (!smokeButton) return;
+    smokeButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson(`/api/admin/publication-releases/${encodeURIComponent(smokeButton.dataset.adminReleaseSmoke)}/smoke-pass`, {
+        method: "POST",
+        body: JSON.stringify({ note: "admin-console" })
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      smokeButton.textContent = error.message;
+    } finally {
+      smokeButton.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const promoteButton = event.target.closest("[data-admin-release-promote]");
+    if (!promoteButton) return;
+    promoteButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson(`/api/admin/publication-releases/${encodeURIComponent(promoteButton.dataset.adminReleasePromote)}/promote`, {
+        method: "POST",
+        body: JSON.stringify({})
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      promoteButton.textContent = error.message;
+    } finally {
+      promoteButton.removeAttribute("disabled");
+    }
+  });
+
+  document.addEventListener("click", async (event) => {
+    const rollbackButton = event.target.closest("[data-admin-release-rollback]");
+    if (!rollbackButton) return;
+    rollbackButton.setAttribute("disabled", "disabled");
+    try {
+      await apiJson(`/api/admin/publication-releases/${encodeURIComponent(rollbackButton.dataset.adminReleaseRollback)}/rollback`, {
+        method: "POST",
+        body: JSON.stringify({ reason: "admin-console" })
+      });
+      await loadAdminDashboard();
+    } catch (error) {
+      rollbackButton.textContent = error.message;
+    } finally {
+      rollbackButton.removeAttribute("disabled");
+    }
+  });
+
   document.addEventListener("submit", async (event) => {
     const form = event.target.closest("form[data-creator-new-series-form]");
     if (!form) return;
@@ -2419,7 +2739,8 @@
       });
       form.reset();
       status.textContent = "작품이 등록되었습니다.";
-      await loadCreatorDashboard();
+      creatorState.loaded = false;
+      creatorState.currentRouteKey = "";
       navigateCreatorStudio({ seriesId: payload.series.id });
     } catch (error) {
       status.textContent = error.message;
@@ -2486,7 +2807,7 @@
         })
       });
       status.textContent = "저장되었습니다.";
-      await loadCreatorDashboard();
+      await refreshCreatorCurrentView();
     } catch (error) {
       status.textContent = error.message;
     } finally {
@@ -2522,7 +2843,8 @@
       });
       form.reset();
       status.textContent = "회차가 등록되었습니다.";
-      await loadCreatorDashboard();
+      creatorState.loaded = false;
+      creatorState.currentRouteKey = "";
       navigateCreatorStudio({ episodeId: payload.episode.id });
     } catch (error) {
       status.textContent = error.message;
@@ -2556,7 +2878,7 @@
         })
       });
       status.textContent = "저장되었습니다.";
-      await loadCreatorDashboard();
+      await refreshCreatorCurrentView();
     } catch (error) {
       status.textContent = error.message;
     } finally {
@@ -2667,7 +2989,7 @@
         method: "POST",
         body: JSON.stringify({})
       });
-      await loadCreatorDashboard();
+      await refreshCreatorCurrentView();
     } catch (error) {
       reviewButton.textContent = error.message;
     } finally {

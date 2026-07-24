@@ -19,6 +19,8 @@ const {
   listCreatorAssets,
   createCreatorAsset,
   requestEpisodeReview,
+  listCreatorFeedback,
+  creatorDashboard,
   creatorSummary
 } = require("./_lib/creator-content");
 const { handleError, methodNotAllowed, readJson, sendJson } = require("./_lib/http");
@@ -84,6 +86,17 @@ async function handleSummary(request, response) {
   sendJson(response, 200, { author, summary });
 }
 
+async function handleDashboard(request, response) {
+  if (request.method !== "GET") {
+    methodNotAllowed(response, ["GET"]);
+    return;
+  }
+
+  const { author } = await authorRecord(request);
+  const dashboard = await creatorDashboard(author.id);
+  sendJson(response, 200, { author, ...dashboard });
+}
+
 async function handleWorkspace(request, response) {
   if (request.method !== "GET") {
     methodNotAllowed(response, ["GET"]);
@@ -97,6 +110,20 @@ async function handleWorkspace(request, response) {
     episodeId: url.searchParams.get("episode") || ""
   });
   sendJson(response, 200, { author, ...workspace });
+}
+
+async function handleCreatorFeedback(request, response) {
+  if (request.method !== "GET") {
+    methodNotAllowed(response, ["GET"]);
+    return;
+  }
+
+  const { author } = await authorRecord(request);
+  const url = new URL(request.url || "/", "https://webtoon.wcamper.com");
+  const feedback = await listCreatorFeedback(author.id, {
+    limit: url.searchParams.get("limit") || "50"
+  });
+  sendJson(response, 200, { author, feedback });
 }
 
 async function handleProfile(request, response) {
@@ -334,6 +361,11 @@ module.exports = async function handler(request, response) {
       return;
     }
 
+    if (parts.length === 1 && parts[0] === "dashboard") {
+      await handleDashboard(request, response);
+      return;
+    }
+
     if (parts.length === 1 && parts[0] === "workspace") {
       await handleWorkspace(request, response);
       return;
@@ -346,6 +378,11 @@ module.exports = async function handler(request, response) {
 
     if (parts.length === 1 && parts[0] === "assets") {
       await handleAssets(request, response);
+      return;
+    }
+
+    if (parts.length === 1 && parts[0] === "feedback") {
+      await handleCreatorFeedback(request, response);
       return;
     }
 

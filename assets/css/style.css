@@ -669,6 +669,32 @@ h1 {
   line-height: 1;
 }
 
+.creator-section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.creator-section-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: #3f4a43;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.creator-section-nav a[aria-current="page"] {
+  border-color: var(--accent);
+  background: #183a27;
+  color: #fff;
+}
+
 .creator-page-nav {
   display: grid;
   gap: 16px;

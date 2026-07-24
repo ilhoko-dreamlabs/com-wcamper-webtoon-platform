@@ -228,8 +228,8 @@ async function upsertStaticCatalogSeed(tx, plan, options = {}) {
 
   for (const series of plan.rows.series) {
     await tx(
-      `insert into webtoon_series (id, author_id, title, summary, genre, tags, cover_url, status, updated_at)
-       values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, now())
+      `insert into webtoon_series (id, author_id, title, summary, genre, tags, cover_url, status, draft_status, publication_status, updated_at)
+       values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9, $10, now())
        on conflict (id) do update
        set author_id = excluded.author_id,
            title = excluded.title,
@@ -238,6 +238,8 @@ async function upsertStaticCatalogSeed(tx, plan, options = {}) {
            tags = excluded.tags,
            cover_url = excluded.cover_url,
            status = excluded.status,
+           draft_status = excluded.draft_status,
+           publication_status = excluded.publication_status,
            updated_at = now()`,
       [
         series.id,
@@ -247,15 +249,17 @@ async function upsertStaticCatalogSeed(tx, plan, options = {}) {
         series.genre,
         JSON.stringify(series.tags),
         series.coverUrl,
-        series.status
+        series.status,
+        series.draftStatus,
+        series.publicationStatus
       ]
     );
   }
 
   for (const episode of plan.rows.episodes) {
     await tx(
-      `insert into webtoon_episodes (id, series_id, number, title, summary, content_url, status, published_at, updated_at)
-       values ($1, $2, $3, $4, $5, $6, $7, $8::timestamptz, now())
+      `insert into webtoon_episodes (id, series_id, number, title, summary, content_url, status, draft_status, publication_status, published_at, updated_at)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::timestamptz, now())
        on conflict (id) do update
        set series_id = excluded.series_id,
            number = excluded.number,
@@ -263,6 +267,8 @@ async function upsertStaticCatalogSeed(tx, plan, options = {}) {
            summary = excluded.summary,
            content_url = excluded.content_url,
            status = excluded.status,
+           draft_status = excluded.draft_status,
+           publication_status = excluded.publication_status,
            published_at = excluded.published_at,
            updated_at = now()`,
       [
@@ -273,6 +279,8 @@ async function upsertStaticCatalogSeed(tx, plan, options = {}) {
         episode.summary,
         episode.contentUrl,
         episode.status,
+        episode.draftStatus,
+        episode.publicationStatus,
         episode.publishedAt
       ]
     );

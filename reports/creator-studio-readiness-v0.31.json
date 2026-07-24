@@ -1,0 +1,47 @@
+{
+  "task": "creator-studio-readiness-v0.31",
+  "generatedAt": "2026-07-24T17:45:16.863Z",
+  "mutationPerformed": false,
+  "checks": {
+    "requiredFiles": true,
+    "apiReadModels": true,
+    "clientRoutesAndApis": true,
+    "schemaTerms": true,
+    "staticGeneratorRoutes": true,
+    "vercelNestedRouteRewrite": true,
+    "packageScript": true,
+    "workspaceDependencyRemovedFromClient": true
+  },
+  "expectedRouteBoundaries": [
+    {
+      "route": "/creator-studio/dashboard",
+      "api": "/api/creator/dashboard"
+    },
+    {
+      "route": "/creator-studio/works",
+      "api": "/api/creator/series"
+    },
+    {
+      "route": "/creator-studio/works/:seriesId",
+      "api": "/api/creator/series/:id + /api/creator/series/:id/episodes"
+    },
+    {
+      "route": "/creator-studio/episodes/:episodeId",
+      "api": "/api/creator/episodes/:id + /api/creator/episodes/:id/images"
+    },
+    {
+      "route": "/creator-studio/feedback",
+      "api": "/api/creator/feedback"
+    },
+    {
+      "route": "/creator-studio/settings",
+      "api": "/api/creator/profile"
+    }
+  ],
+  "missingFiles": [],
+  "missingApiTerms": [],
+  "missingAppTerms": [],
+  "missingSchemaTerms": [],
+  "missingGeneratorTerms": [],
+  "workspaceReferences": []
+}

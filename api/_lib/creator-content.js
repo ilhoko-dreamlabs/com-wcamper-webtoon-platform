@@ -29,6 +29,7 @@ const { requiredString, optionalUrl } = require("./validation");
 
 const SERIES_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
 const EPISODE_STATUSES = new Set(["DRAFT", "REVIEW_REQUESTED", "REVISION_REQUESTED", "APPROVED", "SCHEDULED", "PUBLISHED", "ARCHIVED"]);
+const EDITABLE_DRAFT_STATUSES = new Set(["DRAFT", "REVISION_REQUESTED"]);
 const DEFAULT_CATALOG_OWNER_EMAILS = ["ilho.ko@dreamlabs.co.kr"];
 
 let schemaReady;
@@ -112,7 +113,8 @@ function emailFromAuthorContext(authorContext) {
 }
 
 function shouldAttachInitialCatalog(authorContext) {
-  return initialCatalogOwnerEmails().has(emailFromAuthorContext(authorContext));
+  return process.env.WEBTOON_ENABLE_INITIAL_CATALOG_ATTACH === "true"
+    && initialCatalogOwnerEmails().has(emailFromAuthorContext(authorContext));
 }
 
 function tableMissing(error) {
@@ -260,6 +262,8 @@ async function ensureCreatorSchemaStatements() {
       tags jsonb not null default '[]'::jsonb,
       cover_url text,
       status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
+      draft_status text not null default 'DRAFT' check (draft_status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'ARCHIVED')),
+      publication_status text not null default 'UNPUBLISHED' check (publication_status in ('UNPUBLISHED', 'SCHEDULED', 'PUBLISHED', 'WITHDRAWN')),
       review_note text,
       created_at timestamptz not null default now(),
       updated_at timestamptz not null default now()
@@ -272,6 +276,8 @@ async function ensureCreatorSchemaStatements() {
     `alter table webtoon_series add column if not exists tags jsonb not null default '[]'::jsonb`,
     `alter table webtoon_series add column if not exists cover_url text`,
     `alter table webtoon_series add column if not exists status text not null default 'DRAFT'`,
+    `alter table webtoon_series add column if not exists draft_status text not null default 'DRAFT'`,
+    `alter table webtoon_series add column if not exists publication_status text not null default 'UNPUBLISHED'`,
     `alter table webtoon_series add column if not exists review_note text`,
     `alter table webtoon_series add column if not exists created_at timestamptz not null default now()`,
     `alter table webtoon_series add column if not exists updated_at timestamptz not null default now()`,
@@ -286,6 +292,8 @@ async function ensureCreatorSchemaStatements() {
       draft_body text not null default '',
       content_url text,
       status text not null default 'DRAFT' check (status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED')),
+      draft_status text not null default 'DRAFT' check (draft_status in ('DRAFT', 'REVIEW_REQUESTED', 'REVISION_REQUESTED', 'APPROVED', 'ARCHIVED')),
+      publication_status text not null default 'UNPUBLISHED' check (publication_status in ('UNPUBLISHED', 'SCHEDULED', 'PUBLISHED', 'WITHDRAWN')),
       review_note text,
       review_requested_at timestamptz,
       scheduled_at timestamptz,
@@ -301,6 +309,8 @@ async function ensureCreatorSchemaStatements() {
     `alter table webtoon_episodes add column if not exists draft_body text not null default ''`,
     `alter table webtoon_episodes add column if not exists content_url text`,
     `alter table webtoon_episodes add column if not exists status text not null default 'DRAFT'`,
+    `alter table webtoon_episodes add column if not exists draft_status text not null default 'DRAFT'`,
+    `alter table webtoon_episodes add column if not exists publication_status text not null default 'UNPUBLISHED'`,
     `alter table webtoon_episodes add column if not exists review_note text`,
     `alter table webtoon_episodes add column if not exists review_requested_at timestamptz`,
     `alter table webtoon_episodes add column if not exists scheduled_at timestamptz`,
@@ -489,8 +499,8 @@ async function createCreatorSeries(authorId, body) {
   try {
     const result = await query(
       `with inserted as (
-         insert into webtoon_series (id, author_id, title, summary, genre, tags, cover_url, status)
-         values ($1, $2, $3, $4, $5, $6::jsonb, $7, 'DRAFT')
+         insert into webtoon_series (id, author_id, title, summary, genre, tags, cover_url, status, draft_status, publication_status)
+         values ($1, $2, $3, $4, $5, $6::jsonb, $7, 'DRAFT', 'DRAFT', 'UNPUBLISHED')
          returning id
        )
        ${seriesSelectSql("join inserted on inserted.id = webtoon_series.id")}`,
@@ -507,7 +517,7 @@ async function createCreatorSeries(authorId, body) {
 async function updateCreatorSeries(authorId, seriesId, body) {
   const current = await getCreatorSeries(authorId, seriesId);
   if (!current) return null;
-  if (!["DRAFT", "REVISION_REQUESTED"].includes(current.status)) {
+  if (!EDITABLE_DRAFT_STATUSES.has(current.draftStatus || current.status)) {
     throw Object.assign(new Error("Series is locked"), {
       statusCode: 409,
       code: "SERIES_LOCKED",
@@ -605,8 +615,8 @@ async function createCreatorEpisode(authorId, seriesId, body) {
 
     const result = await query(
       `with inserted as (
-         insert into webtoon_episodes (id, series_id, number, title, summary, draft_body, content_url, status)
-         values ($1, $2, $3, $4, $5, $6, $7, 'DRAFT')
+         insert into webtoon_episodes (id, series_id, number, title, summary, draft_body, content_url, status, draft_status, publication_status)
+         values ($1, $2, $3, $4, $5, $6, $7, 'DRAFT', 'DRAFT', 'UNPUBLISHED')
          returning id
        )
        ${episodeSelectSql("join inserted on inserted.id = webtoon_episodes.id")}`,
@@ -630,7 +640,7 @@ async function createCreatorEpisode(authorId, seriesId, body) {
 async function updateCreatorEpisode(authorId, episodeId, body) {
   const current = await getCreatorEpisode(authorId, episodeId);
   if (!current) return null;
-  if (!["DRAFT", "REVISION_REQUESTED"].includes(current.status)) {
+  if (!EDITABLE_DRAFT_STATUSES.has(current.draftStatus || current.status)) {
     throw Object.assign(new Error("Episode is locked"), {
       statusCode: 409,
       code: "EPISODE_LOCKED",
@@ -680,7 +690,7 @@ async function updateCreatorEpisode(authorId, episodeId, body) {
 async function requestEpisodeReview(authorId, episodeId) {
   const current = await getCreatorEpisode(authorId, episodeId);
   if (!current) return null;
-  if (!["DRAFT", "REVISION_REQUESTED"].includes(current.status)) {
+  if (!EDITABLE_DRAFT_STATUSES.has(current.draftStatus || current.status)) {
     throw Object.assign(new Error("Episode cannot request review"), {
       statusCode: 409,
       code: "EPISODE_REVIEW_NOT_ALLOWED",
@@ -694,6 +704,7 @@ async function requestEpisodeReview(authorId, episodeId) {
       await tx(
         `update webtoon_series
          set status = case when status = 'DRAFT' then 'REVIEW_REQUESTED' else status end,
+             draft_status = case when draft_status = 'DRAFT' then 'REVIEW_REQUESTED' else draft_status end,
              updated_at = now()
          where author_id = $1 and id = $2`,
         [authorId, current.seriesId]
@@ -701,7 +712,11 @@ async function requestEpisodeReview(authorId, episodeId) {
       const updated = await tx(
         `with updated as (
            update webtoon_episodes
-           set status = 'REVIEW_REQUESTED', review_requested_at = now(), updated_at = now()
+           set status = 'REVIEW_REQUESTED',
+               draft_status = 'REVIEW_REQUESTED',
+               publication_status = 'UNPUBLISHED',
+               review_requested_at = now(),
+               updated_at = now()
            where id = $2 and series_id in (select id from webtoon_series where author_id = $1)
            returning id
          )
@@ -953,6 +968,42 @@ async function creatorSummary(authorId) {
   }
 }
 
+async function listCreatorFeedback(authorId, options = {}) {
+  const limit = Math.max(1, Math.min(100, Number.parseInt(options.limit || "50", 10) || 50));
+  try {
+    const result = await query(
+      `select f.id, f.user_id as "userId", f.target_type as "targetType", f.target_id as "targetId",
+              f.body, f.status, f.created_at as "createdAt", f.updated_at as "updatedAt",
+              coalesce(e.title, s.title, a.display_name) as "targetTitle"
+       from feedback f
+       left join authors a on f.target_type = 'AUTHOR' and a.id = f.target_id
+       left join webtoon_series s on f.target_type = 'SERIES' and s.id = f.target_id
+       left join webtoon_episodes e on f.target_type = 'EPISODE' and e.id = f.target_id
+       where (f.target_type = 'AUTHOR' and f.target_id = $1)
+          or (f.target_type = 'SERIES' and f.target_id in (select id from webtoon_series where author_id = $1))
+          or (f.target_type = 'EPISODE' and f.target_id in (
+            select e2.id from webtoon_episodes e2 join webtoon_series s2 on s2.id = e2.series_id where s2.author_id = $1
+          ))
+       order by f.created_at desc
+       limit $2`,
+      [authorId, limit]
+    );
+    return result.rows;
+  } catch (error) {
+    if (tableMissing(error)) throw creatorStoreNotReady(error);
+    throw error;
+  }
+}
+
+async function creatorDashboard(authorId) {
+  const [profile, summary, recentFeedback] = await Promise.all([
+    getCreatorProfile(authorId),
+    creatorSummary(authorId),
+    listCreatorFeedback(authorId, { limit: 5 })
+  ]);
+  return { profile, summary, recentFeedback };
+}
+
 async function creatorWorkspace(authorId, options = {}) {
   const [profile, summary, series, episodes] = await Promise.all([
     getCreatorProfile(authorId),
@@ -982,6 +1033,7 @@ module.exports = {
   creatorStoreDiagnostics,
   ensureAuthorRecord,
   creatorWorkspace,
+  creatorDashboard,
   getCreatorProfile,
   updateCreatorProfile,
   listCreatorSeries,
@@ -998,6 +1050,7 @@ module.exports = {
   listCreatorAssets,
   createCreatorAsset,
   requestEpisodeReview,
+  listCreatorFeedback,
   refreshCreatorDashboardCounts,
   creatorSummary,
   normalizeStatus

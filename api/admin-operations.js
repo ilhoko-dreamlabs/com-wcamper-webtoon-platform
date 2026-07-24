@@ -4,9 +4,18 @@ const { writeAdminAuditLog } = require("./_lib/admin-audit");
 const { query, transaction } = require("./_lib/db");
 const { handleError, methodNotAllowed, readJson, sendJson } = require("./_lib/http");
 const { ensurePlatformSchema } = require("./_lib/platform-schema");
+const {
+  createPreviewRelease,
+  createPublicationSnapshot,
+  listPublicationReleases,
+  listPublicationSnapshots,
+  markReleaseSmokePassed,
+  promoteRelease,
+  rollbackProductionRelease
+} = require("./_lib/publication-pipeline");
 
 const FEEDBACK_STATUSES = new Set(["VISIBLE", "HIDDEN", "DELETED", "REPORTED"]);
-const REVIEW_ACTIONS = new Set(["approve", "request-revision", "publish", "reject"]);
+const REVIEW_ACTIONS = new Set(["approve", "request-revision", "reject"]);
 
 function pathParts(request) {
   const path = request.query?.path;
@@ -55,9 +64,12 @@ function reviewStatus(action) {
   return {
     approve: "APPROVED",
     "request-revision": "REVISION_REQUESTED",
-    publish: "PUBLISHED",
     reject: "REJECTED"
   }[action];
+}
+
+function contentStatusForReviewAction(action) {
+  return action === "reject" ? "REVISION_REQUESTED" : reviewStatus(action);
 }
 
 async function listAuthorApplications(request, response) {
@@ -217,6 +229,7 @@ async function moderatePublicationReview(request, response, admin, id) {
   const body = await readJson(request);
   const action = reviewAction(body.action);
   const status = reviewStatus(action);
+  const contentStatus = contentStatusForReviewAction(action);
   const note = typeof body.note === "string" ? body.note.trim().slice(0, 1000) : "";
   const result = await transaction(async (tx) => {
     const reviewResult = await tx(
@@ -231,19 +244,135 @@ async function moderatePublicationReview(request, response, admin, id) {
     if (review.targetType === "EPISODE") {
       await tx(
         `update webtoon_episodes
-         set status = $2, review_note = $3, published_at = case when $2 = 'PUBLISHED' then coalesce(published_at, now()) else published_at end, updated_at = now()
+         set status = $2,
+             draft_status = case
+               when $2 in ('APPROVED', 'PUBLISHED') then 'APPROVED'
+               when $2 = 'REVISION_REQUESTED' then 'REVISION_REQUESTED'
+               else draft_status
+             end,
+             publication_status = case
+               when $2 = 'APPROVED' then 'SCHEDULED'
+               else publication_status
+             end,
+             review_note = $3,
+             updated_at = now()
          where id = $1`,
-        [review.targetId, status, note]
+        [review.targetId, contentStatus, note]
       );
     }
     if (review.targetType === "SERIES") {
-      await tx(`update webtoon_series set status = $2, review_note = $3, updated_at = now() where id = $1`, [review.targetId, status, note]);
+      await tx(
+        `update webtoon_series
+         set status = $2,
+             draft_status = case
+               when $2 in ('APPROVED', 'PUBLISHED') then 'APPROVED'
+               when $2 = 'REVISION_REQUESTED' then 'REVISION_REQUESTED'
+               else draft_status
+             end,
+             publication_status = case
+               when $2 = 'APPROVED' then 'SCHEDULED'
+               else publication_status
+             end,
+             review_note = $3,
+             updated_at = now()
+         where id = $1`,
+        [review.targetId, contentStatus, note]
+      );
     }
     return reviewResult;
   });
   if (!result.rows[0]) return sendJson(response, 404, { error: "NOT_FOUND", message: "검수 항목을 찾지 못했습니다." });
   await writeAdminAuditLog({ admin, action: `publication_review.${action}`, resourceType: "publication_review", resourceId: result.rows[0].id, afterValue: { status }, requestId: request.headers["x-request-id"] || null });
   sendJson(response, 200, { publicationReview: result.rows[0] });
+}
+
+async function handlePublicationSnapshots(request, response, admin) {
+  if (request.method === "GET") {
+    return sendJson(response, 200, { publicationSnapshots: await listPublicationSnapshots() });
+  }
+  if (request.method === "POST") {
+    const body = await readJson(request);
+    const publicationSnapshot = await createPublicationSnapshot(admin, body);
+    await writeAdminAuditLog({
+      admin,
+      action: "publication_snapshot.generate",
+      resourceType: "publication_snapshot",
+      resourceId: publicationSnapshot.id,
+      afterValue: {
+        sourceHash: publicationSnapshot.sourceHash,
+        counts: publicationSnapshot.counts,
+        outputPath: publicationSnapshot.outputPath
+      },
+      requestId: request.headers["x-request-id"] || null
+    });
+    return sendJson(response, 201, { publicationSnapshot });
+  }
+  return methodNotAllowed(response, ["GET", "POST"]);
+}
+
+async function handlePreviewRelease(request, response, admin, snapshotId) {
+  if (request.method !== "POST") return methodNotAllowed(response, ["POST"]);
+  const release = await createPreviewRelease(admin, snapshotId, await readJson(request));
+  if (!release) return sendJson(response, 404, { error: "NOT_FOUND", message: "preview release를 생성할 snapshot을 찾지 못했습니다." });
+  await writeAdminAuditLog({
+    admin,
+    action: "publication_release.preview",
+    resourceType: "publication_snapshot",
+    resourceId: snapshotId,
+    afterValue: { releaseId: release.id, status: release.status },
+    requestId: request.headers["x-request-id"] || null
+  });
+  return sendJson(response, 201, { publicationRelease: release });
+}
+
+async function handlePublicationReleases(request, response) {
+  if (request.method !== "GET") return methodNotAllowed(response, ["GET"]);
+  return sendJson(response, 200, { publicationReleases: await listPublicationReleases() });
+}
+
+async function handleReleaseSmokePass(request, response, admin, releaseId) {
+  if (request.method !== "POST") return methodNotAllowed(response, ["POST"]);
+  const release = await markReleaseSmokePassed(admin, releaseId, await readJson(request));
+  if (!release) return sendJson(response, 404, { error: "NOT_FOUND", message: "smoke 통과 처리 가능한 preview release를 찾지 못했습니다." });
+  await writeAdminAuditLog({
+    admin,
+    action: "publication_release.smoke_pass",
+    resourceType: "publication_release",
+    resourceId: releaseId,
+    afterValue: { status: release.status },
+    requestId: request.headers["x-request-id"] || null
+  });
+  return sendJson(response, 200, { publicationRelease: release });
+}
+
+async function handleReleasePromote(request, response, admin, releaseId) {
+  if (request.method !== "POST") return methodNotAllowed(response, ["POST"]);
+  const release = await promoteRelease(admin, releaseId, await readJson(request));
+  if (!release) return sendJson(response, 404, { error: "NOT_FOUND", message: "production promote 가능한 preview release를 찾지 못했습니다." });
+  await writeAdminAuditLog({
+    admin,
+    action: "publication_release.promote",
+    resourceType: "publication_release",
+    resourceId: release.id,
+    afterValue: { snapshotId: release.snapshotId, status: release.status },
+    requestId: request.headers["x-request-id"] || null
+  });
+  return sendJson(response, 201, { publicationRelease: release });
+}
+
+async function handleReleaseRollback(request, response, admin, releaseId) {
+  if (request.method !== "POST") return methodNotAllowed(response, ["POST"]);
+  const rollback = await rollbackProductionRelease(admin, releaseId, await readJson(request));
+  if (!rollback) return sendJson(response, 404, { error: "NOT_FOUND", message: "rollback 가능한 production release를 찾지 못했습니다." });
+  await writeAdminAuditLog({
+    admin,
+    action: "publication_release.rollback",
+    resourceType: "publication_release",
+    resourceId: releaseId,
+    afterValue: rollback,
+    requestId: request.headers["x-request-id"] || null
+  });
+  return sendJson(response, 200, { publicationRollback: rollback });
 }
 
 module.exports = async function handler(request, response) {
@@ -260,6 +389,12 @@ module.exports = async function handler(request, response) {
     if (parts.length === 2 && parts[0] === "feedback") return moderateFeedback(request, response, admin, parts[1]);
     if (parts.length === 1 && parts[0] === "publication-reviews") return listPublicationReviews(request, response);
     if (parts.length === 2 && parts[0] === "publication-reviews") return moderatePublicationReview(request, response, admin, parts[1]);
+    if (parts.length === 1 && parts[0] === "publication-snapshots") return handlePublicationSnapshots(request, response, admin);
+    if (parts.length === 3 && parts[0] === "publication-snapshots" && parts[2] === "preview") return handlePreviewRelease(request, response, admin, parts[1]);
+    if (parts.length === 1 && parts[0] === "publication-releases") return handlePublicationReleases(request, response);
+    if (parts.length === 3 && parts[0] === "publication-releases" && parts[2] === "smoke-pass") return handleReleaseSmokePass(request, response, admin, parts[1]);
+    if (parts.length === 3 && parts[0] === "publication-releases" && parts[2] === "promote") return handleReleasePromote(request, response, admin, parts[1]);
+    if (parts.length === 3 && parts[0] === "publication-releases" && parts[2] === "rollback") return handleReleaseRollback(request, response, admin, parts[1]);
 
     sendJson(response, 404, { error: "NOT_FOUND", message: "관리자 운영 API 경로를 찾지 못했습니다." });
   } catch (error) {

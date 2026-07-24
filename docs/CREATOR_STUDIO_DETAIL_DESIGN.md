@@ -39,7 +39,7 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 - 작가 API는 이 계정의 인증 세션이 확인되면 정적 카탈로그의 `BD-Crew 단톡방`, `부라보캠프 단톡방`, `봉봉패미리 캠핑`을 DB의 `webtoon_series`에 연결한다.
 - 해당 작품의 공개/기획 회차도 `webtoon_episodes`에 연결해 `/creator-studio`의 내 작품과 회차 목록에서 확인할 수 있게 한다.
 - 이 연결은 idempotent upsert로 수행한다. 운영 DB에 같은 작품 id가 이미 있으면 해당 작가 소유권과 공개 메타데이터를 현재 카탈로그 기준으로 맞춘다.
-- 추가 초기 카탈로그 소유자는 `WEBTOON_INITIAL_CATALOG_OWNER_EMAILS`로 확장할 수 있다.
+- 초기 카탈로그 seed 자동 연결은 기본 비활성이다. 운영자가 `WEBTOON_ENABLE_INITIAL_CATALOG_ATTACH=true`로 명시 opt-in한 경우에만 `WEBTOON_INITIAL_CATALOG_OWNER_EMAILS` allowlist가 적용된다.
 
 ## 정보 구조
 
@@ -68,7 +68,7 @@ Scope: `/creator-studio`, 작가 권한 API, 작가 운영 데이터 모델
 | 8 | 일반 공개 작가페이지와 작가정보 연동 | 계획 | 후속 | `/@작가아이디`를 DB 작가 프로필 기반으로 확장 필요 |
 | 9 | 실제 이미지 업로드/교체 | 계획 | 후속 | 현재는 URL 등록 방식, 파일 업로드 저장소 연동 필요 |
 | 10 | 이미지 사이 자동 처리 | 계획 | 후속 | 현재는 간격/색상 데이터 저장, 자동 합성/보정은 후속 |
-| 11 | 초기 조회 성능 개선 | 완료 | `api/creator.js`, `api/_lib/creator-content.js`, `assets/js/app.js`, `docs/CREATOR_STUDIO_PERFORMANCE_PLAN.md` | `/api/creator/workspace` 통합 조회로 작가페이지 첫 화면의 작품별 회차 API 호출 제거 |
+| 11 | 초기 조회 성능 개선 | 완료 | `api/creator.js`, `api/_lib/creator-read-model.js`, `assets/js/app.js`, `docs/CREATOR_STUDIO_PERFORMANCE_PLAN.md` | 화면 단위 API로 작가페이지 첫 화면의 작품별 회차 API 호출 제거; `/api/creator/workspace`는 호환용으로만 유지 |
 
 ```text
 /creator-studio

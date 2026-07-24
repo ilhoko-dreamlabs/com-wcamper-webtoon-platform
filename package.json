@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "python3 -m http.server 5174",
+    "start": "python3 -m http.server 5174 -d public",
     "build": "node scripts/generate-static-pages.js",
     "build:legacy-catalog": "WCAMPER_CATALOG_SCRIPT_PATH=/data/catalog.js node scripts/generate-static-pages.js",
     "baseline:catalog": "node scripts/generate-static-catalog-baseline.js",
@@ -17,6 +17,8 @@
     "readiness:public-artifact-handoff": "node scripts/verify-public-catalog-release-handoff.js --release-handoff",
     "readiness:github-handoff": "node scripts/verify-github-handoff.js --github-handoff",
     "readiness:mvp-gap": "node scripts/verify-mvp-gap-implementation.js",
+    "readiness:creator-studio": "node scripts/verify-creator-studio-readiness.js",
+    "readiness:publication-pipeline": "node scripts/verify-publication-pipeline-readiness.js",
     "verify:public-catalog": "node scripts/verify-public-catalog-boundary.js",
     "verify:public-artifact": "node scripts/verify-public-catalog-artifact.js",
     "smoke:public-artifact-runtime": "node scripts/verify-public-catalog-runtime-smoke.js",

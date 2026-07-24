@@ -8,14 +8,17 @@ const {
 
 function seriesSelectSql(whereClause) {
   return `select webtoon_series.id, author_id as "authorId", title, summary, genre, tags, cover_url as "coverUrl",
-                 status, review_note as "reviewNote", created_at as "createdAt", updated_at as "updatedAt"
+                 status, draft_status as "draftStatus", publication_status as "publicationStatus",
+                 review_note as "reviewNote", created_at as "createdAt", updated_at as "updatedAt"
           from webtoon_series
           ${whereClause}`;
 }
 
 function episodeSelectSql(whereClause) {
   return `select webtoon_episodes.id, series_id as "seriesId", number, title, summary, draft_body as "draftBody",
-                 content_url as "contentUrl", webtoon_episodes.status, webtoon_episodes.review_note as "reviewNote",
+                 content_url as "contentUrl", webtoon_episodes.status,
+                 webtoon_episodes.draft_status as "draftStatus", webtoon_episodes.publication_status as "publicationStatus",
+                 webtoon_episodes.review_note as "reviewNote",
                  scheduled_at as "scheduledAt", published_at as "publishedAt",
                  webtoon_episodes.created_at as "createdAt", webtoon_episodes.updated_at as "updatedAt"
           from webtoon_episodes

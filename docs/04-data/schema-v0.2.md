@@ -115,3 +115,40 @@ The migration input baseline is `reports/static-catalog-baseline.json`.
 - Current `status` compatibility is explicit.
 - No DB migration is executed as part of this document-only step.
 
+## v0.30 Implementation Update
+
+Date: 2026-07-24
+
+`draft_status`와 `publication_status`를 `webtoon_series`, `webtoon_episodes`에 additive 방식으로 추가했다. 기존 `status`는 응답 호환과 관리자 화면 호환을 위해 유지한다.
+
+| Table | Added columns | Runtime behavior |
+|---|---|---|
+| `webtoon_series` | `draft_status`, `publication_status` | 작가 수정 가능 여부는 `draft_status` 기준, 공개 여부는 `publication_status` 기준 |
+| `webtoon_episodes` | `draft_status`, `publication_status` | 검수 요청은 `draft_status=REVIEW_REQUESTED`, 공개는 `publication_status=PUBLISHED` |
+| `publication_snapshots` | `snapshot_type`, `target_id`, `source_hash`, `output_path`, `metadata` | public catalog artifact provenance 기록용 |
+| `static_artifacts` | 신규 테이블 | snapshot에서 생성한 catalog/html/manifest 파일 기록 |
+| `publication_releases` | 신규 테이블 | preview/production release, promote, rollback 이력 기록 |
+
+Backwards compatibility:
+
+- `status`는 기존 UI와 관리자 목록의 표시/필터 호환 필드로 남긴다.
+- 신규 API 응답은 `status`, `draftStatus`, `publicationStatus`를 모두 포함한다.
+- 현재 단계는 additive schema이므로 기존 데이터 제거 또는 destructive migration은 수행하지 않는다.
+
+## v0.32 Publication Pipeline Update
+
+Date: 2026-07-24
+
+검수 승인과 production 공개를 분리했다.
+
+| State | Meaning |
+|---|---|
+| `draft_status=APPROVED` | 관리자 검수가 승인됨 |
+| `publication_status=SCHEDULED` | snapshot 후보가 됨. production 공개는 아직 아님 |
+| `publication_snapshots.status=GENERATED` | DB release candidate에서 catalog payload를 생성함 |
+| `publication_releases.environment=PREVIEW` | preview 검증용 release |
+| `publication_releases.status=SMOKE_PASSED` | production promote 가능 |
+| `publication_releases.environment=PRODUCTION`, `status=PROMOTED` | 현재 production release 기록 |
+| `publication_status=PUBLISHED` | production promote 후 공개 상태 |
+
+`data/catalog.js`는 운영 source of truth가 아니다. 기본 경로에서는 로그인 시 자동 import/upsert를 수행하지 않고, 명시적 import script 또는 승인된 migration flow만 legacy catalog를 DB로 반영할 수 있다.

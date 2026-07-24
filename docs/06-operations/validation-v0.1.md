@@ -39,3 +39,211 @@ Commands run:
 | Secret rotation | Not performed |
 | DNS/CDN/public URL change | Not performed |
 | worker00 request | Not performed |
+
+## Iteration 18 Verification
+
+Date: 2026-07-24
+
+Status: Passed for creator studio route/API split, additive schema update, and generated public catalog readiness.
+
+| Check | Result | Notes |
+|---|---|---|
+| Node syntax checks | Passed | Checked creator/admin API modules, schema bootstrap modules, app JS, and static generator |
+| Default build | Passed | `npm run build` generated 34 static pages and `public/data/catalog.generated.js` |
+| Public catalog boundary | Passed | `npm run verify:public-catalog`, baseline match yes, mutation performed no |
+| Public artifact verification | Passed | `npm run verify:public-artifact`, payload hash matched |
+| Asset validation | Passed | `npm run validate:assets`, 40 catalog asset references exist |
+| Runtime smoke | Passed | `npm run smoke:public-artifact-runtime`, baseline match yes |
+| Browser route smoke | Passed | `npm run smoke:public-artifact-browser`, public catalog routes rendered |
+| Release readiness | Passed | `npm run readiness:public-artifact`, 34 HTML files compared, baseline match yes |
+| Creator nested route smoke | Passed | VM smoke rendered `/creator-studio`, `/creator-studio/dashboard`, `/creator-studio/works`, `/creator-studio/feedback`, `/creator-studio/settings` without 404 |
+| Creator workspace dependency scan | Passed | No `/api/creator/workspace` reference remains in `assets/` or generated `public/assets/` client code |
+| Secret scan review | Passed | Common secret indicator scan produced no findings |
+
+Commands run:
+
+| Command | Status |
+|---|---|
+| `node --check ...` | Passed |
+| `npm run build` | Passed |
+| `npm run verify:public-catalog` | Passed |
+| `npm run verify:public-artifact` | Passed |
+| `npm run validate:assets` | Passed |
+| `npm run smoke:public-artifact-runtime` | Passed |
+| `npm run smoke:public-artifact-browser` | Passed |
+| `npm run readiness:public-artifact` | Passed |
+| Creator nested route VM smoke | Passed |
+| Secret indicator scan | Passed |
+
+## Iteration 18 External State
+
+| Action | State |
+|---|---|
+| Remote push | Not performed |
+| Pull request creation | Not performed |
+| Production deployment | Not performed |
+| Production database migration | Not performed |
+| Secret rotation | Not performed |
+| DNS/CDN/public URL change | Not performed |
+
+## Iteration 19 Verification
+
+Date: 2026-07-24
+
+Status: Passed for creator studio release readiness package, migration runbook, and repeatable regression script.
+
+| Check | Result | Notes |
+|---|---|---|
+| Creator readiness | Passed | `npm run readiness:creator-studio` wrote `reports/creator-studio-readiness-v0.31.json`; route/API/schema/static routing checks passed |
+| Node syntax checks | Passed | Checked creator/admin API modules, schema bootstrap modules, app JS, static generator, and new readiness script |
+| Default build | Passed | `npm run build` generated 34 static pages and `public/data/catalog.generated.js` |
+| Public catalog boundary | Passed | `npm run verify:public-catalog`, baseline match yes, mutation performed no |
+| Public artifact verification | Passed | `npm run verify:public-artifact`, payload hash matched |
+| Asset validation | Passed | `npm run validate:assets`, 40 catalog asset references exist |
+| Runtime smoke | Passed | `npm run smoke:public-artifact-runtime`, baseline match yes |
+| Browser route smoke | Passed | `npm run smoke:public-artifact-browser`, public catalog routes rendered |
+| Release readiness | Passed | `npm run readiness:public-artifact`, 34 HTML files compared, baseline match yes |
+| Secret scan review | Passed | Common indicator scan found environment-variable names and explanatory text only; no secret values were printed or identified |
+
+Commands run:
+
+| Command | Status |
+|---|---|
+| `node --check scripts/verify-creator-studio-readiness.js` | Passed |
+| `npm run readiness:creator-studio` | Passed |
+| `node --check api/creator.js` | Passed |
+| `node --check api/_lib/creator-content.js` | Passed |
+| `node --check api/_lib/creator-read-model.js` | Passed |
+| `node --check api/_lib/creator-repository.js` | Passed |
+| `node --check api/_lib/platform-schema.js` | Passed |
+| `node --check api/admin-operations.js` | Passed |
+| `node --check assets/js/app.js` | Passed |
+| `node --check scripts/generate-static-pages.js` | Passed |
+| `npm run build` | Passed |
+| `npm run verify:public-catalog` | Passed |
+| `npm run verify:public-artifact` | Passed |
+| `npm run validate:assets` | Passed |
+| `npm run smoke:public-artifact-runtime` | Passed |
+| `npm run smoke:public-artifact-browser` | Passed |
+| `npm run readiness:public-artifact` | Passed |
+| Secret indicator scan | Passed with env-name-only findings |
+
+## Iteration 19 External State
+
+| Action | State |
+|---|---|
+| Remote push | Not performed |
+| Pull request creation | Not performed |
+| Staging deployment | Not performed |
+| Production deployment | Not performed |
+| Production database migration | Not performed |
+| Secret rotation | Not performed |
+| DNS/CDN/public URL change | Not performed |
+| Production promote | Not performed |
+
+## Iteration 20 Verification
+
+Date: 2026-07-24
+
+Status: Passed for local publication pipeline implementation, legacy catalog source boundary, and skill candidate reporting.
+
+| Check | Result | Notes |
+|---|---|---|
+| Publication pipeline readiness | Passed | `npm run readiness:publication-pipeline` wrote `reports/publication-pipeline-readiness-v0.32.json` |
+| Creator readiness | Passed | `npm run readiness:creator-studio` still passes after admin pipeline changes |
+| Node syntax checks | Passed | Checked creator/admin API modules, publication pipeline module, catalog import service, app JS, static generator, and readiness scripts |
+| Default build | Passed | `npm run build` generated 34 static pages and `public/data/catalog.generated.js` |
+| Public catalog boundary | Passed | `npm run verify:public-catalog`, baseline match yes |
+| Public artifact verification | Passed | `npm run verify:public-artifact`, payload hash matched |
+| Asset validation | Passed | `npm run validate:assets`, 40 catalog asset references exist |
+| Runtime smoke | Passed | `npm run smoke:public-artifact-runtime`, baseline match yes |
+| Browser route smoke | Passed after sequential rerun | Initial parallel run raced on `public/` cleanup; sequential rerun passed |
+| Release readiness | Passed | `npm run readiness:public-artifact`, 34 HTML files compared, baseline match yes |
+| Secret scan review | Passed with env-name-only findings | Indicator scan found configuration names and documentation wording only; no secret values were printed or identified |
+
+Commands run:
+
+| Command | Status |
+|---|---|
+| `node --check ...` | Passed |
+| `npm run readiness:publication-pipeline` | Passed |
+| `npm run readiness:creator-studio` | Passed |
+| `npm run build` | Passed |
+| `npm run verify:public-catalog` | Passed |
+| `npm run verify:public-artifact` | Passed |
+| `npm run validate:assets` | Passed |
+| `npm run smoke:public-artifact-runtime` | Passed |
+| `npm run smoke:public-artifact-browser` | Passed after sequential rerun |
+| `npm run readiness:public-artifact` | Passed |
+| Secret indicator scan | Passed with env-name-only findings |
+
+## Iteration 20 External State
+
+| Action | State |
+|---|---|
+| Remote push | Not performed |
+| Pull request creation | Not performed |
+| Staging deployment | Not performed |
+| Production deployment | Not performed |
+| Production database migration | Not performed |
+| Secret rotation | Not performed |
+| DNS/CDN/public URL change | Not performed |
+| Object storage write | Not performed |
+| CDN invalidation | Not performed |
+| Production promote | Not performed |
+
+## Iteration 21 Verification
+
+Date: 2026-07-24
+
+Status: Passed for final local completion package and generated-runtime local serving fix.
+
+| Check | Result | Notes |
+|---|---|---|
+| Documentation alignment | Passed | Updated creator performance plan, architecture note, README local run order, completion report, and runbook local route checks |
+| GitLab Pages CI artifact boundary | Passed | `.gitlab-ci.yml` now publishes the generated `public/` directory from `npm run build` without copying source files over it |
+| JavaScript syntax checks | Passed | `find api scripts assets -type f -name '*.js' ... \| xargs -n1 node --check` |
+| Publication pipeline readiness | Passed | `npm run readiness:publication-pipeline` |
+| Creator readiness | Passed | `npm run readiness:creator-studio` |
+| Default build | Passed | `npm run build` generated 34 static pages and generated catalog artifact |
+| Public catalog boundary | Passed | `npm run verify:public-catalog` |
+| Public artifact verification | Passed | `npm run verify:public-artifact` |
+| Asset validation | Passed | `npm run validate:assets` |
+| Runtime smoke | Passed | `npm run smoke:public-artifact-runtime` |
+| Browser route smoke | Passed | `npm run smoke:public-artifact-browser` |
+| Release readiness | Passed | `npm run readiness:public-artifact` |
+| Local HTTP route check | Passed after fix | `npm run start` now serves `public/`; checked `/`, creator nested routes, and `/data/catalog.generated.js` |
+| Secret scan review | Passed | File-name and indicator scan found no secret values; one route file path contains `key` as a URL parameter name only |
+
+Commands run:
+
+| Command | Status |
+|---|---|
+| `find api scripts assets -type f -name '*.js' -not -path './node_modules/*' -print \| sort \| xargs -n1 node --check` | Passed |
+| `npm run readiness:publication-pipeline` | Passed |
+| `npm run readiness:creator-studio` | Passed |
+| `npm run build` | Passed |
+| `npm run verify:public-catalog` | Passed |
+| `npm run verify:public-artifact` | Passed |
+| `npm run validate:assets` | Passed |
+| `npm run smoke:public-artifact-runtime` | Passed |
+| `npm run smoke:public-artifact-browser` | Passed |
+| `npm run readiness:public-artifact` | Passed |
+| `npm run start` plus local HTTP route checks | Passed |
+| Secret scan review | Passed |
+
+## Iteration 21 External State
+
+| Action | State |
+|---|---|
+| Remote push | Not performed |
+| Pull request creation | Not performed |
+| Staging deployment | Not performed |
+| Production deployment | Not performed |
+| Staging database migration | Not performed |
+| Production database migration | Not performed |
+| Secret rotation | Not performed |
+| DNS/CDN/public URL change | Not performed |
+| Object storage write | Not performed |
+| CDN invalidation | Not performed |
+| Production promote | Not performed |

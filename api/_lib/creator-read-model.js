@@ -10,6 +10,8 @@ function serializeSeries(row) {
     tags: row.tags || [],
     coverUrl: row.coverUrl,
     status: row.status,
+    draftStatus: row.draftStatus || row.status,
+    publicationStatus: row.publicationStatus || (row.status === "PUBLISHED" ? "PUBLISHED" : row.status === "SCHEDULED" ? "SCHEDULED" : "UNPUBLISHED"),
     reviewNote: row.reviewNote,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt
@@ -41,6 +43,8 @@ function serializeEpisode(row) {
     draftBody: row.draftBody,
     contentUrl: row.contentUrl,
     status: row.status,
+    draftStatus: row.draftStatus || row.status,
+    publicationStatus: row.publicationStatus || (row.status === "PUBLISHED" ? "PUBLISHED" : row.status === "SCHEDULED" ? "SCHEDULED" : "UNPUBLISHED"),
     reviewNote: row.reviewNote,
     scheduledAt: row.scheduledAt,
     publishedAt: row.publishedAt,

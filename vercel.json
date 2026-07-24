@@ -33,6 +33,10 @@
     {
       "source": "/api/creator/:path*",
       "destination": "/api/creator?path=:path*"
+    },
+    {
+      "source": "/creator-studio/:path*",
+      "destination": "/creator-studio"
     }
   ],
   "headers": [

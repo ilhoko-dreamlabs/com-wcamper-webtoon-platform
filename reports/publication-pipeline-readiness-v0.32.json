@@ -1,0 +1,75 @@
+{
+  "task": "publication-pipeline-readiness-v0.32",
+  "generatedAt": "2026-07-24T17:45:16.765Z",
+  "mutationPerformed": false,
+  "checks": {
+    "requiredFiles": true,
+    "adminPipelineRoutes": true,
+    "pipelineServiceContract": true,
+    "adminUiControls": true,
+    "reviewPublishActionRemoved": true,
+    "legacyAutoSeedOptIn": true,
+    "explicitImportMaintainsSplitStatus": true,
+    "sampleSnapshotBuilds": true,
+    "packageScript": true
+  },
+  "requiredFiles": [
+    "api/_lib/publication-pipeline.js",
+    "docs/05-implementation/publication-pipeline-plan-v0.32.md",
+    "docs/06-operations/publication-pipeline-release-runbook-v0.32.md",
+    "docs/06-operations/skill-candidates-v0.32.md"
+  ],
+  "endpointContract": [
+    {
+      "method": "GET",
+      "path": "/api/admin/publication-snapshots"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/publication-snapshots"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/publication-snapshots/:id/preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/publication-releases"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/publication-releases/:id/smoke-pass"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/publication-releases/:id/promote"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/publication-releases/:id/rollback"
+    }
+  ],
+  "boundary": {
+    "approvalDoesNotPublish": true,
+    "productionPromotionRequiresReleaseEndpoint": true,
+    "catalogAutoSeedDefaultDisabled": true
+  },
+  "sampleSnapshot": {
+    "sourceHash": "c5a88d624f32e753430cf59993e96f222ca571ca8e092da381f2ea08959109f8",
+    "counts": {
+      "authors": 1,
+      "series": 1,
+      "episodes": 1,
+      "images": 1
+    },
+    "invariants": {
+      "releaseCandidateSeries": true,
+      "releaseCandidateEpisodes": true,
+      "seriesEpisodeRefsResolve": true
+    }
+  },
+  "missingFiles": [],
+  "missingAdminTerms": [],
+  "missingPipelineTerms": [],
+  "missingAppTerms": []
+}

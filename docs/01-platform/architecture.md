@@ -127,8 +127,8 @@ Public pages should only receive public asset URLs, never private originals or s
 |---|---|
 | Public page loading | Static HTML/catalog and static/CDN images |
 | Public catalog | Generated at build/snapshot time |
-| Creator first screen | `/api/me` plus `/api/creator/workspace` |
-| Creator details | Query only selected series or episode data |
+| Creator first screen | `/api/me` plus screen-scoped creator API such as `/api/creator/dashboard` |
+| Creator details | Query only selected series, episode, or feedback data; `/api/creator/workspace` is compatibility-only |
 | Admin lists | Paginated and status-indexed |
 | Reader events | Batch or aggregate where possible |
 | Build | Validate catalog, publication state, and asset paths before output |
@@ -144,4 +144,3 @@ The following require separate explicit approval:
 - secret rotation
 - data deletion
 - changing external routing, DNS, or storage policies
-

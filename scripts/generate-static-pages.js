@@ -138,6 +138,13 @@ function pagesForCatalog(data) {
       image: "assets/img/authors/bongdal-universe-comics-logo.png",
       type: "website"
     }),
+    ...["dashboard", "works", "feedback", "settings"].map((creatorSection) => normalizePage({
+      routePath: `/creator-studio/${creatorSection}`,
+      title: "작가페이지 | WCAMPER Webtoon",
+      description: "작가의 작품 관리, 회차 제작, 독자 피드백, 광고 협의 현황을 확인하는 작가페이지 설계 화면입니다.",
+      image: "assets/img/authors/bongdal-universe-comics-logo.png",
+      type: "website"
+    })),
     normalizePage({
       routePath: "/admin",
       title: "사이트관리자 | WCAMPER Webtoon",

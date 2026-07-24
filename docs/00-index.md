@@ -32,8 +32,15 @@ This index separates current operating decisions from historical MVP notes. New 
 | `docs/04-data/publication-review-migration.sql` | Draft migration SQL | Review only; do not execute without separate approval |
 | `docs/05-implementation/mvp-gap-implementation-plan-v0.20.md` | Applied MVP gap implementation plan | Use for admin, feedback, reader activity, favorites, review, and asset-object completion status |
 | `docs/05-implementation/mvp-gap-design-v0.20.md` | Applied MVP gap design supplement | Use as the current API/state model for MVP gap features |
+| `docs/05-implementation/creator-studio-refactor-plan-v0.30.md` | Applied creator studio refactor plan | Use for creator navigation, read model split, schema state split, and publication release boundary |
+| `docs/05-implementation/publication-pipeline-plan-v0.32.md` | Applied publication pipeline plan | Use for review approval, snapshot, preview, promote, rollback, and legacy catalog source boundaries |
 | `docs/06-operations/public-catalog-default-runtime-release-handoff-v0.16.md` | Release handoff package for generated default runtime | Use before requesting release approval or deployment work |
 | `docs/06-operations/github-project-handoff-v0.17.md` | Corrected GitHub project identity and handoff boundary | Use before preparing GitHub push/PR work; worker00 GitLab MR work is not required |
+| `docs/06-operations/creator-studio-db-migration-runbook-v0.31.md` | Creator studio additive DB migration runbook | Use before staging or production DB migration rehearsal |
+| `docs/06-operations/creator-studio-release-handoff-v0.31.md` | Creator studio release handoff package | Use before staging deploy, production change request, or rollback planning |
+| `docs/06-operations/publication-pipeline-release-runbook-v0.32.md` | Publication pipeline release runbook | Use for staged review-to-production release operation |
+| `docs/06-operations/creator-publication-completion-report-v0.33.md` | Final local completion and release-ready report | Use to confirm implemented scope, validation evidence, and external execution boundary |
+| `docs/06-operations/skill-candidates-v0.32.md` | Skill candidate notes | Use to review candidate skills before adding anything to the DreamLabs registry |
 | `docs/06-operations/worklog-v0.1.md` | Work record | Use for what was changed in this planning session |
 | `docs/06-operations/validation-v0.1.md` | Verification record | Use for local validation status and remaining checks |
 
@@ -45,7 +52,7 @@ This index separates current operating decisions from historical MVP notes. New 
 | `docs/DESIGN.md` | Product vision and early domain design | Treat as product input, not as API or data source of truth |
 | `docs/AUTH_FEEDBACK_AUTHOR_PLAN.md` | Auth, feedback, author application design | Still valid as a domain detail document |
 | `docs/CREATOR_STUDIO_DETAIL_DESIGN.md` | Creator studio detailed design | Still valid for supplier workspace behavior |
-| `docs/CREATOR_STUDIO_PERFORMANCE_PLAN.md` | Creator API performance analysis | Still valid for workspace API consolidation |
+| `docs/CREATOR_STUDIO_PERFORMANCE_PLAN.md` | Creator API performance analysis | Current screen-scoped creator API performance boundary; `/api/creator/workspace` is compatibility-only |
 | `docs/SITE_ADMIN_SETTINGS_DESIGN.md` | Admin console and site settings | Still valid for operator workflow |
 | `docs/NAVIGATION_PAGE_DESIGN.md` | Public IA and navigation | Supporting frontend detail |
 | `docs/MYPAGE_AUTH_STATUS_DESIGN.md` | My page auth states | Supporting reader account detail |

@@ -72,3 +72,37 @@ Define the creator API boundary before refactoring `api/creator.js` and `api/_li
 - The first implementation sequence avoids external state changes.
 - Verification remains local: build, asset validation, baseline generation, and dry-run reports.
 
+## v0.30 Implementation Update
+
+Date: 2026-07-24
+
+작가페이지 성능 개선을 위해 신규 UI 기본 경로는 `/api/creator/workspace`가 아니라 화면 단위 endpoint를 사용한다. `/api/creator/workspace`는 기존 링크와 운영 호환을 위해 남긴다.
+
+| Method | Route | Response boundary | UI route |
+|---|---|---|---|
+| `GET` | `/api/creator/dashboard` | `{ author, profile, summary, recentFeedback }` | `/creator-studio/dashboard` |
+| `GET` | `/api/creator/series` | `{ author, series }` | `/creator-studio/works` |
+| `GET` | `/api/creator/series/:id` | `{ series }` | `/creator-studio/works/:seriesId` |
+| `GET` | `/api/creator/series/:id/episodes` | `{ episodes }` | `/creator-studio/works/:seriesId` |
+| `GET` | `/api/creator/episodes/:id` | `{ episode }` | `/creator-studio/episodes/:episodeId` |
+| `GET` | `/api/creator/episodes/:id/images` | `{ images }` | `/creator-studio/episodes/:episodeId` |
+| `GET` | `/api/creator/feedback` | `{ author, feedback }` | `/creator-studio/feedback` |
+| `GET`, `PATCH` | `/api/creator/profile` | `{ author, profile }` / `{ profile }` | `/creator-studio/settings` |
+
+`series`와 `episode` 객체는 호환 필드 `status`와 함께 `draftStatus`, `publicationStatus`를 반환한다. 신규 lock 판단은 `draftStatus`를 우선 사용한다.
+
+## v0.32 Admin Publication Pipeline API Update
+
+Review approval and production publication are separate API surfaces.
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/admin/publication-snapshots` | List recent DB-backed publication snapshots |
+| `POST` | `/api/admin/publication-snapshots` | Generate a catalog snapshot and static artifact metadata from release-candidate DB rows |
+| `POST` | `/api/admin/publication-snapshots/:id/preview` | Create a preview release record |
+| `GET` | `/api/admin/publication-releases` | List release records |
+| `POST` | `/api/admin/publication-releases/:id/smoke-pass` | Mark preview smoke checks as passed |
+| `POST` | `/api/admin/publication-releases/:id/promote` | Promote a smoke-passed preview release to production |
+| `POST` | `/api/admin/publication-releases/:id/rollback` | Roll back an active production release record |
+
+The admin review action set is now `approve`, `request-revision`, and `reject`. Direct review `publish` is not exposed in the admin UI or accepted by the review moderation API.
