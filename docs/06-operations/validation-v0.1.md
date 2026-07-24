@@ -200,11 +200,11 @@ Status: Passed for GitHub production deployment after publication admin rewrite 
 
 | Check | Result | Notes |
 |---|---|---|
-| GitHub push | Passed | `main` fast-forwarded to `b45b284`; follow-up rewrite fix prepared for redeploy |
-| Vercel deployment | Passed | Latest GitHub production deployment reached `READY` |
-| Production route smoke | Passed | `/`, creator studio nested routes, and `/data/catalog.generated.js` returned `200` |
-| Admin publication route smoke | Fixed locally | `/api/admin/publication-snapshots` initially returned Vercel `404`; `vercel.json` rewrite was added and readiness now guards it |
-| Runtime error log check | Passed | No `error` or `fatal` logs found for latest deployment during post-deploy check window |
+| GitHub push | Passed | `main` fast-forwarded through `c2583c3` |
+| Vercel deployment | Passed | Latest GitHub production deployment `dpl_GrZX9BMPKbDMU3u3DRYmVm5TZbDU` reached `READY` |
+| Production route smoke | Passed | `/`, creator studio nested routes, and `/data/catalog.generated.js` returned `200` on `webtoon.wcamper.com` |
+| Admin publication route smoke | Passed after fix | Publication admin endpoints now route to API auth boundary and return `401` without session instead of Vercel `404` |
+| Runtime log check | Passed with note | No fatal or 5xx application error found; intentional unauthenticated smoke generated a `401` log and a Node `url.parse()` deprecation warning from runtime/dependency path |
 | GitLab preview push | Blocked externally | Auth succeeded, but GitLab rejected push because preview project has no default branch; Owner/Maintainer setup required |
 
 Commands run:
@@ -222,7 +222,7 @@ Commands run:
 | `npm run readiness:public-artifact` | Passed |
 | `git diff --check` | Passed |
 | Production HTTP route smoke | Passed |
-| Vercel runtime error log query | Passed |
+| Vercel runtime log query | Passed with auth-boundary note |
 
 ## Iteration 22 External State
 

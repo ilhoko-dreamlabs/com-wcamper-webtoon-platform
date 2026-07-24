@@ -301,6 +301,7 @@ Push the completed creator publication pipeline to the primary remote, verify th
 | Missing Vercel rewrite for publication admin APIs identified | Complete |
 | Publication snapshot/release rewrites added | Complete |
 | Publication readiness verifier updated to check Vercel rewrites | Complete |
+| Production admin API auth-boundary smoke completed | Complete |
 
 ### Changed Files
 
@@ -319,3 +320,4 @@ Push the completed creator publication pipeline to the primary remote, verify th
 | GitLab preview remote | Blocked because the project has no default branch; Owner/Maintainer must initialize it |
 | DB migration | Not executed because no staging/production DB connection string is available in the worker environment |
 | Authenticated production QA | Not executed because browser auth/admin session is not available in the worker environment |
+| Runtime deprecation warning | Observed during unauthenticated smoke; repository code uses WHATWG `URL`, so the warning appears to come from runtime/dependency path rather than direct project `url.parse()` usage |

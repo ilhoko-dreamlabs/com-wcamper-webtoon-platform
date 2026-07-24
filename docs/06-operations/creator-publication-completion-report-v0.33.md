@@ -38,7 +38,7 @@ Complete the creator studio refactor and publication pipeline work through desig
 | Primary remote push | Complete | GitHub `origin/main` updated to the release commits |
 | Production deployment | Complete | Vercel production deployment reached `READY` |
 | Production public smoke | Complete | Public and creator static routes returned `200` |
-| Production admin route boundary | Complete | Publication admin endpoints are covered by `vercel.json` rewrites and readiness checks |
+| Production admin route boundary | Complete | Publication admin endpoints are covered by `vercel.json` rewrites and returned `401` auth boundary on `webtoon.wcamper.com` without session |
 
 ## Remaining External Boundary
 
@@ -73,7 +73,7 @@ These actions still require environment-specific credentials, browser session co
 | GitHub push | Passed |
 | Vercel production deployment | Passed; latest deployment `READY` |
 | Production public HTTP route smoke | Passed |
-| Production runtime error log check | Passed; no error/fatal logs found in checked window |
+| Production runtime log check | Passed with note; unauthenticated smoke generated expected `401` log and no fatal/5xx application error was found |
 
 ## Final Recommendation
 
