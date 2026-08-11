@@ -2,44 +2,6 @@
 
 Date: 2026-07-16
 
-## Iteration 17 Verification
-
-Status: Passed for GitHub project identity cleanup and wrong GitLab/worker00 handoff removal.
-
-| Check | Result | Notes |
-|---|---|---|
-| GitHub handoff readiness | Passed | `npm run readiness:github-handoff` verified GitHub `origin`, secondary `gitlab-preview`, cleanup state, README wording, and wrote `reports/github-project-handoff.json` |
-| Release handoff readiness | Passed | `npm run readiness:public-artifact-handoff` validated the generated default runtime handoff |
-| Default-runtime switch readiness | Passed | `npm run readiness:public-artifact-switch` verified generated default build, legacy rollback build, and restored generated default build |
-| Browser-like generated artifact route smoke | Passed | `npm run smoke:public-artifact-browser` passed against generated runtime routes |
-| Asset validation | Passed | `npm run validate:assets` checked 40 catalog asset references with no missing files |
-| Default build | Passed | `npm run build` generated 30 static pages and emitted `public/data/catalog.generated.js` |
-| Secret scan review | Passed | File-name-only scan found no likely secret indicators in the new GitHub handoff/cleanup files; README and existing design docs contain environment-variable names or operational wording only |
-
-Commands run:
-
-| Command | Status |
-|---|---|
-| `npm run readiness:github-handoff` | Passed |
-| `npm run readiness:public-artifact-handoff` | Passed |
-| `npm run readiness:public-artifact-switch` | Passed |
-| `npm run smoke:public-artifact-browser` | Passed |
-| `npm run validate:assets` | Passed |
-| `npm run build` | Passed |
-| File-name-only secret indicator scan | Passed |
-
-## Expected External State
-
-| Action | Expected state |
-|---|---|
-| Remote push | Not performed |
-| Pull request creation | Not performed |
-| Deployment | Not performed |
-| DB migration | Not performed |
-| Secret rotation | Not performed |
-| DNS/CDN/public URL change | Not performed |
-| worker00 request | Not performed |
-
 ## Iteration 18 Verification
 
 Date: 2026-07-24
@@ -205,7 +167,6 @@ Status: Passed for GitHub production deployment after publication admin rewrite 
 | Production route smoke | Passed | `/`, creator studio nested routes, and `/data/catalog.generated.js` returned `200` on `webtoon.wcamper.com` |
 | Admin publication route smoke | Passed after fix | Publication admin endpoints now route to API auth boundary and return `401` without session instead of Vercel `404` |
 | Runtime log check | Passed with note | No fatal or 5xx application error found; intentional unauthenticated smoke generated a `401` log and a Node `url.parse()` deprecation warning from runtime/dependency path |
-| GitLab preview push | Blocked externally | Auth succeeded, but GitLab rejected push because preview project has no default branch; Owner/Maintainer setup required |
 
 Commands run:
 
@@ -234,7 +195,6 @@ Commands run:
 | Production authenticated creator/admin workflow QA | Not performed; requires real auth session and admin account in browser |
 | Staging DB migration | Not performed; DB connection not present in worker environment |
 | Production DB migration | Not performed; DB connection not present in worker environment |
-| GitLab preview push | Blocked by remote default-branch configuration |
 | Secret rotation | Not performed |
 | DNS/CDN/public URL change | Not performed |
 | Object storage write | Not performed |
@@ -249,7 +209,6 @@ Status: Passed for final local completion package and generated-runtime local se
 | Check | Result | Notes |
 |---|---|---|
 | Documentation alignment | Passed | Updated creator performance plan, architecture note, README local run order, completion report, and runbook local route checks |
-| GitLab Pages CI artifact boundary | Passed | `.gitlab-ci.yml` now publishes the generated `public/` directory from `npm run build` without copying source files over it |
 | JavaScript syntax checks | Passed | `find api scripts assets -type f -name '*.js' ... \| xargs -n1 node --check` |
 | Publication pipeline readiness | Passed | `npm run readiness:publication-pipeline` |
 | Creator readiness | Passed | `npm run readiness:creator-studio` |
@@ -295,3 +254,37 @@ Commands run:
 | Object storage write | Not performed |
 | CDN invalidation | Not performed |
 | Production promote | Not performed |
+
+## Iteration 23 Verification
+
+Date: 2026-08-11
+
+Status: Passed for obsolete non-GitHub release-path cleanup.
+
+| Check | Result | Notes |
+|---|---|---|
+| Obsolete release-path text scan | Passed | Project files contain no obsolete non-GitHub release-path references |
+| Remote list | Passed | Only GitHub `origin` remains configured locally |
+| Package JSON parse | Passed | `package.json` parses after script removal |
+| JavaScript syntax sweep | Passed | `find scripts api assets -type f -name '*.js' ... \| xargs -n1 node --check` |
+| Publication pipeline readiness | Passed | `npm run readiness:publication-pipeline` |
+| Creator studio readiness | Passed | `npm run readiness:creator-studio` |
+| Default build | Passed | `npm run build` generated 34 pages and the generated catalog artifact |
+| Public catalog boundary | Passed | `npm run verify:public-catalog` |
+| Public artifact verification | Passed | `npm run verify:public-artifact` |
+| Asset validation | Passed | `npm run validate:assets` |
+| Runtime smoke | Passed | `npm run smoke:public-artifact-runtime` |
+| Browser smoke | Passed | `npm run smoke:public-artifact-browser` |
+| Release readiness | Passed | `npm run readiness:public-artifact` |
+| Diff whitespace check | Passed | `git diff --check` |
+
+## Iteration 23 External State
+
+| Action | State |
+|---|---|
+| Local secondary remote removal | Complete |
+| Remote push | Not performed |
+| Production deployment | Not performed |
+| Staging database migration | Not performed |
+| Production database migration | Not performed |
+| Authenticated creator/admin QA | Not performed; requires real auth session |

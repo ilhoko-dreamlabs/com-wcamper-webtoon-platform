@@ -35,7 +35,6 @@ This index separates current operating decisions from historical MVP notes. New 
 | `docs/05-implementation/creator-studio-refactor-plan-v0.30.md` | Applied creator studio refactor plan | Use for creator navigation, read model split, schema state split, and publication release boundary |
 | `docs/05-implementation/publication-pipeline-plan-v0.32.md` | Applied publication pipeline plan | Use for review approval, snapshot, preview, promote, rollback, and legacy catalog source boundaries |
 | `docs/06-operations/public-catalog-default-runtime-release-handoff-v0.16.md` | Release handoff package for generated default runtime | Use before requesting release approval or deployment work |
-| `docs/06-operations/github-project-handoff-v0.17.md` | Corrected GitHub project identity and handoff boundary | Use before preparing GitHub push/PR work; worker00 GitLab MR work is not required |
 | `docs/06-operations/creator-studio-db-migration-runbook-v0.31.md` | Creator studio additive DB migration runbook | Use before staging or production DB migration rehearsal |
 | `docs/06-operations/creator-studio-release-handoff-v0.31.md` | Creator studio release handoff package | Use before staging deploy, production change request, or rollback planning |
 | `docs/06-operations/publication-pipeline-release-runbook-v0.32.md` | Publication pipeline release runbook | Use for staged review-to-production release operation |

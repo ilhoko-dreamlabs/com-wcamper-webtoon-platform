@@ -30,7 +30,6 @@ Complete the creator studio refactor and publication pipeline work through desig
 | Legacy catalog source demotion | Complete | Login-time seed attach is opt-in only; explicit import remains available |
 | Static route generation | Complete | Creator nested routes generated under `public/` |
 | Local start behavior | Complete | `npm run start` serves `public/`, matching generated catalog default runtime |
-| GitLab Pages artifact behavior | Complete | CI keeps `npm run build` output as the `public/` artifact without copying root source over it |
 | Design documents | Complete | Creator refactor plan, publication pipeline plan, API/data updates |
 | Operation documents | Complete | Migration runbook, release runbook, release handoff, validation record |
 | Skill candidates | Complete | `docs/06-operations/skill-candidates-v0.32.md` |
@@ -42,11 +41,10 @@ Complete the creator studio refactor and publication pipeline work through desig
 
 ## Remaining External Boundary
 
-These actions still require environment-specific credentials, browser session context, or remote project owner setup.
+These actions still require environment-specific credentials or browser session context.
 
 | External action | Prepared artifact | Execution requirement |
 |---|---|---|
-| GitLab preview publish | GitHub release commit and GitLab preview remote | GitLab Owner/Maintainer must create the preview project default branch |
 | Staging DB migration | `docs/04-data/publication-review-migration.sql` and migration runbook | Staging DB connection through approved channel |
 | Staging deployment | Build output, route rewrite, release handoff | Staging hosting target if separate from production Vercel |
 | Staging performance measurement | Updated performance plan | Representative staging data and network access |
@@ -77,4 +75,4 @@ These actions still require environment-specific credentials, browser session co
 
 ## Final Recommendation
 
-Treat the GitHub/Vercel production deployment as complete for the code and static route layer. Finish the environment-only items by applying the additive DB migration through the approved DB channel, performing authenticated admin/creator QA, and initializing the GitLab preview project's default branch if that preview path is still required.
+Treat the GitHub/Vercel production deployment as complete for the code and static route layer. Finish the environment-only items by applying the additive DB migration through the approved DB channel and performing authenticated admin/creator QA.

@@ -60,8 +60,6 @@ Primary repository remote: GitHub.
 origin: https://github.com/ilhoko-dreamlabs/com-wcamper-webtoon-platform.git
 ```
 
-로컬 환경에 `gitlab-preview` remote가 있을 수 있지만, 이는 보조 preview remote입니다. GitHub 업로드/PR 작업에는 worker00 GitLab 작업이 필요하지 않습니다.
-
 ## 로컬 실행
 
 ```bash

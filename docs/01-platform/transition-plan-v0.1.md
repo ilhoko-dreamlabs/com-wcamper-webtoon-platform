@@ -208,10 +208,8 @@ Next coding task: prepare a GitHub push/PR package for the generated catalog def
 
 | Order | Task | Status | Output | Notes |
 |---:|---|---|---|---|
-| 17 | Correct GitHub project identity and handoff boundary | Complete | `docs/06-operations/github-project-handoff-v0.17.md` | Documents GitHub `origin` as primary and `gitlab-preview` as a secondary preview remote |
-| 17.1 | Remove incorrect GitLab/worker00 handoff artifacts | Complete | Removed GitLab/worker00 scripts, docs, reports, and package commands | worker00 is not required for GitHub upload/PR work |
-| 17.2 | Restore temporary CI candidate change | Complete | `.gitlab-ci.yml` | Removes the temporary `catalog_readiness` candidate job and restores the previous deploy-only shape |
-| 17.3 | Add GitHub handoff verifier | Complete | `scripts/verify-github-handoff.js`, `reports/github-project-handoff.json` | Verifies remote identity, cleanup state, README wording, and no external state mutation |
+| 17 | Confirm GitHub project identity | Complete | `README.md` | Documents GitHub `origin` as the project release remote |
+| 17.1 | Remove obsolete non-GitHub handoff artifacts | Complete | Removed obsolete scripts, docs, reports, and package commands | Release work proceeds through GitHub and Vercel only |
 
 Next task: prepare a GitHub push/PR request package with branch name, PR title/body, changed-file summary, validation results, and rollback note. Remote push and PR creation remain separate approvals.
 

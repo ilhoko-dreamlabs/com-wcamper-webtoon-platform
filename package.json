@@ -15,7 +15,6 @@
     "readiness:public-artifact-proposal": "node scripts/verify-public-catalog-default-runtime-proposal.js --proposal-readiness",
     "readiness:public-artifact-switch": "node scripts/verify-public-catalog-default-runtime-switch.js --default-runtime-switch",
     "readiness:public-artifact-handoff": "node scripts/verify-public-catalog-release-handoff.js --release-handoff",
-    "readiness:github-handoff": "node scripts/verify-github-handoff.js --github-handoff",
     "readiness:mvp-gap": "node scripts/verify-mvp-gap-implementation.js",
     "readiness:creator-studio": "node scripts/verify-creator-studio-readiness.js",
     "readiness:publication-pipeline": "node scripts/verify-publication-pipeline-readiness.js",

@@ -50,8 +50,7 @@ For code rollback, restore `scripts/generate-static-pages.js` so the default run
 ## Non-Goals
 
 - No production deployment.
-- No remote push or merge request.
+- No remote push or pull request.
 - No DB migration.
 - No secret, token, or environment variable change.
 - No change to the long-term goal that DB/API becomes the operational source of truth.
-

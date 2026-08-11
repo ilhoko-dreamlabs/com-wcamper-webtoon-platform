@@ -69,7 +69,7 @@ No production deployment is included in this handoff. The following actions requ
 |---|---|
 | Production deploy | Not performed |
 | Remote push | Not performed |
-| PR or merge request creation | Not performed |
+| Pull request creation | Not performed |
 | DB migration | Not performed |
 | Secret or variable rotation | Not performed |
 | Public URL, DNS, CDN, or cache purge change | Not performed |

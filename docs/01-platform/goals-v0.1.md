@@ -201,8 +201,6 @@ The transition foundation is complete when a new session can implement from thes
 
 | ID | Goal | Status | Completion criteria |
 |---|---|---|---|
-| V0.17-G1 | Correct repository identity to GitHub-first handoff | Complete | README and operations docs state that `origin` is GitHub and `gitlab-preview` is only a secondary preview remote |
-| V0.17-G2 | Remove incorrect GitLab/worker00 handoff artifacts | Complete | GitLab/worker00 verifier scripts, request docs, reports, and package scripts are absent |
-| V0.17-G3 | Restore `.gitlab-ci.yml` to previous local shape | Complete | The temporary `catalog_readiness` candidate job is removed and the previous deploy-only Pages configuration is restored |
-| V0.17-G4 | Add GitHub handoff readiness verification | Complete | `npm run readiness:github-handoff` validates remote identity, cleanup state, README wording, and writes `reports/github-project-handoff.json` |
-| V0.17-G5 | Keep external state unchanged | Complete | No push, PR creation, deploy, DB migration, secret rotation, DNS, CDN, or public URL change was performed |
+| V0.17-G1 | Confirm GitHub as the only project release remote | Complete | README states `origin` as the GitHub repository |
+| V0.17-G2 | Remove obsolete non-GitHub handoff artifacts | Complete | Obsolete verifier scripts, request docs, reports, and package scripts are absent |
+| V0.17-G3 | Keep external state unchanged | Complete | No push, PR creation, deploy, DB migration, secret rotation, DNS, CDN, or public URL change was performed |
