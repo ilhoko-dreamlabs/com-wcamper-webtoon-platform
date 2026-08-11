@@ -38,6 +38,7 @@ Complete the creator studio refactor and publication pipeline work through desig
 | Production deployment | Complete | Vercel production deployment reached `READY` |
 | Production public smoke | Complete | Public and creator static routes returned `200` |
 | Production admin route boundary | Complete | Publication admin endpoints are covered by `vercel.json` rewrites and returned `401` auth boundary on `webtoon.wcamper.com` without session |
+| Obsolete release-path cleanup | Complete | Commit `6cf8c1ccbb6c9c689509ac711bfa37a86a5d4a1e` removed obsolete references and deployed as `dpl_4j7Etbt3EWH8q4j5rK7N714nCEUQ` |
 
 ## Remaining External Boundary
 
@@ -72,6 +73,7 @@ These actions still require environment-specific credentials or browser session 
 | Vercel production deployment | Passed; latest deployment `READY` |
 | Production public HTTP route smoke | Passed |
 | Production runtime log check | Passed with note; unauthenticated smoke generated expected `401` log and no fatal/5xx application error was found |
+| Obsolete release-path cleanup production smoke | Passed; `/`, creator nested routes, catalog artifact, and unauthenticated API boundaries verified on 2026-08-11 |
 
 ## Final Recommendation
 

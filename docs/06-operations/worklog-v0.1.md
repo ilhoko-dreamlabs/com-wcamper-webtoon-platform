@@ -305,3 +305,42 @@ reports/github-project-handoff.json
 | `npm run smoke:public-artifact-browser` | Passed |
 | `npm run readiness:public-artifact` | Passed |
 | `git diff --check` | Passed |
+
+## Iteration 24
+
+Date: 2026-08-11
+
+Task: Complete GitHub/Vercel release for obsolete release-path cleanup.
+
+### Goal
+
+Commit and push the obsolete release-path cleanup, confirm Vercel production deployment, run production smoke checks, and record remaining environment-only boundaries.
+
+### Completed
+
+| Work item | Status |
+|---|---|
+| Local cleanup commit created | Complete |
+| GitHub `origin/main` push completed | Complete |
+| Vercel production deployment confirmed `READY` | Complete |
+| Production public route smoke completed | Complete |
+| Production creator nested route smoke completed | Complete |
+| Production catalog artifact smoke completed | Complete |
+| Production creator/admin API unauthenticated boundary smoke completed | Complete |
+| Vercel runtime error and 5xx log checks completed | Complete |
+
+### Release Details
+
+| Item | Value |
+|---|---|
+| Commit | `6cf8c1ccbb6c9c689509ac711bfa37a86a5d4a1e` |
+| Message | Obsolete release-path cleanup |
+| Deployment | `dpl_4j7Etbt3EWH8q4j5rK7N714nCEUQ` |
+| Production URL | `https://webtoon.wcamper.com` |
+
+### Remaining External Boundaries
+
+| Item | State |
+|---|---|
+| DB migration | Not executed because no staging/production DB connection string is available in the worker environment |
+| Authenticated production QA | Not executed because browser auth/admin session is not available in the worker environment |
