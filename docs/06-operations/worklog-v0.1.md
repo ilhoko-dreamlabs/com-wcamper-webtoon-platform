@@ -2,6 +2,41 @@
 
 Date: 2026-07-24
 
+## Iteration 29 - Authoring MCP Production RRA Handoff
+
+Date: 2026-08-21
+
+### Goal
+
+Prepare the admin-worker/RRA handoff needed to activate Authoring MCP production
+environment settings without exposing secret values.
+
+### Completed
+
+| Work item | Status |
+|---|---|
+| Reviewed DreamLabs registry usage guide and admin secret-variable audit guidance | Complete |
+| Confirmed current repository is aligned with GitHub `origin/main` | Complete |
+| Confirmed current worker has no Vercel login session | Complete |
+| Confirmed `npx vercel env ls production` enters interactive login flow in this worker | Complete |
+| Identified required Authoring MCP production env metadata | Complete |
+| Prepared sanitized worker00/RRA request package | Complete |
+
+### Output
+
+| File | Purpose |
+|---|---|
+| `docs/06-operations/authoring-mcp-production-rra-request-v0.37.md` | Sanitized production activation RRA handoff for worker00/admin operator |
+| `docs/00-index.md` | Adds the RRA handoff to the operations document index |
+| `docs/06-operations/validation-v0.1.md` | Records local RRA preparation checks |
+
+### External State
+
+No production environment variable, DB connection string, secret, token, DNS,
+publication release state, or Vercel project setting was changed in this
+iteration. This worker has no official worker00/RRA submission tool in the
+current session, so the request is prepared for external execution.
+
 ## Iteration 28 - Authoring MCP Production Activation Attempt
 
 Date: 2026-08-21

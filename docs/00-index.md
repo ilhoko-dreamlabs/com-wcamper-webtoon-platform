@@ -43,6 +43,7 @@ This index separates current operating decisions from historical MVP notes. New 
 | `docs/06-operations/publication-pipeline-release-runbook-v0.32.md` | Publication pipeline release runbook | Use for staged review-to-production release operation |
 | `docs/06-operations/creator-publication-completion-report-v0.33.md` | Final local completion and release-ready report | Use to confirm implemented scope, validation evidence, and external execution boundary |
 | `docs/06-operations/authoring-mcp-test-scenarios-v0.36.md` | Authoring MCP test scenarios | Use before staging worker-token/DB integration tests |
+| `docs/06-operations/authoring-mcp-production-rra-request-v0.37.md` | Authoring MCP production activation RRA handoff | Use when asking an admin worker/operator to audit env metadata and activate Authoring MCP without exposing secrets |
 | `docs/06-operations/skill-candidates-v0.32.md` | Skill candidate notes | Use to review candidate skills before adding anything to the DreamLabs registry |
 | `docs/06-operations/worklog-v0.1.md` | Work record | Use for what was changed in this planning session |
 | `docs/06-operations/validation-v0.1.md` | Verification record | Use for local validation status and remaining checks |

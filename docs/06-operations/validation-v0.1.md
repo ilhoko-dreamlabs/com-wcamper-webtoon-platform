@@ -2,6 +2,35 @@
 
 Date: 2026-07-16
 
+## Iteration 29 Verification
+
+Date: 2026-08-21
+
+Status: RRA handoff package prepared. Direct production env audit/submission is
+blocked in this worker by missing Vercel authentication and no official
+worker00/RRA submission tool.
+
+| Check | Result | Notes |
+|---|---|---|
+| Git status | Passed | Local `main` aligned with `origin/main` before RRA document edits |
+| DreamLabs registry guidance review | Passed | Reviewed worker usage, deployment readiness, release handoff, and secret-variable audit guidance |
+| Required env metadata identification | Passed | Identified `WEBTOON_AUTHORING_MCP_TOKEN`, optional `WEBTOON_AUTHORING_MCP_WORKER_ID`, DB URL fallback variables, and optional `WEBTOON_DATABASE_SSL` |
+| Vercel CLI identity | Blocked | `npx vercel whoami` reports logged out |
+| Vercel production env metadata audit | Blocked | `npx vercel env ls production` starts an interactive login flow in this worker |
+| worker00/RRA direct submission | Blocked | No official worker00/RRA submission tool is available in this session |
+| RRA handoff package | Passed | `docs/06-operations/authoring-mcp-production-rra-request-v0.37.md` prepared without secret values |
+
+## RRA Follow-Up Expected From Admin Worker
+
+| Item | Expected sanitized result |
+|---|---|
+| Production env audit | Variable presence and scope only; no values |
+| Token activation | `WEBTOON_AUTHORING_MCP_TOKEN` present in production |
+| DB readiness | One DB URL variable present; no connection string printed |
+| Authoring MCP no-auth smoke | `401 AUTHORING_MCP_AUTH_REQUIRED` after token activation |
+| Valid-token happy path | `200` import `status=OPEN` with approved test authorRef |
+| Deferred tools | `501 AUTHORING_MCP_TOOL_NOT_IMPLEMENTED` |
+
 ## Iteration 28 Verification
 
 Date: 2026-08-21
