@@ -21,6 +21,10 @@ environment settings without exposing secret values.
 | Confirmed `npx vercel env ls production` enters interactive login flow in this worker | Complete |
 | Identified required Authoring MCP production env metadata | Complete |
 | Prepared sanitized worker00/RRA request package | Complete |
+| Submitted worker00 prerequisite check through Remote Request API | Complete |
+| Confirmed production token metadata exists through worker00 recheck | Complete |
+| Triggered production redeploy through GitHub empty commit `e95abae` | Complete |
+| Verified Authoring MCP unauthenticated production boundary returns `401` instead of `503` | Complete |
 
 ### Output
 
@@ -32,10 +36,27 @@ environment settings without exposing secret values.
 
 ### External State
 
-No production environment variable, DB connection string, secret, token, DNS,
-publication release state, or Vercel project setting was changed in this
-iteration. This worker has no official worker00/RRA submission tool in the
-current session, so the request is prepared for external execution.
+Production `WEBTOON_AUTHORING_MCP_TOKEN` metadata was confirmed through
+worker00 without exposing the value. This worker did not read, print, rotate, or
+store the token. A GitHub empty commit was pushed to trigger production redeploy.
+
+Completed Remote Request API records:
+
+| Request | Result |
+|---|---|
+| `req-5d21fab089a61d0488157efae9b768c8` | Prerequisite check completed; Vercel project and DB env metadata present |
+| `req-1ffd19f93f458009fb474fcf6e170443` | Token recheck completed; token already exists, not overwritten |
+| `req-88a0a3614b78b4a1e2b96e6d21b65500` | Broad activation request failed before vendor dispatch |
+| `req-0a30a366720ce089d324aa0bc3464a9a` | Redeploy request failed before vendor dispatch |
+
+Current production no-auth smoke:
+
+| Endpoint | Result |
+|---|---|
+| `POST /api/authoring-mcp/tools/create_authoring_import` | `401 AUTHORING_MCP_AUTH_REQUIRED` |
+
+Remaining external validation requires the production bearer token and an
+approved test `authorRef`; neither value was exposed to this worker.
 
 ## Iteration 28 - Authoring MCP Production Activation Attempt
 

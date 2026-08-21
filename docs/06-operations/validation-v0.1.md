@@ -6,9 +6,8 @@ Date: 2026-07-16
 
 Date: 2026-08-21
 
-Status: RRA handoff package prepared. Direct production env audit/submission is
-blocked in this worker by missing Vercel authentication and no official
-worker00/RRA submission tool.
+Status: RRA handoff package prepared, worker00 Remote Request API path verified,
+and Authoring MCP production unauthenticated boundary activated after redeploy.
 
 | Check | Result | Notes |
 |---|---|---|
@@ -17,8 +16,13 @@ worker00/RRA submission tool.
 | Required env metadata identification | Passed | Identified `WEBTOON_AUTHORING_MCP_TOKEN`, optional `WEBTOON_AUTHORING_MCP_WORKER_ID`, DB URL fallback variables, and optional `WEBTOON_DATABASE_SSL` |
 | Vercel CLI identity | Blocked | `npx vercel whoami` reports logged out |
 | Vercel production env metadata audit | Blocked | `npx vercel env ls production` starts an interactive login flow in this worker |
-| worker00/RRA direct submission | Blocked | No official worker00/RRA submission tool is available in this session |
+| worker00/RRA prerequisite check | Passed | Remote Request API `req-5d21fab089a61d0488157efae9b768c8` confirmed Vercel project yes, production DB env metadata yes, and `WEBTOON_AUTHORING_MCP_TOKEN` absent at that check |
+| worker00/RRA token recheck | Passed | Remote Request API `req-1ffd19f93f458009fb474fcf6e170443` reported the token already exists in Vercel production and did not overwrite it |
+| worker00/RRA broad activation request | Failed externally | `req-88a0a3614b78b4a1e2b96e6d21b65500` failed before vendor dispatch with `ADAPTER_PROMPT_DISPATCH_CANCELLED` |
+| worker00/RRA redeploy request | Failed externally | `req-0a30a366720ce089d324aa0bc3464a9a` failed before vendor dispatch with `ADAPTER_PROMPT_DISPATCH_CANCELLED` |
+| GitHub redeploy trigger | Passed | Empty commit `e95abae` pushed to `origin/main` to trigger production redeploy |
 | RRA handoff package | Passed | `docs/06-operations/authoring-mcp-production-rra-request-v0.37.md` prepared without secret values |
+| Authoring MCP production no-auth smoke | Passed | `POST /api/authoring-mcp/tools/create_authoring_import` returns `401 AUTHORING_MCP_AUTH_REQUIRED`, not `503 AUTHORING_MCP_NOT_CONFIGURED` |
 
 ## RRA Follow-Up Expected From Admin Worker
 
@@ -27,7 +31,7 @@ worker00/RRA submission tool.
 | Production env audit | Variable presence and scope only; no values |
 | Token activation | `WEBTOON_AUTHORING_MCP_TOKEN` present in production |
 | DB readiness | One DB URL variable present; no connection string printed |
-| Authoring MCP no-auth smoke | `401 AUTHORING_MCP_AUTH_REQUIRED` after token activation |
+| Authoring MCP no-auth smoke | Completed: `401 AUTHORING_MCP_AUTH_REQUIRED` after production redeploy |
 | Valid-token happy path | `200` import `status=OPEN` with approved test authorRef |
 | Deferred tools | `501 AUTHORING_MCP_TOOL_NOT_IMPLEMENTED` |
 
