@@ -2,6 +2,47 @@
 
 Date: 2026-07-24
 
+## Iteration 27 - Authoring MCP Vercel Deployment Consolidation
+
+Date: 2026-08-21
+
+### Goal
+
+Push and deploy the Authoring MCP minimal adapter, resolve deployment blockers,
+and define the next integration test scenarios.
+
+### Completed
+
+| Work item | Status |
+|---|---|
+| Pushed `870eea2` to GitHub `origin/main` | Complete |
+| Vercel deployment failure investigated | Complete |
+| Build logs confirmed `npm run build` completed before deployment output error | Complete |
+| Vercel deployment metadata showed previous successful deployments at `nodejs:12` functions | Complete |
+| Independent Authoring MCP serverless function removed | Complete |
+| Authoring MCP route consolidated through existing `api/creator.js` function | Complete |
+| `vercel.json` rewrite updated to keep `/api/authoring-mcp/*` public contract | Complete |
+| Fix committed and pushed as `a66c21e` | Complete |
+| Vercel production deployment `dpl_AQF6i83yaUv8YpF64xvSBXzWVoAw` reached `READY` | Complete |
+| Production smoke verified public routes, API auth boundaries, and Authoring MCP route boundary | Complete |
+| Test scenario document added | Complete |
+
+### Changed Files
+
+| File | Purpose |
+|---|---|
+| `api/creator.js` | Handles Authoring MCP tool routing inside the existing creator function |
+| `vercel.json` | Rewrites `/api/authoring-mcp/:path*` to the creator function |
+| `scripts/verify-authoring-mcp-readiness.js` | Verifies consolidated adapter and rewrite |
+| `docs/06-operations/authoring-mcp-test-scenarios-v0.36.md` | Defines staging/production Authoring MCP test scenarios |
+| `docs/06-operations/validation-v0.1.md` | Records deployment failure, fix, and production smoke |
+
+### External State
+
+GitHub push and Vercel production deployment were performed with user approval.
+Worker token issuance, DB migration, object storage write, and authenticated
+author/admin QA remain outside this smoke step.
+
 ## Iteration 18
 
 Date: 2026-07-24

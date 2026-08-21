@@ -2,6 +2,38 @@
 
 Date: 2026-07-16
 
+## Iteration 27 Verification
+
+Date: 2026-08-21
+
+Status: Passed for Authoring MCP Vercel deployment consolidation.
+
+| Check | Result | Notes |
+|---|---|---|
+| Initial Vercel deployment for `870eea2` | Failed | Build completed, but deployment output entered `ERROR`; adding a new Node function likely exceeded the existing Vercel function limit |
+| Vercel route consolidation | Passed | Removed independent `api/authoring-mcp.js`; `/api/authoring-mcp/:path*` rewrites into existing `api/creator.js` |
+| Authoring MCP readiness | Passed | `npm run readiness:authoring-mcp` verifies `api/creator.js` adapter and Vercel rewrite |
+| Syntax checks | Passed | `node --check` passed for `api/creator.js`, authoring service, platform schema, and readiness script |
+| Public build and artifact checks | Passed | Sequential build/catalog/artifact/asset/runtime/browser/readiness checks passed |
+| Vercel deployment | Passed | `dpl_AQF6i83yaUv8YpF64xvSBXzWVoAw`, commit `a66c21ea4ec30db268226e32310cf39a0164f146`, state `READY` |
+| Function count guard | Passed | Vercel deployment metadata reports `lambdaRuntimeStats {"nodejs":12}` |
+| Production smoke | Passed | Public routes return `200`; creator/admin APIs return `401`; Authoring MCP route returns expected `503 AUTHORING_MCP_NOT_CONFIGURED` |
+| 5xx review | Passed with expected findings | Only two `503` entries from intentional Authoring MCP missing-env smoke |
+
+Commands and checks:
+
+| Command/check | Status |
+|---|---|
+| `git diff --check` | Passed |
+| `node --check api/creator.js` | Passed |
+| `node --check api/_lib/authoring-mcp-service.js` | Passed |
+| `node --check api/_lib/platform-schema.js` | Passed |
+| `node --check scripts/verify-authoring-mcp-readiness.js` | Passed |
+| `npm run readiness:authoring-mcp` | Passed |
+| `npm run readiness:publication-pipeline` | Passed |
+| `npm run readiness:creator-studio` | Passed |
+| `npm run build && npm run verify:public-catalog && npm run verify:public-artifact && npm run validate:assets && npm run smoke:public-artifact-runtime && npm run smoke:public-artifact-browser && npm run readiness:public-artifact` | Passed |
+
 ## Iteration 26 Verification
 
 Date: 2026-08-21
