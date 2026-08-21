@@ -18,6 +18,7 @@
     "readiness:mvp-gap": "node scripts/verify-mvp-gap-implementation.js",
     "readiness:creator-studio": "node scripts/verify-creator-studio-readiness.js",
     "readiness:publication-pipeline": "node scripts/verify-publication-pipeline-readiness.js",
+    "readiness:authoring-mcp": "node scripts/verify-authoring-mcp-readiness.js",
     "verify:public-catalog": "node scripts/verify-public-catalog-boundary.js",
     "verify:public-artifact": "node scripts/verify-public-catalog-artifact.js",
     "smoke:public-artifact-runtime": "node scripts/verify-public-catalog-runtime-smoke.js",

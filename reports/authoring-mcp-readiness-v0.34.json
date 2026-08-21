@@ -1,0 +1,31 @@
+{
+  "task": "authoring-mcp-readiness-v0.34",
+  "generatedAt": "2026-08-21T06:09:51.628Z",
+  "mutationPerformed": false,
+  "checks": {
+    "requiredFiles": true,
+    "toolContract": true,
+    "productionBypassBlocked": true,
+    "requiredBoundaries": true,
+    "implementationSequence": true,
+    "docsIndex": true,
+    "packageScript": true
+  },
+  "requiredFiles": [
+    "docs/03-apis/authoring-mcp-contract-v0.34.md",
+    "docs/05-implementation/authoring-mcp-integration-plan-v0.34.md"
+  ],
+  "requiredTools": [
+    "create_authoring_import",
+    "register_authoring_asset",
+    "upsert_series_draft",
+    "upsert_episode_draft",
+    "set_episode_panels",
+    "submit_episode_for_review",
+    "get_authoring_import_status"
+  ],
+  "missingFiles": [],
+  "missingTools": [],
+  "missingBoundaryTerms": [],
+  "forbiddenTermsFound": []
+}

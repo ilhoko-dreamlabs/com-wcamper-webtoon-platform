@@ -17,6 +17,7 @@ No registry files were changed in this project task.
 | `legacy-source-deprecation-check` | Detects hidden runtime side effects from legacy static sources and confirms explicit import paths | Auto catalog attach changed to opt-in and import script keeps split statuses | `skills/general/atomic` or `skills/dreamlabs-specific/atomic` |
 | `webtoon-release-runbook-writer` | Produces operator handoff for webtoon snapshot/artifact release flows | `docs/06-operations/publication-pipeline-release-runbook-v0.32.md` | `skills/dreamlabs-specific/atomic` |
 | `admin-release-api-boundary-review` | Checks that approval, preview, production promote, and rollback are different API actions | Admin API and UI publish action split | `skills/dreamlabs-specific/atomic` |
+| `authoring-mcp-contract-readiness` | Verifies external authoring worker tools cannot bypass review or production release boundaries | `scripts/verify-authoring-mcp-readiness.js` and authoring MCP v0.34 docs | `skills/dreamlabs-specific/atomic` |
 
 ## Evidence Format To Use Later
 

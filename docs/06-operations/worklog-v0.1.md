@@ -245,7 +245,48 @@ Push the completed creator publication pipeline to the primary remote, verify th
 |---|---|
 | DB migration | Not executed because no staging/production DB connection string is available in the worker environment |
 | Authenticated production QA | Not executed because browser auth/admin session is not available in the worker environment |
-| Runtime deprecation warning | Observed during unauthenticated smoke; repository code uses WHATWG `URL`, so the warning appears to come from runtime/dependency path rather than direct project `url.parse()` usage |
+
+## Iteration 25
+
+Date: 2026-08-21
+
+Task: Define Authoring MCP integration contract and synchronize durable Wiki knowledge.
+
+### Goal
+
+Record the MCP boundary for external authoring workers so they can submit
+reviewable webtoon drafts without bypassing creator/admin review or production
+publication controls.
+
+### Completed
+
+| Work item | Status |
+|---|---|
+| Runtime Knowledge Wiki policy review | Complete |
+| DreamLabs registry usage review | Complete |
+| Authoring MCP contract document | Complete |
+| Authoring MCP integration plan | Complete |
+| Authoring MCP readiness verifier | Complete |
+| Package script registration | Complete |
+| Project docs index update | Complete |
+| Skillization candidate update | Complete |
+
+### Changed Files
+
+| File | Purpose |
+|---|---|
+| `docs/03-apis/authoring-mcp-contract-v0.34.md` | Defines worker-facing MCP tools, idempotency, auth boundary, and review-only submission flow |
+| `docs/05-implementation/authoring-mcp-integration-plan-v0.34.md` | Defines component responsibilities, data-model additions, implementation sequence, and external boundary |
+| `scripts/verify-authoring-mcp-readiness.js` | Verifies required contract terms and production-bypass prohibitions |
+| `package.json` | Adds `readiness:authoring-mcp` |
+| `docs/00-index.md` | Adds v0.34 MCP documents |
+| `docs/06-operations/skill-candidates-v0.32.md` | Adds `authoring-mcp-contract-readiness` candidate |
+
+### External State
+
+No MCP server deployment, worker token issuance, object storage write, staging
+or production database migration, production release promote, remote push, or
+production deployment was performed.
 
 ## Iteration 23
 

@@ -317,3 +317,32 @@ Status: Passed for GitHub/Vercel production release of obsolete release-path cle
 | Staging database migration | Not performed |
 | Production database migration | Not performed |
 | Authenticated creator/admin QA | Not performed; requires real auth session |
+
+## Iteration 25 Verification
+
+Date: 2026-08-21
+
+Status: Passed for Authoring MCP contract readiness.
+
+| Check | Result | Notes |
+|---|---|---|
+| Authoring MCP readiness | Passed | `npm run readiness:authoring-mcp` wrote `reports/authoring-mcp-readiness-v0.34.json` |
+| Publication pipeline readiness | Passed | `npm run readiness:publication-pipeline` still passes after MCP contract addition |
+| Creator studio readiness | Passed | `npm run readiness:creator-studio` still passes after MCP contract addition |
+| JavaScript syntax check | Passed | `find api scripts assets -type f -name '*.js' ... \| xargs -n1 node --check` |
+| Package JSON parse | Passed | `package.json` parses and includes `readiness:authoring-mcp` |
+| Default build | Passed | `npm run build` generated 34 pages and the generated catalog artifact |
+| Diff whitespace check | Passed | `git diff --check` |
+| Secret scan review | Passed with env-name-only finding | Indicator scan found existing bearer-token comparison code only; no secret value was printed or identified |
+
+## Iteration 25 External State
+
+| Action | State |
+|---|---|
+| MCP production server deployment | Not performed |
+| Worker token issuance | Not performed |
+| Object storage write | Not performed |
+| Staging database migration | Not performed |
+| Production database migration | Not performed |
+| Production promote | Not performed |
+| Remote push | Not performed |
