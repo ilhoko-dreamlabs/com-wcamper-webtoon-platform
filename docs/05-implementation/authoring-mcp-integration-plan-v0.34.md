@@ -127,6 +127,11 @@ The second tool reads status for imports owned by the calling worker id.
 The remaining contracted tools return `501 AUTHORING_MCP_TOOL_NOT_IMPLEMENTED`
 until their draft mutation behavior is implemented.
 
+The HTTP adapter is intentionally hosted inside the existing `api/creator.js`
+serverless function through the `/api/authoring-mcp/:path*` Vercel rewrite.
+This preserves the external Authoring MCP URL contract without increasing the
+Vercel Node function count.
+
 ## Acceptance Criteria For This Step
 
 | Check | Expected |
@@ -137,7 +142,7 @@ until their draft mutation behavior is implemented.
 | Package script | `readiness:authoring-mcp` is registered |
 | Safety boundary | Readiness fails if the contract allows direct production release |
 | Wiki sync | Runtime Knowledge Wiki records the durable MCP decision |
-| Minimal adapter | `api/authoring-mcp.js` routes tool calls |
+| Minimal adapter | `api/creator.js` routes `/api/authoring-mcp/*` tool calls |
 | Minimal service | `api/_lib/authoring-mcp-service.js` implements import create/status |
 
 ## External Boundary

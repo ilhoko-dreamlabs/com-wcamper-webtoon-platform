@@ -280,15 +280,16 @@ approval, snapshot generation, production promote, or rollback.
 | `create_authoring_import` implemented | Complete |
 | `get_authoring_import_status` implemented | Complete |
 | Deferred draft mutation tools return guarded `501` | Complete |
-| Vercel rewrite for `/api/authoring-mcp/:path*` added | Complete |
+| Vercel rewrite for `/api/authoring-mcp/:path*` added through existing creator function | Complete |
 | Authoring MCP migration draft added | Complete |
 | Readiness guard updated for implementation files and production-bypass checks | Complete |
+| Independent Authoring MCP function removed to stay within Vercel function limits | Complete |
 
 ### Changed Files
 
 | File | Purpose |
 |---|---|
-| `api/authoring-mcp.js` | Routes Authoring MCP HTTP tool calls |
+| `api/creator.js` | Routes Authoring MCP HTTP tool calls through the existing creator serverless function |
 | `api/_lib/authoring-mcp-service.js` | Implements worker auth, import creation, status lookup, audit event, and idempotency |
 | `api/_lib/platform-schema.js` | Adds runtime-safe additive authoring tables |
 | `db/schema.sql` | Adds managed schema authoring tables |
@@ -296,7 +297,7 @@ approval, snapshot generation, production promote, or rollback.
 | `docs/03-apis/authoring-mcp-contract-v0.34.md` | Records current minimal adapter |
 | `docs/05-implementation/authoring-mcp-integration-plan-v0.34.md` | Updates implementation status |
 | `scripts/verify-authoring-mcp-readiness.js` | Verifies implementation, route, schema, and boundary checks |
-| `vercel.json` | Adds Authoring MCP route rewrite |
+| `vercel.json` | Adds Authoring MCP route rewrite without adding a new Node function |
 
 ### External State
 

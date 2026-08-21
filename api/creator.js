@@ -23,6 +23,7 @@ const {
   creatorDashboard,
   creatorSummary
 } = require("./_lib/creator-content");
+const { invokeAuthoringTool } = require("./_lib/authoring-mcp-service");
 const { handleError, methodNotAllowed, readJson, sendJson } = require("./_lib/http");
 
 function pathParts(request) {
@@ -37,6 +38,17 @@ function pathParts(request) {
   }
 
   return [];
+}
+
+async function handleAuthoringMcpTool(request, response, toolName) {
+  if (request.method !== "POST") {
+    methodNotAllowed(response, ["POST"]);
+    return;
+  }
+
+  const body = await readJson(request);
+  const result = await invokeAuthoringTool(request, toolName, body);
+  sendJson(response, 200, result);
 }
 
 async function authorRecord(request) {
@@ -345,6 +357,11 @@ async function handleAssets(request, response) {
 module.exports = async function handler(request, response) {
   try {
     const parts = pathParts(request);
+
+    if (parts.length === 3 && parts[0] === "authoring-mcp" && parts[1] === "tools") {
+      await handleAuthoringMcpTool(request, response, parts[2]);
+      return;
+    }
 
     if (parts.length === 1 && parts[0] === "me") {
       await handleMe(request, response);

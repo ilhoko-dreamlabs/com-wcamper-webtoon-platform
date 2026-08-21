@@ -52,7 +52,7 @@
     },
     {
       "source": "/api/authoring-mcp/:path*",
-      "destination": "/api/authoring-mcp?path=:path*"
+      "destination": "/api/creator?path=authoring-mcp/:path*"
     },
     {
       "source": "/creator-studio/:path*",

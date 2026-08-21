@@ -11,7 +11,7 @@ Status: Passed for Authoring MCP minimal implementation.
 | Check | Result | Notes |
 |---|---|---|
 | Authoring MCP readiness | Passed | `npm run readiness:authoring-mcp` verifies route adapter, implemented tools, deferred tool guard, schema terms, and production-bypass absence |
-| Syntax checks for new files | Passed | `node --check` passed for `api/authoring-mcp.js`, `api/_lib/authoring-mcp-service.js`, `api/_lib/platform-schema.js`, and readiness script |
+| Syntax checks for changed files | Passed | `node --check` passed for `api/creator.js`, `api/_lib/authoring-mcp-service.js`, `api/_lib/platform-schema.js`, and readiness script |
 | Handler auth-boundary smoke | Passed | Missing MCP token returns `AUTHORING_MCP_NOT_CONFIGURED`; configured token with no DB returns `DB_NOT_CONFIGURED` |
 | Publication pipeline readiness | Passed | `npm run readiness:publication-pipeline` |
 | Creator studio readiness | Passed | `npm run readiness:creator-studio` |
@@ -28,7 +28,7 @@ Commands run:
 
 | Command | Status |
 |---|---|
-| `node --check api/authoring-mcp.js` | Passed |
+| `node --check api/creator.js` | Passed |
 | `node --check api/_lib/authoring-mcp-service.js` | Passed |
 | `node --check api/_lib/platform-schema.js` | Passed |
 | `node --check scripts/verify-authoring-mcp-readiness.js` | Passed |

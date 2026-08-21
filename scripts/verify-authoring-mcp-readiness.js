@@ -16,7 +16,7 @@ const requiredFiles = [
   "docs/03-apis/authoring-mcp-contract-v0.34.md",
   "docs/05-implementation/authoring-mcp-integration-plan-v0.34.md",
   "docs/04-data/authoring-mcp-migration-v0.35.sql",
-  "api/authoring-mcp.js",
+  "api/creator.js",
   "api/_lib/authoring-mcp-service.js"
 ];
 
@@ -25,7 +25,7 @@ const plan = read("docs/05-implementation/authoring-mcp-integration-plan-v0.34.m
 const docsIndex = read("docs/00-index.md");
 const packageJson = JSON.parse(read("package.json"));
 const service = read("api/_lib/authoring-mcp-service.js");
-const adapter = read("api/authoring-mcp.js");
+const adapter = read("api/creator.js");
 const platformSchema = read("api/_lib/platform-schema.js");
 const dbSchema = read("db/schema.sql");
 const migrationSql = read("docs/04-data/authoring-mcp-migration-v0.35.sql");
@@ -109,7 +109,9 @@ const checks = {
     && packageJson.scripts["readiness:authoring-mcp"] === "node scripts/verify-authoring-mcp-readiness.js",
   routeAdapter: adapter.includes("invokeAuthoringTool")
     && adapter.includes("tools")
-    && vercelConfig.includes("/api/authoring-mcp/:path*"),
+    && adapter.includes("authoring-mcp")
+    && vercelConfig.includes("/api/authoring-mcp/:path*")
+    && vercelConfig.includes("/api/creator?path=authoring-mcp/:path*"),
   implementedToolBridge: implementedTools.every((tool) => service.includes(tool))
     && service.includes("WEBTOON_AUTHORING_MCP_TOKEN")
     && service.includes("idempotencyKey")

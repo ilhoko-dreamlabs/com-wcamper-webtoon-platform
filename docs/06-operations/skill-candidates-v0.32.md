@@ -18,7 +18,7 @@ No registry files were changed in this project task.
 | `webtoon-release-runbook-writer` | Produces operator handoff for webtoon snapshot/artifact release flows | `docs/06-operations/publication-pipeline-release-runbook-v0.32.md` | `skills/dreamlabs-specific/atomic` |
 | `admin-release-api-boundary-review` | Checks that approval, preview, production promote, and rollback are different API actions | Admin API and UI publish action split | `skills/dreamlabs-specific/atomic` |
 | `authoring-mcp-contract-readiness` | Verifies external authoring worker tools cannot bypass review or production release boundaries | `scripts/verify-authoring-mcp-readiness.js`, authoring MCP v0.34 docs, and v0.35 minimal adapter checks | `skills/dreamlabs-specific/atomic` |
-| `authoring-mcp-minimal-adapter-check` | Checks the minimal import/status tool adapter, route rewrite, import schema, idempotency, and deferred-tool guard | `api/authoring-mcp.js`, `api/_lib/authoring-mcp-service.js`, `docs/04-data/authoring-mcp-migration-v0.35.sql`, `reports/authoring-mcp-readiness-v0.35.json` | `skills/dreamlabs-specific/atomic` |
+| `authoring-mcp-minimal-adapter-check` | Checks the minimal import/status tool adapter, route rewrite, import schema, idempotency, and deferred-tool guard | `api/creator.js`, `api/_lib/authoring-mcp-service.js`, `docs/04-data/authoring-mcp-migration-v0.35.sql`, `reports/authoring-mcp-readiness-v0.35.json` | `skills/dreamlabs-specific/atomic` |
 
 ## Evidence Format To Use Later
 
