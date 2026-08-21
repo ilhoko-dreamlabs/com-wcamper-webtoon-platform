@@ -2,6 +2,42 @@
 
 Date: 2026-07-24
 
+## Iteration 28 - Authoring MCP Production Activation Attempt
+
+Date: 2026-08-21
+
+### Goal
+
+Apply Authoring MCP to production directly after owner approval.
+
+### Completed
+
+| Work item | Status |
+|---|---|
+| Confirmed GitHub `origin/main` is current | Complete |
+| Re-ran Authoring MCP, publication pipeline, and creator studio readiness checks | Complete |
+| Confirmed production public routes still return `200` | Complete |
+| Confirmed `/api/authoring-mcp/tools/*` is routed in production and does not return `404` | Complete |
+| Confirmed production Authoring MCP remains inactive with `503 AUTHORING_MCP_NOT_CONFIGURED` | Complete |
+| Checked local Vercel CLI authentication state | Complete |
+
+### Production Activation Result
+
+Authoring MCP code and route are already deployed to production. Full production
+activation is blocked because this worker does not have Vercel authentication
+or the production `WEBTOON_AUTHORING_MCP_TOKEN` value needed to configure the
+environment variable.
+
+The worker also has no production DB connection string in its environment. The
+application can run additive schema setup when a configured Authoring MCP request
+reaches the DB, but the worker cannot independently verify the authenticated
+happy path without the production env and token.
+
+### External State
+
+No production environment variable, DB connection string, secret, token, DNS,
+or publication release state was changed in this iteration.
+
 ## Iteration 27 - Authoring MCP Vercel Deployment Consolidation
 
 Date: 2026-08-21

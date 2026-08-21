@@ -2,6 +2,35 @@
 
 Date: 2026-07-16
 
+## Iteration 28 Verification
+
+Date: 2026-08-21
+
+Status: Production route remains deployed; Authoring MCP production activation
+is blocked by missing Vercel auth/env access.
+
+| Check | Result | Notes |
+|---|---|---|
+| Git status | Passed | Local `main` was aligned with `origin/main` before validation rerun |
+| Authoring MCP readiness | Passed | `npm run readiness:authoring-mcp` |
+| Publication pipeline readiness | Passed | `npm run readiness:publication-pipeline` |
+| Creator studio readiness | Passed | `npm run readiness:creator-studio` |
+| Vercel CLI access | Blocked | CLI is available through `npx vercel`, but current worker is logged out |
+| Production public route smoke | Passed | `/`, `/creator-studio/dashboard`, and `/data/catalog.generated.js` returned `200` |
+| Authoring MCP production route smoke | Passed with inactive boundary | `create_authoring_import` and `get_authoring_import_status` returned `503 AUTHORING_MCP_NOT_CONFIGURED`, not `404` |
+| Production env activation | Blocked | Worker has no Vercel auth and no `WEBTOON_AUTHORING_MCP_TOKEN` value to set |
+
+Commands and checks:
+
+| Command/check | Status |
+|---|---|
+| `npm run readiness:authoring-mcp` | Passed |
+| `npm run readiness:publication-pipeline` | Passed |
+| `npm run readiness:creator-studio` | Passed |
+| `npx vercel --version` | Passed |
+| `npx vercel whoami` | Blocked, logged out |
+| Production HTTP smoke for public and Authoring MCP routes | Passed with expected inactive Authoring MCP boundary |
+
 ## Iteration 27 Verification
 
 Date: 2026-08-21

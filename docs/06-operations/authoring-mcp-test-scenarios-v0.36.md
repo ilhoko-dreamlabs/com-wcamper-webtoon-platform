@@ -34,6 +34,27 @@ or roll back production releases.
 
 ## Current Production Smoke Result
 
+Latest direct activation attempt:
+
+```text
+date 2026-08-21
+result blocked
+reason Vercel CLI is available but the current worker is logged out; production
+       WEBTOON_AUTHORING_MCP_TOKEN value is not available in this environment
+```
+
+Observed production route smoke:
+
+| Route | Result |
+|---|---|
+| `/` | `200` |
+| `/creator-studio/dashboard` | `200` |
+| `/data/catalog.generated.js` | `200` |
+| `/api/authoring-mcp/tools/create_authoring_import` | `503 AUTHORING_MCP_NOT_CONFIGURED` |
+| `/api/authoring-mcp/tools/get_authoring_import_status` | `503 AUTHORING_MCP_NOT_CONFIGURED` |
+
+Previous deployment smoke:
+
 Deployment:
 
 ```text
