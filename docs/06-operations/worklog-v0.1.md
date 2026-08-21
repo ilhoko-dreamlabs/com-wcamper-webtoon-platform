@@ -288,6 +288,46 @@ No MCP server deployment, worker token issuance, object storage write, staging
 or production database migration, production release promote, remote push, or
 production deployment was performed.
 
+## Iteration 26
+
+Date: 2026-08-21
+
+Task: Commit and push the Authoring MCP contract package, then run production
+domain smoke checks.
+
+### Goal
+
+Persist the Authoring MCP integration contract to the primary GitHub remote and
+verify that the existing production reader/admin API boundary remains healthy.
+
+### Completed
+
+| Work item | Status |
+|---|---|
+| Authoring MCP contract commit | Complete |
+| GitHub `origin/main` push | Complete |
+| Production public route smoke | Complete |
+| Production creator API auth-boundary smoke | Complete |
+| Production admin publication API auth-boundary smoke | Complete |
+
+### Result
+
+| Item | Value |
+|---|---|
+| Commit | `530ff71 Document authoring MCP integration contract` |
+| Primary remote | GitHub `origin/main` |
+| Public site | `https://webtoon.wcamper.com` |
+| Public route smoke | `/`, `/creator-studio/dashboard`, `/creator-studio/works`, `/creator-studio/feedback`, `/creator-studio/settings`, and `/data/catalog.generated.js` returned expected responses |
+| API auth boundary | `/api/creator/dashboard` and `/api/admin/publication-snapshots` returned unauthenticated `401` |
+
+### External State
+
+No MCP server deployment, worker token issuance, object storage write, staging
+or production database migration, or production release promote was performed.
+The Vercel CLI/token was not available in this worker, so deployment identity
+inspection was not performed; production domain smoke completed against the
+live site after the GitHub push.
+
 ## Iteration 23
 
 Date: 2026-08-11

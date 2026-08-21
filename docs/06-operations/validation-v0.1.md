@@ -346,3 +346,34 @@ Status: Passed for Authoring MCP contract readiness.
 | Production database migration | Not performed |
 | Production promote | Not performed |
 | Remote push | Not performed |
+
+## Iteration 26 Verification
+
+Date: 2026-08-21
+
+Status: Passed for GitHub push and production domain smoke of the Authoring MCP
+contract package.
+
+| Check | Result | Notes |
+|---|---|---|
+| GitHub push | Passed | `origin/main` advanced to `530ff71 Document authoring MCP integration contract` |
+| Production `/` smoke | Passed | `GET /` returned `200` |
+| Production creator route smoke | Passed | `/creator-studio/dashboard`, `/works`, `/feedback`, and `/settings` returned `200` |
+| Production catalog artifact smoke | Passed | `/data/catalog.generated.js` returned `200` |
+| Production creator API auth boundary | Passed | `/api/creator/dashboard` returned unauthenticated `401` |
+| Production admin publication API auth boundary | Passed | `/api/admin/publication-snapshots` returned unauthenticated `401` |
+| GitHub deployment record lookup | Not applicable | GitHub deployments API returned no deployment records for this commit |
+| Vercel deployment identity inspection | Not performed | Vercel CLI/token was not available in the worker environment |
+
+## Iteration 26 External State
+
+| Action | State |
+|---|---|
+| Remote push | Complete |
+| Production domain smoke | Complete |
+| MCP production server deployment | Not performed |
+| Worker token issuance | Not performed |
+| Object storage write | Not performed |
+| Staging database migration | Not performed |
+| Production database migration | Not performed |
+| Production promote | Not performed |
