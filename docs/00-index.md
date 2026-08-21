@@ -18,7 +18,7 @@ This index separates current operating decisions from historical MVP notes. New 
 | `docs/01-platform/implementation-backlog-v0.2.md` | Approved implementation backlog | Use for the next coding sequence after v0.2 design |
 | `docs/02-domains/creator-domain-v0.2.md` | Approved creator domain baseline | Use for author/supplier write model rules |
 | `docs/03-apis/creator-api-v0.2.md` | Approved creator API boundary | Use before refactoring creator routes and services |
-| `docs/03-apis/authoring-mcp-contract-v0.34.md` | Proposed Authoring MCP contract | Use before integrating external webtoon authoring workers |
+| `docs/03-apis/authoring-mcp-contract-v0.34.md` | Authoring MCP contract and minimal adapter | Use before integrating external webtoon authoring workers |
 | `docs/04-data/schema-v0.2.md` | Approved schema transition baseline | Use before drafting DB migration SQL |
 | `docs/04-data/static-catalog-import-v0.2.md` | Approved static catalog import design | Use before implementing import dry-run |
 | `docs/04-data/public-catalog-snapshot-v0.7.md` | Approved public snapshot boundary baseline | Use before changing public reader catalog generation |
@@ -31,11 +31,12 @@ This index separates current operating decisions from historical MVP notes. New 
 | `docs/04-data/public-catalog-default-runtime-proposal-v0.14.md` | Proposed default runtime replacement and rollback plan | Use before changing the default build from `/data/catalog.js` to `/data/catalog.generated.js` |
 | `docs/04-data/public-catalog-default-runtime-switch-v0.15.md` | Applied local default runtime switch | Use for current generated artifact default build and rollback verification |
 | `docs/04-data/publication-review-migration.sql` | Draft migration SQL | Review only; do not execute without separate approval |
+| `docs/04-data/authoring-mcp-migration-v0.35.sql` | Authoring MCP additive migration draft | Use before applying import/audit/idempotency tables |
 | `docs/05-implementation/mvp-gap-implementation-plan-v0.20.md` | Applied MVP gap implementation plan | Use for admin, feedback, reader activity, favorites, review, and asset-object completion status |
 | `docs/05-implementation/mvp-gap-design-v0.20.md` | Applied MVP gap design supplement | Use as the current API/state model for MVP gap features |
 | `docs/05-implementation/creator-studio-refactor-plan-v0.30.md` | Applied creator studio refactor plan | Use for creator navigation, read model split, schema state split, and publication release boundary |
 | `docs/05-implementation/publication-pipeline-plan-v0.32.md` | Applied publication pipeline plan | Use for review approval, snapshot, preview, promote, rollback, and legacy catalog source boundaries |
-| `docs/05-implementation/authoring-mcp-integration-plan-v0.34.md` | Proposed Authoring MCP integration plan | Use for worker draft submission, idempotency, audit, and production-bypass boundaries |
+| `docs/05-implementation/authoring-mcp-integration-plan-v0.34.md` | Authoring MCP integration plan | Use for worker draft submission, idempotency, audit, and production-bypass boundaries |
 | `docs/06-operations/public-catalog-default-runtime-release-handoff-v0.16.md` | Release handoff package for generated default runtime | Use before requesting release approval or deployment work |
 | `docs/06-operations/creator-studio-db-migration-runbook-v0.31.md` | Creator studio additive DB migration runbook | Use before staging or production DB migration rehearsal |
 | `docs/06-operations/creator-studio-release-handoff-v0.31.md` | Creator studio release handoff package | Use before staging deploy, production change request, or rollback planning |

@@ -1,7 +1,7 @@
 # Authoring MCP Integration Plan v0.34
 
 Date: 2026-08-21
-Status: Design contract and readiness guard
+Status: Minimal implementation started
 
 ## Goal
 
@@ -51,14 +51,15 @@ submit reviewable draft content in a repeatable, auditable way.
 | Object storage implementation in this step | Storage provider and signing policy are external environment decisions |
 | Production DB migration in this step | Connection target is not available in the worker environment |
 
-## Data Model Additions For Later Implementation
+## Data Model Additions
 
-The current step records the contract only. A later DB migration should add:
+The v0.35 implementation adds the import envelope, event audit, and
+idempotency cache tables locally:
 
 | Table | Purpose |
 |---|---|
-| `authoring_imports` | Import job envelope, worker identity, author binding, status |
-| `authoring_import_events` | Append-only audit trail for MCP tool calls |
+| `authoring_imports` | Import job envelope, worker identity, author binding, status, draft pointers |
+| `authoring_import_events` | Append-only audit trail for accepted MCP tool calls |
 | `authoring_idempotency_keys` | Idempotent mutation result cache by worker/import/tool/key |
 
 Recommended statuses:
@@ -97,14 +98,34 @@ Required tools:
 
 | Step | Work | Completion criteria |
 |---:|---|---|
-| 1 | Contract documentation | Contract and plan are indexed |
-| 2 | Readiness guard | `npm run readiness:authoring-mcp` verifies boundaries |
-| 3 | DB migration draft | Add import/idempotency/audit tables |
-| 4 | MCP transport | Expose tools through approved MCP server surface |
-| 5 | Internal service bridge | Reuse creator services for drafts/assets/review request |
-| 6 | Admin visibility | Admin and creator UI show import provenance |
-| 7 | Auth hardening | Worker token or signed job token validation |
-| 8 | Integration smoke | Sample external worker submits a draft and review request |
+| 1 | Contract documentation | Complete |
+| 2 | Readiness guard | Complete |
+| 3 | DB migration draft | Complete for import/idempotency/audit tables |
+| 4 | HTTP tool adapter | Complete for `/api/authoring-mcp/tools/:toolName` |
+| 5 | Minimal service bridge | Complete for `create_authoring_import` and `get_authoring_import_status` |
+| 6 | Draft mutation bridge | Pending for series, episode, panels, assets, review submission |
+| 7 | Admin visibility | Pending; admin and creator UI should show import provenance |
+| 8 | Auth hardening | Partial; bearer token exists, signed job token remains future hardening |
+| 9 | Integration smoke | Pending; requires configured DB and worker token in staging/production |
+
+## Implemented v0.35 API Surface
+
+The platform now exposes a minimal HTTP adapter for worker tool calls:
+
+```text
+POST /api/authoring-mcp/tools/create_authoring_import
+POST /api/authoring-mcp/tools/get_authoring_import_status
+```
+
+Authentication uses `Authorization: Bearer <WEBTOON_AUTHORING_MCP_TOKEN>`.
+The worker id is taken from `X-Authoring-Worker-Id` or
+`WEBTOON_AUTHORING_MCP_WORKER_ID`.
+
+The first tool creates or reuses an import envelope bound to an active author.
+The second tool reads status for imports owned by the calling worker id.
+
+The remaining contracted tools return `501 AUTHORING_MCP_TOOL_NOT_IMPLEMENTED`
+until their draft mutation behavior is implemented.
 
 ## Acceptance Criteria For This Step
 
@@ -116,9 +137,11 @@ Required tools:
 | Package script | `readiness:authoring-mcp` is registered |
 | Safety boundary | Readiness fails if the contract allows direct production release |
 | Wiki sync | Runtime Knowledge Wiki records the durable MCP decision |
+| Minimal adapter | `api/authoring-mcp.js` routes tool calls |
+| Minimal service | `api/_lib/authoring-mcp-service.js` implements import create/status |
 
 ## External Boundary
 
-This step does not create a production MCP server, issue worker tokens, write to
-object storage, migrate staging or production DBs, promote a release, or deploy
-new production infrastructure.
+This step does not issue worker tokens, write to object storage, run staging or
+production DB migration, promote a release, or deploy new production
+infrastructure.

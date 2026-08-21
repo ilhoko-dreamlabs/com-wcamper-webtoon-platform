@@ -1,7 +1,7 @@
 # Authoring MCP Contract v0.34
 
 Date: 2026-08-21
-Status: Proposed contract, not yet exposed as a production MCP server
+Status: Contract with minimal HTTP tool adapter implementation
 
 ## Goal
 
@@ -48,6 +48,18 @@ cookies.
 | `register_authoring_asset` | Register an already uploaded asset or request an upload slot | Yes | No |
 | `submit_episode_for_review` | Submit a draft episode to the existing review flow | Yes | No |
 | `get_authoring_import_status` | Return import, draft, review, and release-state pointers | No | No |
+
+## Current HTTP Adapter
+
+The current implementation exposes the first two tools through the platform API:
+
+```text
+POST /api/authoring-mcp/tools/create_authoring_import
+POST /api/authoring-mcp/tools/get_authoring_import_status
+```
+
+The remaining tools are part of the contract but return
+`AUTHORING_MCP_TOOL_NOT_IMPLEMENTED` until the draft mutation bridge is built.
 
 ## Tool Contracts
 
@@ -257,6 +269,13 @@ Output:
 | `register_authoring_asset` | Creator asset service |
 | `submit_episode_for_review` | Existing creator review request flow |
 | Release status fields | `publication_reviews`, `publication_snapshots`, `publication_releases` |
+
+## Current Environment Variables
+
+| Variable | Purpose |
+|---|---|
+| `WEBTOON_AUTHORING_MCP_TOKEN` | Bearer token required by the HTTP tool adapter |
+| `WEBTOON_AUTHORING_MCP_WORKER_ID` | Optional fallback worker id when `X-Authoring-Worker-Id` is not sent |
 
 ## Acceptance Criteria
 

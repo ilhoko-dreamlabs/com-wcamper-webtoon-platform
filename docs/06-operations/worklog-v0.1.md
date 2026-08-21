@@ -258,6 +258,52 @@ Record the MCP boundary for external authoring workers so they can submit
 reviewable webtoon drafts without bypassing creator/admin review or production
 publication controls.
 
+## Iteration 26
+
+Date: 2026-08-21
+
+Task: Implement the minimal Authoring MCP import/status API surface.
+
+### Goal
+
+Add the first executable Authoring MCP boundary without allowing direct review
+approval, snapshot generation, production promote, or rollback.
+
+### Completed
+
+| Work item | Status |
+|---|---|
+| DreamLabs registry usage review | Complete |
+| Runtime Knowledge Wiki policy/index review | Complete |
+| Authoring import/idempotency/audit schema added | Complete |
+| Minimal Authoring MCP HTTP tool adapter added | Complete |
+| `create_authoring_import` implemented | Complete |
+| `get_authoring_import_status` implemented | Complete |
+| Deferred draft mutation tools return guarded `501` | Complete |
+| Vercel rewrite for `/api/authoring-mcp/:path*` added | Complete |
+| Authoring MCP migration draft added | Complete |
+| Readiness guard updated for implementation files and production-bypass checks | Complete |
+
+### Changed Files
+
+| File | Purpose |
+|---|---|
+| `api/authoring-mcp.js` | Routes Authoring MCP HTTP tool calls |
+| `api/_lib/authoring-mcp-service.js` | Implements worker auth, import creation, status lookup, audit event, and idempotency |
+| `api/_lib/platform-schema.js` | Adds runtime-safe additive authoring tables |
+| `db/schema.sql` | Adds managed schema authoring tables |
+| `docs/04-data/authoring-mcp-migration-v0.35.sql` | Adds migration draft for authoring tables |
+| `docs/03-apis/authoring-mcp-contract-v0.34.md` | Records current minimal adapter |
+| `docs/05-implementation/authoring-mcp-integration-plan-v0.34.md` | Updates implementation status |
+| `scripts/verify-authoring-mcp-readiness.js` | Verifies implementation, route, schema, and boundary checks |
+| `vercel.json` | Adds Authoring MCP route rewrite |
+
+### External State
+
+No remote push, production deployment, staging or production DB migration,
+worker token issuance, object storage write, production promote, or rollback
+was performed in this local implementation step.
+
 ### Completed
 
 | Work item | Status |

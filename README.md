@@ -93,6 +93,8 @@ Vercel Functions는 다음 환경변수를 사용합니다.
 | `WEBTOON_AUTHOR_EMAILS` | 아니오 | 추가 승인 작가 이메일 allowlist. 쉼표 또는 공백 구분 |
 | `WEBTOON_ENABLE_INITIAL_CATALOG_ATTACH` | 아니오 | `true`일 때만 로그인 시 초기 공개 카탈로그 seed 연결을 허용한다. 기본값은 비활성이다. |
 | `WEBTOON_INITIAL_CATALOG_OWNER_EMAILS` | 아니오 | opt-in seed 연결이 켜진 경우에만 사용하는 작가 이메일 allowlist. 기본값 `ilho.ko@dreamlabs.co.kr` |
+| `WEBTOON_AUTHORING_MCP_TOKEN` | 예, Authoring MCP 사용 시 | 외부 authoring worker tool 호출용 Bearer 토큰 |
+| `WEBTOON_AUTHORING_MCP_WORKER_ID` | 아니오 | `X-Authoring-Worker-Id` 헤더가 없을 때 사용할 기본 worker id |
 
 전체 DB 스키마는 자동 마이그레이션하지 않습니다. 운영 DB에는 `db/schema.sql`을 적용하는 것을 기준으로 합니다. 단, 승인 작가 콘솔이 쓰는 `authors`, `feedback`, `webtoon_series`, `webtoon_episodes` 기본 테이블은 작가 API가 `CREATE TABLE IF NOT EXISTS`와 `ALTER TABLE ADD COLUMN IF NOT EXISTS` 방식으로 보강해 초기 운영 저장 흐름이 바로 동작하도록 구성했습니다. 이 런타임 부트스트랩은 기존 운영 DB의 제약 조건 편차로 작가페이지가 막히지 않도록 컬럼 보강을 우선하며, 외래키/unique 같은 정식 제약은 `db/schema.sql` 기준의 관리형 migration에서 적용합니다.
 
@@ -103,6 +105,8 @@ Vercel Functions는 다음 환경변수를 사용합니다.
 초기 승인 작가 계정은 `ilho.ko@dreamlabs.co.kr`입니다. 해당 계정은 auth 세션에서 검증된 이메일이 일치하면 웹툰 API가 `Author.status=ACTIVE`에 준하는 작가 권한으로 처리합니다. 추가 작가는 `WEBTOON_AUTHOR_EMAILS` 또는 auth role `webtoonAuthor`/`creator`/`author`로 등록합니다.
 
 초기 공개 카탈로그를 작가 DB에 연결하는 동작은 기본 비활성입니다. 운영자가 `WEBTOON_ENABLE_INITIAL_CATALOG_ATTACH=true`로 명시 opt-in하고 `WEBTOON_INITIAL_CATALOG_OWNER_EMAILS` allowlist를 설정한 경우에만 해당 작가의 로그인 세션에서 초기 공개 카탈로그 작품을 `webtoon_series`, `webtoon_episodes`에 idempotent upsert합니다.
+
+Authoring MCP는 외부 worker가 검수 가능한 draft import를 제출하기 위한 통합 경계입니다. 현재 구현은 `/api/authoring-mcp/tools/create_authoring_import`와 `/api/authoring-mcp/tools/get_authoring_import_status`를 제공하며, production 공개 승인, snapshot 생성, promote, rollback은 계속 관리자 publication pipeline에서만 처리합니다.
 
 운영에서 작가 콘텐츠 저장소 상태를 확인할 때는 승인 작가 계정으로 로그인한 뒤 `/api/creator/diagnostics`를 호출합니다. 이 응답은 DB 연결 문자열 같은 민감정보를 노출하지 않고, 필수 DB 환경변수 미설정과 기본 테이블 준비 상태만 구분해 반환합니다.
 

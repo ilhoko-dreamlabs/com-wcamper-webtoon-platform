@@ -2,6 +2,51 @@
 
 Date: 2026-07-16
 
+## Iteration 26 Verification
+
+Date: 2026-08-21
+
+Status: Passed for Authoring MCP minimal implementation.
+
+| Check | Result | Notes |
+|---|---|---|
+| Authoring MCP readiness | Passed | `npm run readiness:authoring-mcp` verifies route adapter, implemented tools, deferred tool guard, schema terms, and production-bypass absence |
+| Syntax checks for new files | Passed | `node --check` passed for `api/authoring-mcp.js`, `api/_lib/authoring-mcp-service.js`, `api/_lib/platform-schema.js`, and readiness script |
+| Handler auth-boundary smoke | Passed | Missing MCP token returns `AUTHORING_MCP_NOT_CONFIGURED`; configured token with no DB returns `DB_NOT_CONFIGURED` |
+| Publication pipeline readiness | Passed | `npm run readiness:publication-pipeline` |
+| Creator studio readiness | Passed | `npm run readiness:creator-studio` |
+| Default build | Passed | `npm run build` generated 34 static pages and generated catalog artifact |
+| Public catalog boundary | Passed | `npm run verify:public-catalog`, baseline match yes |
+| Public artifact verification | Passed | `npm run verify:public-artifact`, payload hash matched |
+| Asset validation | Passed | `npm run validate:assets`, 40 catalog asset references exist |
+| Runtime smoke | Passed after sequential rerun | Initial parallel run raced on `public/` cleanup; sequential rerun passed |
+| Browser route smoke | Passed | `npm run smoke:public-artifact-browser` |
+| Release readiness | Passed | `npm run readiness:public-artifact`, 34 HTML files compared, baseline match yes |
+| Secret scan review | Passed with env-name/code findings only | Indicator scan found configuration names and bearer-token comparison code, not secret values |
+
+Commands run:
+
+| Command | Status |
+|---|---|
+| `node --check api/authoring-mcp.js` | Passed |
+| `node --check api/_lib/authoring-mcp-service.js` | Passed |
+| `node --check api/_lib/platform-schema.js` | Passed |
+| `node --check scripts/verify-authoring-mcp-readiness.js` | Passed |
+| `npm run readiness:authoring-mcp` | Passed |
+| Authoring MCP handler smoke | Passed |
+| `find api scripts assets -type f -name '*.js' -not -path './node_modules/*' -print \| sort \| xargs -n1 node --check` | Passed |
+| `npm run readiness:publication-pipeline` | Passed |
+| `npm run readiness:creator-studio` | Passed |
+| `npm run build` | Passed |
+| `npm run verify:public-catalog` | Passed |
+| `npm run verify:public-artifact` | Passed |
+| `npm run validate:assets` | Passed |
+| `npm run smoke:public-artifact-runtime` | Passed after sequential rerun |
+| `npm run smoke:public-artifact-browser` | Passed |
+| `npm run readiness:public-artifact` | Passed |
+| `git diff --check` | Passed |
+| Secret indicator scan | Passed with env-name/code findings only |
+
 ## Iteration 18 Verification
 
 Date: 2026-07-24
